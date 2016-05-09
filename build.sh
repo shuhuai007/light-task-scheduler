@@ -32,3 +32,11 @@ cp -rf $LTS_Bin_Dir/lts-admin/target/lts-admin-$VERSION.war $Dist_Bin_Dir/war/lt
  cd $LTS_Bin_Dir/dist
  zip -r lts-$VERSION-bin.zip lts-$VERSION-bin/*
  rm -rf lts-$VERSION-bin
+
+ exit
+echo "...doing my operation..."
+aa=`cd dist; unzip lts-1.6.8-beta1-bin.zip; cd ..`
+echo $aa
+cp lts-jobclient/target/lts-jobclient-1.6.8-beta1.jar dist/lts-1.6.8-beta1-bin/lib
+cp jobclient.sh dist/lts-1.6.8-beta1-bin/bin
+
