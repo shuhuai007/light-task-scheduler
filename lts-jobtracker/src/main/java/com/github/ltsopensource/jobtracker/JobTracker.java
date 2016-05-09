@@ -47,7 +47,6 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         appContext.setJobClientManager(new JobClientManager(appContext));
         // TaskTracker 管理者
         appContext.setTaskTrackerManager(new TaskTrackerManager(appContext));
-
         // injectRemotingServer
         appContext.setRemotingServer(remotingServer);
         appContext.setJobLogger(new SmartJobLogger(appContext));
