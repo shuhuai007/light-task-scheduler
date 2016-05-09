@@ -65,7 +65,10 @@ public class JobFinishHandler {
             // 可能任务队列中改条记录被删除了
             return;
         }
-        Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression());
+        Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
+                new Date(jobPo.getLastGenerateTriggerTime()));
+        LOGGER.info("job's last generate trigger time:" + jobPo.getLastGenerateTriggerTime());
+        LOGGER.info("job's next trigger time:" + nextTriggerTime.getTime());
         if (nextTriggerTime == null) {
             // 从CronJob队列中移除
             appContext.getCronJobQueue().remove(jobId);
@@ -78,6 +81,7 @@ public class JobFinishHandler {
             jobPo.setTriggerTime(nextTriggerTime.getTime());
             jobPo.setGmtModified(SystemClock.now());
             appContext.getExecutableJobQueue().add(jobPo);
+            appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobId, nextTriggerTime.getTime());
         } catch (DupEntryException e) {
             LOGGER.warn("ExecutableJobQueue already exist:" + JSON.toJSONString(jobPo));
         }

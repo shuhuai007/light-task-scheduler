@@ -187,6 +187,8 @@ public class JobReceiver {
                     // 2. add to executable queue
                     jobPo.setTriggerTime(nextTriggerTime.getTime());
                     appContext.getExecutableJobQueue().add(jobPo);
+                    appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
+                            nextTriggerTime.getTime());
                 }
             } else {
                 // 对于不需要依赖上一周期的,采取批量生成的方式
