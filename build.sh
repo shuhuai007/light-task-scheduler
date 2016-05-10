@@ -33,7 +33,7 @@ cp -rf $LTS_Bin_Dir/lts-admin/target/lts-admin-$VERSION.war $Dist_Bin_Dir/war/lt
  zip -r lts-$VERSION-bin.zip lts-$VERSION-bin/*
  rm -rf lts-$VERSION-bin
 
- exit
+exit
 echo "...doing my operation..."
 aa=`cd dist; unzip lts-1.6.8-beta1-bin.zip; cd ..`
 echo $aa
