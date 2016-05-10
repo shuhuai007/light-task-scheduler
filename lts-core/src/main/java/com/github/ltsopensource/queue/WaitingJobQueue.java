@@ -10,15 +10,15 @@ import java.util.List;
  */
 public interface WaitingJobQueue extends JobQueue {
 
-    /**
-     * 创建一个队列
-     */
-    boolean createQueue(String taskTrackerNodeGroup);
-
-    /**
-     * 删除
-     */
-    boolean removeQueue(String taskTrackerNodeGroup);
+//    /**
+//     * 创建一个队列
+//     */
+//    boolean createQueue(String taskTrackerNodeGroup);
+//
+//    /**
+//     * 删除
+//     */
+//    boolean removeQueue(String taskTrackerNodeGroup);
 
     /**
      * 入队列
