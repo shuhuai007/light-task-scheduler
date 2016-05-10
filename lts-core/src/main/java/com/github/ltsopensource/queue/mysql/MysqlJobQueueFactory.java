@@ -20,6 +20,11 @@ public class MysqlJobQueueFactory implements JobQueueFactory {
     }
 
     @Override
+    public WaitingJobQueue getWaitingJobQueue(Config config) {
+        return new MysqlWaitingJobQueue(config);
+    }
+
+    @Override
     public ExecutableJobQueue getExecutableJobQueue(Config config) {
         return new MysqlExecutableJobQueue(config);
     }

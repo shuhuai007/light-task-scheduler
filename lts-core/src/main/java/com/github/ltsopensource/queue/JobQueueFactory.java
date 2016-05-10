@@ -15,6 +15,8 @@ public interface JobQueueFactory {
 
     RepeatJobQueue getRepeatJobQueue(Config config);
 
+    WaitingJobQueue getWaitingJobQueue(Config config);
+
     ExecutableJobQueue getExecutableJobQueue(Config config);
 
     ExecutingJobQueue getExecutingJobQueue(Config config);

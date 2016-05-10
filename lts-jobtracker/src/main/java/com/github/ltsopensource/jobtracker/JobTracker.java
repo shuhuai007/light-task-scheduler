@@ -54,6 +54,7 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         JobQueueFactory factory = ServiceLoader.load(JobQueueFactory.class, config);
 
         appContext.setExecutableJobQueue(factory.getExecutableJobQueue(config));
+        appContext.setWaitingJobQueue(factory.getWaitingJobQueue(config));
         appContext.setExecutingJobQueue(factory.getExecutingJobQueue(config));
         appContext.setCronJobQueue(factory.getCronJobQueue(config));
         appContext.setRepeatJobQueue(factory.getRepeatJobQueue(config));

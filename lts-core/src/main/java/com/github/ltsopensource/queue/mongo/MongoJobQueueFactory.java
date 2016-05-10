@@ -19,6 +19,11 @@ public class MongoJobQueueFactory implements JobQueueFactory {
     }
 
     @Override
+    public WaitingJobQueue getWaitingJobQueue(Config config) {
+        return null;
+    }
+
+    @Override
     public ExecutableJobQueue getExecutableJobQueue(Config config) {
         return new MongoExecutableJobQueue(config);
     }

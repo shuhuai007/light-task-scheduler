@@ -39,6 +39,8 @@ public class JobTrackerAppContext extends AppContext {
     // biz logger
     private JobLogger jobLogger;
 
+    // waiting job queue (waiting for entering th executable job queue)
+    private WaitingJobQueue waitingJobQueue;
     // executable job queue（waiting for exec）
     private ExecutableJobQueue executableJobQueue;
     // executing job queue
@@ -216,5 +218,13 @@ public class JobTrackerAppContext extends AppContext {
 
     public void setExecutableDeadJobChecker(ExecutableDeadJobChecker executableDeadJobChecker) {
         this.executableDeadJobChecker = executableDeadJobChecker;
+    }
+
+    public void setWaitingJobQueue(WaitingJobQueue waitingJobQueue) {
+        this.waitingJobQueue = waitingJobQueue;
+    }
+
+    public WaitingJobQueue getWaitingJobQueue() {
+        return waitingJobQueue;
     }
 }
