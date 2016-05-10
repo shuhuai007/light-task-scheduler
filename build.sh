@@ -6,6 +6,9 @@ LTS_BIN="${BASH_SOURCE-$0}"
 LTS_BIN="$(dirname "${LTS_BIN}")"
 LTS_Bin_Dir="$(cd "${LTS_BIN}"; pwd)"
 
+# delete old dist dir
+[ -d ${LTS_Bin_Dir}/dist ] && rm -rf ${LTS_Bin_Dir}/dist 
+
 cd $LTS_Bin_Dir
 
 mvn clean install -U -DskipTests
@@ -29,14 +32,10 @@ mvn clean assembly:assembly -DskipTests -Plts-admin
 cp -rf $Startup_Dir/target/lts-bin/lts/lib  $Dist_Bin_Dir/war/jetty
 cp -rf $LTS_Bin_Dir/lts-admin/target/lts-admin-$VERSION.war $Dist_Bin_Dir/war/lts-admin.war
 
- cd $LTS_Bin_Dir/dist
- zip -r lts-$VERSION-bin.zip lts-$VERSION-bin/*
- rm -rf lts-$VERSION-bin
+cd $LTS_Bin_Dir/dist
+zip -r lts-$VERSION-bin.zip lts-$VERSION-bin/*
 
-exit
-echo "...doing my operation..."
-aa=`cd dist; unzip lts-1.6.8-beta1-bin.zip; cd ..`
-echo $aa
-cp lts-jobclient/target/lts-jobclient-1.6.8-beta1.jar dist/lts-1.6.8-beta1-bin/lib
-cp jobclient.sh dist/lts-1.6.8-beta1-bin/bin
+
+cp ${LTS_Bin_Dir}/lts-jobclient/target/lts-jobclient-${VERSION}.jar ${LTS_Bin_Dir}/dist/lts-${VERSION}-bin/lib
+cp ${LTS_Bin_Dir}/jobclient.sh ${LTS_Bin_Dir}/dist/lts-${VERSION}-bin/bin
 
