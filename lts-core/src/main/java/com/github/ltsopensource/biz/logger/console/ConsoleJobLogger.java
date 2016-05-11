@@ -34,4 +34,10 @@ public class ConsoleJobLogger implements JobLogger {
         throw new UnsupportedOperationException("Console logger dose not support this operation!");
     }
 
+    @Override
+    public JobLogPo search(String workflowId, String taskId) {
+        // TODO (need to implement)
+        return null;
+    }
+
 }

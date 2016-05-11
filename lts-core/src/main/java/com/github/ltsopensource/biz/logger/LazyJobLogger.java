@@ -168,4 +168,9 @@ public class LazyJobLogger implements JobLogger {
         return delegate.search(request);
     }
 
+    @Override
+    public JobLogPo search(String workflowId, String taskId) {
+        return delegate.search(workflowId, taskId);
+    }
+
 }

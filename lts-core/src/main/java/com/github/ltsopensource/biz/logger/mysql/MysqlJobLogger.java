@@ -7,6 +7,8 @@ import com.github.ltsopensource.biz.logger.domain.JobLoggerRequest;
 import com.github.ltsopensource.core.cluster.Config;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.json.JSON;
+import com.github.ltsopensource.core.logger.Logger;
+import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.queue.mysql.support.RshHolder;
 import com.github.ltsopensource.store.jdbc.JdbcAbstractAccess;
 import com.github.ltsopensource.store.jdbc.builder.InsertSql;
@@ -21,6 +23,7 @@ import java.util.List;
  * @author Robert HG (254963746@qq.com) on 5/21/15.
  */
 public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MysqlJobLogger.class);
 
     public MysqlJobLogger(Config config) {
         super(config);
@@ -140,6 +143,36 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
         response.setRows(rows);
 
         return response;
+    }
+
+    @Override
+    public JobLogPo search(String workflowId, String taskId) {
+        SelectSql sql = new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("task_id = ?", taskId)
+                .and(buildAndStatement(workflowId))
+                .and("log_type = 'FINISHED'")
+                .and("success = 1")
+                .orderBy()
+                .column("log_time", OrderByType.DESC);
+        LOGGER.info("......search(workflowId, taskId): " + sql.getSQL());
+        List<JobLogPo> rows = sql.list(RshHolder.JOB_LOGGER_LIST_RSH);
+        if (rows != null && rows.size() > 0) {
+            return rows.get(0);
+        }
+        return null;
+    }
+
+    private String buildAndStatement(String workflowId) {
+        // TODO (zj: need to refactor)
+        String andStatement = "POSITION(" +
+                "'\"wfInstanceId\":" +
+                "\"" + workflowId + "\"'" +
+                " in ext_params)!=0";
+        return andStatement;
     }
 
     private WhereSql buildWhereSql(JobLoggerRequest request) {

@@ -1,9 +1,12 @@
 package com.github.ltsopensource.jobtracker.support.checker;
 
+import com.github.ltsopensource.biz.logger.SmartJobLogger;
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
+import com.github.ltsopensource.biz.logger.mysql.MysqlJobLogger;
 import com.github.ltsopensource.core.cluster.NodeType;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
+import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.Constants;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.Level;
@@ -106,6 +109,36 @@ public class WaitingJobQueueChecker {
 
     private boolean meetDependencies(JobPo jobPo) {
         // TODO (zj: this job should wait until it's parents finish the execution.)
+        String parents = jobPo.getExtParams().get("parents");
+        LOGGER.info("......enter meetDependencies");
+        LOGGER.info("job task_id: " + jobPo.getTaskId() + ", parents: " + parents);
+        if (StringUtils.isEmpty(parents)) {
+            LOGGER.info("......exit meetDependencies, true");
+            return true;
+        }
+
+        String workflowId = jobPo.getExtParams().get("wfInstanceId");
+        LOGGER.info("job workflowId: " + workflowId);
+
+        String[] parentIds = StringUtils.splitWithTrim("\001", parents);
+        LOGGER.info("parentIds's size:" + parentIds.length);
+
+        for (String parentId : parentIds) {
+            LOGGER.info(" for loop, parentId:" + parentId);
+            LOGGER.info(" for loop, workflowId:" + workflowId);
+
+            JobLogPo parentLog = appContext.getJobLogger().search(workflowId, parentId);
+            LOGGER.info("parentLog:" + parentLog);
+
+            if (parentLog == null) {
+                LOGGER.info("......exit meetDependencies, false");
+                LOGGER.info("\n\n");
+                return false;
+            }
+        }
+        LOGGER.info("......exit meetDependencies, true");
+        LOGGER.info("\n\n");
+
         return true;
     }
 

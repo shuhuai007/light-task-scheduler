@@ -76,6 +76,12 @@ public class MongoJobLogger extends MongoRepository implements JobLogger {
         return paginationRsp;
     }
 
+    @Override
+    public JobLogPo search(String workflowId, String taskId) {
+        // TODO (zj: need to implement)
+        return null;
+    }
+
     private Long getTimestamp(Date timestamp) {
         if (timestamp == null) {
             return null;

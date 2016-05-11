@@ -18,4 +18,7 @@ public interface JobLogger {
     public void log(List<JobLogPo> jobLogPos);
 
     public PaginationRsp<JobLogPo> search(JobLoggerRequest request);
+
+    public JobLogPo search(String workflowId, String taskId);
+
 }

@@ -44,4 +44,10 @@ public class SmartJobLogger implements JobLogger {
     public PaginationRsp<JobLogPo> search(JobLoggerRequest request) {
         return this.delegate.search(request);
     }
+
+    @Override
+    public JobLogPo search(String workflowId, String taskId) {
+        // TODO (zj: need to implement)
+        return delegate.search(workflowId, taskId);
+    }
 }
