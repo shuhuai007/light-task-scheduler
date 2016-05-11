@@ -130,8 +130,8 @@ public class JobReceiver {
                 }
             }
             if (needAdd2ExecutableJobQueue) {
-                appContext.getExecutableJobQueue().add(jobPo);
-//                appContext.getWaitingJobQueue().add(jobPo);
+//                appContext.getExecutableJobQueue().add(jobPo);
+                appContext.getWaitingJobQueue().add(jobPo);
             }
         }
     }
