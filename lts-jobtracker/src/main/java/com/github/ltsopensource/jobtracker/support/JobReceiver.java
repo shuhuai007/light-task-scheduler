@@ -122,18 +122,26 @@ public class JobReceiver {
         } else if (job.isRepeatable()) {
             addRepeatJob(jobPo);
         } else {
-            boolean needAdd2ExecutableJobQueue = true;
-            String ignoreAddOnExecuting = CollectionUtils.getValue(jobPo.getInternalExtParams(), "__LTS_ignoreAddOnExecuting");
-            if (ignoreAddOnExecuting != null && "true".equals(ignoreAddOnExecuting)) {
-                if (appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(), jobPo.getTaskId()) != null) {
-                    needAdd2ExecutableJobQueue = false;
-                }
-            }
-            if (needAdd2ExecutableJobQueue) {
+            if (needAdd2WaitingJobQueue(jobPo)) {
 //                appContext.getExecutableJobQueue().add(jobPo);
                 appContext.getWaitingJobQueue().add(jobPo);
             }
         }
+    }
+
+    private boolean needAdd2WaitingJobQueue(JobPo jobPo) {
+        boolean needAdd2WaitingJobQueue = true;
+        if (shouldIgnoreAddOnExecuting(jobPo)) {
+            if (appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(), jobPo.getTaskId()) != null) {
+                needAdd2WaitingJobQueue = false;
+            }
+        }
+        return needAdd2WaitingJobQueue;
+    }
+
+    private boolean shouldIgnoreAddOnExecuting(JobPo jobPo) {
+        String ignoreAddOnExecuting = CollectionUtils.getValue(jobPo.getInternalExtParams(), "__LTS_ignoreAddOnExecuting");
+        return ignoreAddOnExecuting != null && "true".equals(ignoreAddOnExecuting);
     }
 
     /**
