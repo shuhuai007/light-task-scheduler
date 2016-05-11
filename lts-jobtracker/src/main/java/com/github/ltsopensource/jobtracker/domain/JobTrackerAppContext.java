@@ -11,6 +11,7 @@ import com.github.ltsopensource.jobtracker.support.OldDataHandler;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutableDeadJobChecker;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutingDeadJobChecker;
 import com.github.ltsopensource.jobtracker.support.checker.FeedbackJobSendChecker;
+import com.github.ltsopensource.jobtracker.support.checker.WaitingJobQueueChecker;
 import com.github.ltsopensource.jobtracker.support.cluster.JobClientManager;
 import com.github.ltsopensource.jobtracker.support.cluster.TaskTrackerManager;
 import com.github.ltsopensource.queue.*;
@@ -59,6 +60,7 @@ public class JobTrackerAppContext extends AppContext {
     private JobSender jobSender;
 
     private NonRelyOnPrevCycleJobScheduler nonRelyOnPrevCycleJobScheduler;
+    private WaitingJobQueueChecker waitingJobQueueChecker;
 
     public JobSender getJobSender() {
         return jobSender;
@@ -226,5 +228,13 @@ public class JobTrackerAppContext extends AppContext {
 
     public WaitingJobQueue getWaitingJobQueue() {
         return waitingJobQueue;
+    }
+
+    public void setWaitingJobQueueChecker(WaitingJobQueueChecker waitingJobQueueChecker) {
+        this.waitingJobQueueChecker = waitingJobQueueChecker;
+    }
+
+    public WaitingJobQueueChecker getWaitingJobQueueChecker() {
+        return waitingJobQueueChecker;
     }
 }

@@ -121,4 +121,14 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
                 .and("task_tracker_node_group = ?", taskTrackerNodeGroup)
                 .single(RshHolder.JOB_PO_RSH);
     }
+
+    @Override
+    public List<JobPo> getAllJobs() {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .list(RshHolder.JOB_PO_LIST_RSH);
+    }
 }

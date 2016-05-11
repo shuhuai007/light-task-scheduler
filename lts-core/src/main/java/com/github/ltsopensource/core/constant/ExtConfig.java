@@ -173,6 +173,11 @@ public interface ExtConfig {
      */
     String JOB_TRACKER_EXECUTING_JOB_FIX_DEADLINE_SECONDS = "jobtracker.executing.job.fix.deadline.seconds";
     /**
+     * JobTracker end: time interval to check the waiting job queue
+     */
+    String JOB_TRACKER_WAITING_JOB_FIX_CHECK_INTERVAL_SECONDS =
+            "jobtracker.waiting.job.fix.check.interval.seconds";
+    /**
      * TaskTracker端: Pull 任务频率(秒) , 默认 1s(不建议自己设置)
      */
     String JOB_PULL_FREQUENCY = "job.pull.frequency";

@@ -46,4 +46,9 @@ public interface WaitingJobQueue extends JobQueue {
      * 得到JobPo
      */
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
+
+    /**
+     * Gets all the JobPo.
+     */
+    List<JobPo> getAllJobs();
 }
