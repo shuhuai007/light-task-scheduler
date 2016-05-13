@@ -32,10 +32,5 @@ mvn clean assembly:assembly -DskipTests -Plts-admin
 cp -rf $Startup_Dir/target/lts-bin/lts/lib  $Dist_Bin_Dir/war/jetty
 cp -rf $LTS_Bin_Dir/lts-admin/target/lts-admin-$VERSION.war $Dist_Bin_Dir/war/lts-admin.war
 
-cd $LTS_Bin_Dir/dist
-zip -r lts-$VERSION-bin.zip lts-$VERSION-bin/*
-
-
 cp ${LTS_Bin_Dir}/lts-jobclient/target/lts-jobclient-${VERSION}.jar ${LTS_Bin_Dir}/dist/lts-${VERSION}-bin/lib
 cp ${LTS_Bin_Dir}/jobclient.sh ${LTS_Bin_Dir}/dist/lts-${VERSION}-bin/bin
-
