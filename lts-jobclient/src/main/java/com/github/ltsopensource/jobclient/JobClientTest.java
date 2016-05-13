@@ -15,6 +15,11 @@ public class JobClientTest {
     public static void main(String[] args) throws IOException {
 //        submitWidthReplaceOnExist();
         submitWorkflow();
+        submitCoordinator();
+    }
+
+    private static void submitCoordinator() {
+
     }
 
     private static void submitWidthReplaceOnExist() {
@@ -36,13 +41,22 @@ public class JobClientTest {
         String wfInstanceId = JobUtils.generateJobId();
         Job job1 = createJob("wf_t_1");
         Job job2 = createJob("wf_t_2");
+        Job job3 = createJob("wf_t_3");
+        Job job4 = createJob("wf_t_4");
         job1.setParam("parents", "");
         job1.setParam("wfInstanceId", wfInstanceId);
         job2.setParam("parents", job1.getTaskId());
         job2.setParam("wfInstanceId", wfInstanceId);
+        job3.setParam("parents", job2.getTaskId());
+        job3.setParam("wfInstanceId", wfInstanceId);
+        job4.setParam("parents", job1.getTaskId());
+        job4.setParam("wfInstanceId", wfInstanceId);
+
         List<Job> dag = new ArrayList<Job>();
         dag.add(job1);
         dag.add(job2);
+        dag.add(job3);
+        dag.add(job4);
         Response response = jobClient.submitJob(dag);
         System.out.println(response);
     }
