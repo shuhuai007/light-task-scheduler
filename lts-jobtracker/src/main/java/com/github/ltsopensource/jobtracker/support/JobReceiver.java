@@ -193,7 +193,7 @@ public class JobReceiver {
 
             if (JobUtils.isRelyOnPrevCycle(jobPo)) {
                 // 没有正在执行, 则添加
-                if (isRunning(jobPo)) {
+                if (!isRunning(jobPo)) {
                     // 2. add to executable queue
                     jobPo.setTriggerTime(nextTriggerTime.getTime());
 //                    appContext.getExecutableJobQueue().add(jobPo);
@@ -225,7 +225,7 @@ public class JobReceiver {
 
         if (JobUtils.isRelyOnPrevCycle(jobPo)) {
             // 没有正在执行, 则添加
-            if (isRunning(jobPo)) {
+            if (!isRunning(jobPo)) {
                 // 2. add to executable queue
                 appContext.getExecutableJobQueue().add(jobPo);
             }

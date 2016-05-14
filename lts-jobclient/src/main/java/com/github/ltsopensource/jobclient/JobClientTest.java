@@ -42,7 +42,9 @@ public class JobClientTest {
         List<Job> dag = new ArrayList<Job>();
         dag.add(job1);
         dag.add(job2);
-        jobClient.submitJob(dag);
+        Response response = jobClient.submitJob(dag);
+        System.out.println(response);
+
     }
 
     private static void submitWidthReplaceOnExist() {
