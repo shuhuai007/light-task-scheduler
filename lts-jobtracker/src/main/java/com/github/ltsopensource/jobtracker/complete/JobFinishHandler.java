@@ -67,9 +67,8 @@ public class JobFinishHandler {
         }
         Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
                 new Date(jobPo.getLastGenerateTriggerTime()));
-        LOGGER.info("job's last generate trigger time:" + jobPo.getLastGenerateTriggerTime());
         LOGGER.info("job's next trigger time:" + nextTriggerTime.getTime());
-        if (nextTriggerTime == null) {
+        if (!checkNextTriggerTime(nextTriggerTime)) {
             // 从CronJob队列中移除
             appContext.getCronJobQueue().remove(jobId);
             return;
@@ -80,11 +79,16 @@ public class JobFinishHandler {
             jobPo.setIsRunning(false);
             jobPo.setTriggerTime(nextTriggerTime.getTime());
             jobPo.setGmtModified(SystemClock.now());
-            appContext.getExecutableJobQueue().add(jobPo);
+//            appContext.getExecutableJobQueue().add(jobPo);
+            appContext.getWaitingJobQueue().add(jobPo);
             appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobId, nextTriggerTime.getTime());
         } catch (DupEntryException e) {
-            LOGGER.warn("ExecutableJobQueue already exist:" + JSON.toJSONString(jobPo));
+            LOGGER.warn("WaitingJobQueue already exist:" + JSON.toJSONString(jobPo));
         }
+    }
+
+    private boolean checkNextTriggerTime(Date nextTriggerTime) {
+        return nextTriggerTime != null;
     }
 
     private void finishRepeatJob(String jobId, boolean isRetryForThisTime) {
