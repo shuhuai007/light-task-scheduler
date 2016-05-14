@@ -1,5 +1,6 @@
 package com.github.ltsopensource.jobclient;
 
+import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.jobclient.domain.Response;
@@ -14,12 +15,34 @@ public class JobClientTest {
 
     public static void main(String[] args) throws IOException {
 //        submitWidthReplaceOnExist();
-        submitWorkflow();
+//        submitWorkflow();
         submitCoordinator();
     }
 
     private static void submitCoordinator() {
+        JobClient jobClient = startJobClient();
+        // workflowStaticId comes from database.
+        String workflowStaticId = "1";
+        // The cron task will be assigned an instanceId when being submitted.
+        String submitInstanceId = StringUtils.generateUUID();
+        // all the jobs has the same cron expression
+        String cronExpr = "10 * * * * ?";
+        Job job1 = createJob("job_cron_1");
+        job1.setParam("workflowStaticId", workflowStaticId);
+        job1.setParam("submitInstanceId", submitInstanceId);
+        job1.setCronExpression(cronExpr);
+        Job job2 = createJob("job_cron_2");
+        job2.setParam("workflowStaticId", workflowStaticId);
+        job2.setParam("submitInstanceId", submitInstanceId);
+        job2.setCronExpression(cronExpr);
 
+        job1.setParam("parents", "");
+        job2.setParam("parents", job1.getTaskId());
+
+        List<Job> dag = new ArrayList<Job>();
+        dag.add(job1);
+        dag.add(job2);
+        jobClient.submitJob(dag);
     }
 
     private static void submitWidthReplaceOnExist() {

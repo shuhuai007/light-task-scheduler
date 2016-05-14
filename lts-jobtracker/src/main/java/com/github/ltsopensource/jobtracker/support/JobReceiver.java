@@ -17,6 +17,7 @@ import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
+import com.github.ltsopensource.queue.ExecutingJobQueue;
 import com.github.ltsopensource.queue.domain.JobPo;
 import com.github.ltsopensource.store.jdbc.exception.DupEntryException;
 
@@ -192,10 +193,11 @@ public class JobReceiver {
 
             if (JobUtils.isRelyOnPrevCycle(jobPo)) {
                 // 没有正在执行, 则添加
-                if (appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(), jobPo.getTaskId()) == null) {
+                if (isRunning(jobPo)) {
                     // 2. add to executable queue
                     jobPo.setTriggerTime(nextTriggerTime.getTime());
-                    appContext.getExecutableJobQueue().add(jobPo);
+//                    appContext.getExecutableJobQueue().add(jobPo);
+                    appContext.getWaitingJobQueue().add(jobPo);
                     appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
                             nextTriggerTime.getTime());
                 }
@@ -207,6 +209,14 @@ public class JobReceiver {
     }
 
     /**
+     * @return whether the {@code jobPo} is running in the {@link ExecutingJobQueue}.
+     */
+    private boolean isRunning(JobPo jobPo) {
+        return appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(),
+                jobPo.getTaskId()) != null;
+    }
+
+    /**
      * 添加Repeat 任务
      */
     private void addRepeatJob(JobPo jobPo) throws DupEntryException {
@@ -215,7 +225,7 @@ public class JobReceiver {
 
         if (JobUtils.isRelyOnPrevCycle(jobPo)) {
             // 没有正在执行, 则添加
-            if (appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(), jobPo.getTaskId()) == null) {
+            if (isRunning(jobPo)) {
                 // 2. add to executable queue
                 appContext.getExecutableJobQueue().add(jobPo);
             }

@@ -108,6 +108,11 @@ public class WaitingJobQueueChecker {
     }
 
     private boolean meetDependencies(JobPo jobPo) {
+        // TODO (zj: keep the cron job in the waiting queue for testing)
+        if (jobPo.isCron()) {
+            return false;
+        }
+
         // TODO (zj: this job should wait until it's parents finish the execution.)
         String parents = jobPo.getExtParams().get("parents");
         LOGGER.info("......enter meetDependencies");
