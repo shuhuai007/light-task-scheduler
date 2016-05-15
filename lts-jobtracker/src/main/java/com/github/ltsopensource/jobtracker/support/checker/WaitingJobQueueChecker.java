@@ -20,6 +20,7 @@ import com.github.ltsopensource.core.protocol.command.JobAskRequest;
 import com.github.ltsopensource.core.protocol.command.JobAskResponse;
 import com.github.ltsopensource.core.remoting.RemotingServerDelegate;
 import com.github.ltsopensource.core.support.JobDomainConverter;
+import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.channel.ChannelWrapper;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
@@ -110,7 +111,13 @@ public class WaitingJobQueueChecker {
     private boolean meetDependencies(JobPo jobPo) {
         // TODO (zj: keep the cron job in the waiting queue for testing)
         if (jobPo.isCron()) {
-            return true;
+            List<String> parentList = JobUtils.getParentList(jobPo);
+            if (parentList == null) {
+                // TODO (zj: no parents, it is first level node)
+                return checkLastWorkflow(jobPo);
+            } else {
+                return checkParents(jobPo, parentList);
+            }
         }
 
         // TODO (zj: this job should wait until it's parents finish the execution.)
@@ -147,6 +154,29 @@ public class WaitingJobQueueChecker {
         return true;
     }
 
+    private boolean checkLastWorkflow(JobPo jobPo) {
+        // TODO (zj: should check if the endJob of last workflow finishes
+        return true;
+    }
+
+    /**
+     * Checks if all the parents have already finished.
+     * @param jobPo indicate a job info
+     * @param parentList parent id list
+     * @return true if all the parents have already finished
+     */
+    private boolean checkParents(JobPo jobPo, List<String> parentList) {
+        for (String parentId : parentList) {
+            // parentId(task_id), workflowStaticId, submitInstanceId, trigger_time
+            JobLogPo parentLog = appContext.getJobLogger().
+                    search(jobPo.getExtParams().get("workflowStaticId"),
+                            jobPo.getExtParams().get("submitInstanceId"),
+                            jobPo.getTriggerTime(), parentId);
+
+        }
+        return true;
+    }
+
     private int getFixCheckPeriodSeconds() {
         // TODO (zj: 10 is default value, should be extracted)
         int fixCheckPeriodSeconds = appContext.getConfig().getParameter(ExtConfig
@@ -158,132 +188,6 @@ public class WaitingJobQueueChecker {
             fixCheckPeriodSeconds = 5 * 60;
         }
         return fixCheckPeriodSeconds;
-    }
-
-    private void checkAndFix() throws RemotingSendException {
-
-        // 30s没有收到反馈信息，需要去检查这个任务是否还在执行
-        int maxDeadCheckTime = appContext.getConfig().getParameter(ExtConfig.JOB_TRACKER_EXECUTING_JOB_FIX_DEADLINE_SECONDS, 20);
-        if (maxDeadCheckTime < 10) {
-            maxDeadCheckTime = 10;
-        } else if (maxDeadCheckTime > 5 * 60) {
-            maxDeadCheckTime = 5 * 60;
-        }
-
-        // 查询出所有死掉的任务 (其实可以直接在数据库中fix的, 查询出来主要是为了日志打印)
-        // 一般来说这个是没有多大的，我就不分页去查询了
-        List<JobPo> maybeDeadJobPos = appContext.getExecutingJobQueue().getDeadJobs(
-                SystemClock.now() - maxDeadCheckTime * 1000);
-        if (CollectionUtils.isNotEmpty(maybeDeadJobPos)) {
-
-            Map<String/*taskTrackerIdentity*/, List<JobPo>> jobMap = new HashMap<String, List<JobPo>>();
-            for (JobPo jobPo : maybeDeadJobPos) {
-                List<JobPo> jobPos = jobMap.get(jobPo.getTaskTrackerIdentity());
-                if (jobPos == null) {
-                    jobPos = new ArrayList<JobPo>();
-                    jobMap.put(jobPo.getTaskTrackerIdentity(), jobPos);
-                }
-                jobPos.add(jobPo);
-            }
-
-            for (Map.Entry<String, List<JobPo>> entry : jobMap.entrySet()) {
-                String taskTrackerNodeGroup = entry.getValue().get(0).getTaskTrackerNodeGroup();
-                String taskTrackerIdentity = entry.getKey();
-                // 去查看这个TaskTrackerIdentity是否存活
-                ChannelWrapper channelWrapper = appContext.getChannelManager().getChannel(taskTrackerNodeGroup, NodeType.TASK_TRACKER, taskTrackerIdentity);
-                if (channelWrapper == null && taskTrackerIdentity != null) {
-                    Long offlineTimestamp = appContext.getChannelManager().getOfflineTimestamp(taskTrackerIdentity);
-                    // 已经离线太久，直接修复
-                    if (offlineTimestamp == null || SystemClock.now() - offlineTimestamp > Constants.DEFAULT_TASK_TRACKER_OFFLINE_LIMIT_MILLIS) {
-                        // fixDeadJob
-                        fixDeadJob(entry.getValue());
-                    }
-                } else {
-                    // 去询问是否在执行该任务
-                    if (channelWrapper != null && channelWrapper.getChannel() != null && channelWrapper.isOpen()) {
-                        askTimeoutJob(channelWrapper.getChannel(), entry.getValue());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 向taskTracker询问执行中的任务
-     */
-    private void askTimeoutJob(Channel channel, final List<JobPo> jobPos) {
-        try {
-            RemotingServerDelegate remotingServer = appContext.getRemotingServer();
-            List<String> jobIds = new ArrayList<String>(jobPos.size());
-            for (JobPo jobPo : jobPos) {
-                jobIds.add(jobPo.getJobId());
-            }
-            JobAskRequest requestBody = appContext.getCommandBodyWrapper().wrapper(new JobAskRequest());
-            requestBody.setJobIds(jobIds);
-            RemotingCommand request = RemotingCommand.createRequestCommand(JobProtos.RequestCode.JOB_ASK.code(), requestBody);
-            remotingServer.invokeAsync(channel, request, new AsyncCallback() {
-                @Override
-                public void operationComplete(ResponseFuture responseFuture) {
-                    RemotingCommand response = responseFuture.getResponseCommand();
-                    if (response != null && RemotingProtos.ResponseCode.SUCCESS.code() == response.getCode()) {
-                        JobAskResponse responseBody = response.getBody();
-                        List<String> deadJobIds = responseBody.getJobIds();
-                        if (CollectionUtils.isNotEmpty(deadJobIds)) {
-                            try {
-                                // 睡了1秒再修复, 防止任务刚好执行完正在传输中. 1s可以让完成的正常完成
-                                Thread.sleep(1000L);
-                            } catch (InterruptedException ignored) {
-                            }
-                            for (JobPo jobPo : jobPos) {
-                                if (deadJobIds.contains(jobPo.getJobId())) {
-                                    fixDeadJob(jobPo);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        } catch (RemotingSendException e) {
-            LOGGER.error("Ask timeout Job error, ", e);
-        }
-
-    }
-
-    private void fixDeadJob(List<JobPo> jobPos) {
-        for (JobPo jobPo : jobPos) {
-            fixDeadJob(jobPo);
-        }
-    }
-
-    private void fixDeadJob(JobPo jobPo) {
-        try {
-
-            jobPo.setGmtModified(SystemClock.now());
-            jobPo.setTaskTrackerIdentity(null);
-            jobPo.setIsRunning(false);
-            // 1. add to executable queue
-            try {
-                appContext.getExecutableJobQueue().add(jobPo);
-            } catch (DupEntryException e) {
-                LOGGER.warn("ExecutableJobQueue already exist:" + JSON.toJSONString(jobPo));
-            }
-
-            // 2. remove from executing queue
-            appContext.getExecutingJobQueue().remove(jobPo.getJobId());
-
-            JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
-            jobLogPo.setLogTime(SystemClock.now());
-            jobLogPo.setSuccess(true);
-            jobLogPo.setLevel(Level.WARN);
-            jobLogPo.setLogType(LogType.FIXED_DEAD);
-            appContext.getJobLogger().log(jobLogPo);
-
-            stat.incFixExecutingJobNum();
-
-        } catch (Throwable t) {
-            LOGGER.error(t.getMessage(), t);
-        }
-        LOGGER.info("checkAndFix dead job ! {}", JSON.toJSONString(jobPo));
     }
 
     public void stop() {

@@ -36,12 +36,20 @@ public class JobClientTest {
         job2.setParam("submitInstanceId", submitInstanceId);
         job2.setCronExpression(cronExpr);
 
+        Job endJob = createJob("job_cron_end");
+        endJob.setParam("workflowStaticId", workflowStaticId);
+        endJob.setParam("submitInstanceId", submitInstanceId);
+        endJob.setParam("isEnd", "true");
+        endJob.setCronExpression(cronExpr);
+
         job1.setParam("parents", "");
         job2.setParam("parents", job1.getTaskId());
+        endJob.setParam("parents", job2.getTaskId());
 
         List<Job> dag = new ArrayList<Job>();
         dag.add(job1);
         dag.add(job2);
+        dag.add(endJob);
         Response response = jobClient.submitJob(dag);
         System.out.println(response);
 

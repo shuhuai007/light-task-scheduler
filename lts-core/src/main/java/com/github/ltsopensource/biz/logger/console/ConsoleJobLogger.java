@@ -36,7 +36,14 @@ public class ConsoleJobLogger implements JobLogger {
 
     @Override
     public JobLogPo search(String workflowId, String taskId) {
-        // TODO (need to implement)
+        // TODO (zj: need to implement)
+        return null;
+    }
+
+    @Override
+    public JobLogPo search(String workflowStaticId, String submitInstanceId, Long triggerTime,
+                           String taskId) {
+        // TODO (zj: need to implement)
         return null;
     }
 

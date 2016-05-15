@@ -50,4 +50,10 @@ public class SmartJobLogger implements JobLogger {
         // TODO (zj: need to implement)
         return delegate.search(workflowId, taskId);
     }
+
+    @Override
+    public JobLogPo search(String workflowStaticId, String submitInstanceId, Long triggerTime, String taskId) {
+        // TODO (zj: need to implement)
+        return delegate.search(workflowStaticId, submitInstanceId, triggerTime, taskId);
+    }
 }

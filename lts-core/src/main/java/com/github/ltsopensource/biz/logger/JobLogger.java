@@ -21,4 +21,6 @@ public interface JobLogger {
 
     public JobLogPo search(String workflowId, String taskId);
 
+    public JobLogPo search(String workflowStaticId, String submitInstanceId, Long triggerTime,
+                          String taskId);
 }

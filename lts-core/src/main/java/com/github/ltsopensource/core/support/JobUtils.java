@@ -9,6 +9,8 @@ import com.github.ltsopensource.core.support.bean.BeanCopierFactory;
 import com.github.ltsopensource.core.support.bean.PropConverter;
 import com.github.ltsopensource.queue.domain.JobPo;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,4 +80,12 @@ public class JobUtils {
         return jobPo;
     }
 
+    public static List<String> getParentList(JobPo jobPo) {
+        String parents = jobPo.getExtParams().get("parents");
+        if (StringUtils.isEmpty(parents)) {
+            return null;
+        }
+        String[] parentIds = StringUtils.splitWithTrim("\001", parents);
+        return Arrays.asList(parentIds);
+    }
 }
