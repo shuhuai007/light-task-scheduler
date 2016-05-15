@@ -4,13 +4,19 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
+import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
+import com.github.ltsopensource.core.support.CronExpressionUtils;
 import com.github.ltsopensource.core.support.JobUtils;
+import com.github.ltsopensource.core.support.SystemClock;
+import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
 import com.github.ltsopensource.queue.domain.JobPo;
+import com.github.ltsopensource.store.jdbc.exception.DupEntryException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,10 +83,36 @@ public class WaitingJobQueueChecker {
                 // TODO (zj: maybe should consider concurrency issue about two queues.
                 appContext.getWaitingJobQueue().remove(jobPo.getTaskTrackerNodeGroup(), jobPo
                         .getJobId());
-                appContext.getExecutableJobQueue().add(jobPo);
+                if (isEndNodeJob(jobPo)) {
+                    // end node job is a dummy job, no need to be added into executable queue
+                    handleEndJob(jobPo);
+                } else {
+                    appContext.getExecutableJobQueue().add(jobPo);
+                }
             }
         }
 
+    }
+
+    /**
+     * Handles the end job.
+     * @param jobPo indicate a job info
+     */
+    private void handleEndJob(JobPo jobPo) {
+        new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
+    }
+
+    /**
+     * Checks if the job is end node job.
+     * @param jobPo indicate a job info
+     * @return true if the job is end node job
+     */
+    private boolean isEndNodeJob(JobPo jobPo) {
+        String isEndString = jobPo.getExtParams().get("isEnd");
+        if (StringUtils.isNotEmpty(isEndString) && isEndString.equals("true")) {
+            return true;
+        }
+        return false;
     }
 
     private boolean meetDependencies(JobPo jobPo) {

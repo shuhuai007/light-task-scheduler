@@ -59,7 +59,7 @@ public class JobFinishHandler {
         }
     }
 
-    private void finishCronJob(String jobId) {
+    public void finishCronJob(String jobId) {
         JobPo jobPo = appContext.getCronJobQueue().getJob(jobId);
         if (jobPo == null) {
             // 可能任务队列中改条记录被删除了
@@ -67,7 +67,7 @@ public class JobFinishHandler {
         }
         Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
                 new Date(jobPo.getLastGenerateTriggerTime()));
-        LOGGER.info("job's next trigger time:" + nextTriggerTime.getTime());
+        LOGGER.info("jobId:" + jobId + "; job's next trigger time:" + nextTriggerTime.getTime());
         if (!checkNextTriggerTime(nextTriggerTime)) {
             // 从CronJob队列中移除
             appContext.getCronJobQueue().remove(jobId);

@@ -36,7 +36,7 @@ public class JobClientTest {
         job2.setParam("submitInstanceId", submitInstanceId);
         job2.setCronExpression(cronExpr);
 
-        Job endJob = createJob("job_cron_end");
+        Job endJob = createJob("job_cron_end", "NON-EXIST-TASKTRACKER-NODEGROUP");
         endJob.setParam("workflowStaticId", workflowStaticId);
         endJob.setParam("submitInstanceId", submitInstanceId);
         endJob.setParam("isEnd", "true");
@@ -95,10 +95,13 @@ public class JobClientTest {
     }
 
     private static Job createJob(String taskID) {
+        return createJob(taskID, "test_trade_taskTracker");
+    }
+    private static Job createJob(String taskID, String taskTrackerNodeGroup) {
         Job job = new Job();
         job.setTaskId(taskID);
         job.setParam("shopId", "1122222221");
-        job.setTaskTrackerNodeGroup("test_trade_taskTracker");
+        job.setTaskTrackerNodeGroup(taskTrackerNodeGroup);
         job.setNeedFeedback(true);
         job.setReplaceOnExist(true);
         return job;
