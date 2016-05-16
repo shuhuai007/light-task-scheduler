@@ -1,20 +1,19 @@
 package com.github.ltsopensource.jobtracker.support.checker;
 
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
+import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
+import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
-import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
-import com.github.ltsopensource.core.support.CronExpressionUtils;
+import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.JobUtils;
-import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
 import com.github.ltsopensource.queue.domain.JobPo;
-import com.github.ltsopensource.store.jdbc.exception.DupEntryException;
 
 import java.util.Date;
 import java.util.List;
@@ -86,6 +85,7 @@ public class WaitingJobQueueChecker {
                 if (isEndNodeJob(jobPo)) {
                     // end node job is a dummy job, no need to be added into executable queue
                     handleEndJob(jobPo);
+
                 } else {
                     appContext.getExecutableJobQueue().add(jobPo);
                 }
@@ -99,7 +99,17 @@ public class WaitingJobQueueChecker {
      * @param jobPo indicate a job info
      */
     private void handleEndJob(JobPo jobPo) {
+        // 1. generate next end job for next trigger time
         new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
+        // 2. record this end job info
+        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        jobLogPo.setMsg("End Job Finished");
+        jobLogPo.setLogType(LogType.FINISHED);
+        jobLogPo.setSuccess(true);
+        jobLogPo.setTaskTrackerIdentity(jobPo.getTaskTrackerIdentity());
+        jobLogPo.setLevel(Level.INFO);
+        jobLogPo.setLogTime(new Date().getTime());
+        appContext.getJobLogger().log(jobLogPo);
     }
 
     /**
@@ -179,7 +189,9 @@ public class WaitingJobQueueChecker {
                     search(jobPo.getExtParams().get("workflowStaticId"),
                             jobPo.getExtParams().get("submitInstanceId"),
                             jobPo.getTriggerTime(), parentId);
-
+            if (parentLog == null) {
+                return false;
+            }
         }
         return true;
     }
