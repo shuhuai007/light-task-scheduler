@@ -8,6 +8,7 @@ import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
+import com.github.ltsopensource.core.support.CronExpressionUtils;
 import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
@@ -79,7 +80,7 @@ public class WaitingJobQueueChecker {
         // check if the job can be moved into executable job queue, if so, do it, or do nothing.
         for (JobPo jobPo:allJobPoList) {
             if(meetDependencies(jobPo)) {
-                // TODO (zj: maybe should consider concurrency issue about two queues.
+                // TODO (zj: maybe should consider concurrency issue about two queues.)
                 appContext.getWaitingJobQueue().remove(jobPo.getTaskTrackerNodeGroup(), jobPo
                         .getJobId());
                 if (isEndNodeJob(jobPo)) {
@@ -130,8 +131,7 @@ public class WaitingJobQueueChecker {
         if (jobPo.isCron()) {
             List<String> parentList = JobUtils.getParentList(jobPo);
             if (parentList == null) {
-                // TODO (zj: no parents, it is first level node)
-                return checkLastWorkflow(jobPo);
+                return checkPreviousWorkflow(jobPo);
             } else {
                 return checkParents(jobPo, parentList);
             }
@@ -171,9 +171,30 @@ public class WaitingJobQueueChecker {
         return true;
     }
 
-    private boolean checkLastWorkflow(JobPo jobPo) {
-        // TODO (zj: should check if the endJob of last workflow finishes
-        return true;
+    private boolean checkPreviousWorkflow(JobPo jobPo) {
+        // TODO (zj: should check if the endJob of last workflow finishes)
+        final Long previousTriggerTime = getPreviousTriggerTime(jobPo);
+        if (previousTriggerTime == null) {
+            // this is first workflow instance, no previous workflow
+            return true;
+        } else {
+            // check if the previous workflow's end job has already finished
+            JobLogPo parentLog = appContext.getJobLogger().
+                    search(jobPo.getExtParams().get("workflowStaticId"),
+                            jobPo.getExtParams().get("submitInstanceId"),
+                            previousTriggerTime, "job_cron_end");
+            return parentLog != null;
+        }
+    }
+
+    private Long getPreviousTriggerTime(JobPo jobPo) {
+
+        String triggerTime = jobPo.getInternalExtParam("lastTriggerTime");
+        if (StringUtils.isEmpty(triggerTime)){
+            return null;
+        } else {
+            return Long.valueOf(triggerTime.trim());
+        }
     }
 
     /**

@@ -196,7 +196,7 @@ public class JobReceiver {
                 if (!isRunning(jobPo)) {
                     // 2. add to executable queue
                     jobPo.setTriggerTime(nextTriggerTime.getTime());
-//                    appContext.getExecutableJobQueue().add(jobPo);
+                    jobPo.setInternalExtParam("lastTriggerTime", "");
                     appContext.getWaitingJobQueue().add(jobPo);
                     appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
                             nextTriggerTime.getTime());

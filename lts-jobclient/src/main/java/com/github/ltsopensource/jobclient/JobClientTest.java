@@ -7,6 +7,7 @@ import com.github.ltsopensource.jobclient.domain.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class JobClientTest {
@@ -104,6 +105,7 @@ public class JobClientTest {
         job.setTaskTrackerNodeGroup(taskTrackerNodeGroup);
         job.setNeedFeedback(true);
         job.setReplaceOnExist(true);
+        job.setParam("cronStartTime", String.valueOf(new Date().getTime()));
         return job;
     }
 

@@ -79,7 +79,8 @@ public class JobFinishHandler {
             jobPo.setIsRunning(false);
             jobPo.setTriggerTime(nextTriggerTime.getTime());
             jobPo.setGmtModified(SystemClock.now());
-//            appContext.getExecutableJobQueue().add(jobPo);
+            jobPo.setInternalExtParam("lastTriggerTime"
+                    , String.valueOf(jobPo.getLastGenerateTriggerTime()));
             appContext.getWaitingJobQueue().add(jobPo);
             appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobId, nextTriggerTime.getTime());
         } catch (DupEntryException e) {
