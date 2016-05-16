@@ -3,10 +3,8 @@ package com.github.ltsopensource.jobtracker.channel;
 import com.github.ltsopensource.core.cluster.NodeType;
 import com.github.ltsopensource.core.commons.utils.Assert;
 import com.github.ltsopensource.core.logger.Logger;
-import com.github.ltsopensource.remoting.Channel;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -16,6 +14,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Unit tests for {@link ChannelManager}.
@@ -66,7 +65,7 @@ public class ChannelManagerTest {
     }
 
     @Test
-    public void offerChannelTest() {
+    public void offerChannelWithClientChannelTest() {
         ChannelWrapper clientChannelWrapper = PowerMockito.mock(ChannelWrapper.class);
         Mockito.when(clientChannelWrapper.getNodeGroup()).thenReturn(JOB_CLIENT_NODE_GROUP_NAME);
         Mockito.when(clientChannelWrapper.getNodeType()).thenReturn(NodeType.JOB_CLIENT);
@@ -83,4 +82,24 @@ public class ChannelManagerTest {
         Assert.isNull(actualTaskTrackerChannel);
     }
 
+    @Test
+    public void offerChannelWithTaskTrackerChannelTest() {
+        ChannelWrapper taskTrackerChannelWrapper = PowerMockito.mock(ChannelWrapper.class);
+        Mockito.when(taskTrackerChannelWrapper.getNodeGroup())
+                .thenReturn(TASK_TRACKER_NODE_GROUP_NAME);
+        Mockito.when(taskTrackerChannelWrapper.getNodeType()).thenReturn(NodeType.TASK_TRACKER);
+        Mockito.when(taskTrackerChannelWrapper.getIdentity()).thenReturn(TASK_TRACKER_IDENTITY);
+        Mockito.when(taskTrackerChannelWrapper.isClosed()).thenReturn(false);
+
+        ConcurrentHashMap offlineTaskTrackerMap = new ConcurrentHashMap<String, Long>();
+        offlineTaskTrackerMap.put(TASK_TRACKER_IDENTITY, 10000000L);
+        Whitebox.setInternalState(channelManager, "offlineTaskTrackerMap", offlineTaskTrackerMap);
+
+        channelManager.offerChannel(taskTrackerChannelWrapper);
+        ChannelWrapper actualTaskTrackerChannel = channelManager.getChannel(
+                TASK_TRACKER_NODE_GROUP_NAME, NodeType.TASK_TRACKER, TASK_TRACKER_IDENTITY);
+        Assert.isTrue(actualTaskTrackerChannel != null);
+
+        Assert.isTrue(!offlineTaskTrackerMap.containsKey(TASK_TRACKER_IDENTITY));
+    }
 }
