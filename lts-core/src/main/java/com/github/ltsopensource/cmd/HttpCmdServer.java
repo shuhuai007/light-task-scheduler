@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Robert HG (254963746@qq.com) on 10/26/15.
  */
 public class HttpCmdServer {
+    public static final int HTTP_CMD_SERVER_DEFAULT_PORT = 8719;
 
     private final Logger LOGGER = LoggerFactory.getLogger(HttpCmdServer.class);
 
@@ -25,7 +26,7 @@ public class HttpCmdServer {
     private int portFindTimes;
 
     private HttpCmdServer(String bindAddr, int port) {
-        this.port = port > 0 ? port : 8719;
+        this.port = port > 0 ? port : HTTP_CMD_SERVER_DEFAULT_PORT;
         this.bindAddr = bindAddr;
         this.context = new HttpCmdContext();
     }

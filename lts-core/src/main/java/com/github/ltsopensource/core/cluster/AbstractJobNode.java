@@ -93,7 +93,8 @@ public abstract class AbstractJobNode<T extends Node, Context extends AppContext
 
     private void initHttpCmdServer() {
         // 命令中心
-        int port = appContext.getConfig().getParameter(ExtConfig.HTTP_CMD_PORT, 8719);
+        int port = appContext.getConfig().getParameter(ExtConfig.HTTP_CMD_PORT,
+                HttpCmdServer.HTTP_CMD_SERVER_DEFAULT_PORT);
         appContext.setHttpCmdServer(HttpCmdServer.Factory.getHttpCmdServer(config.getIp(), port));
 
         // 先启动，中间看端口是否被占用
