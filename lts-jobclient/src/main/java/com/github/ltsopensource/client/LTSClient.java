@@ -1,5 +1,8 @@
 package com.github.ltsopensource.client;
 
+import com.github.ltsopensource.client.operation.SubmitOperation;
+import com.github.ltsopensource.client.domain.LTSTask;
+
 /**
  * Client API to submit and manage lts task.
  */
@@ -32,7 +35,14 @@ public class LTSClient {
             throw new LTSClientException();
         } else {
             // TODO(zj): to be implemented
+            LTSTask ltsTask = parseJDL(jdl);
+            new SubmitOperation(ltsTask).call();
         }
+    }
+
+    private LTSTask parseJDL(String jdl) {
+        // TODO(zj): to be implemented
+        return null;
     }
 
     private boolean verifyJDL(String jdl) {
