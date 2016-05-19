@@ -35,12 +35,12 @@ public class LTSClient {
             throw new LTSClientException();
         } else {
             // TODO(zj): to be implemented
-            LTSTask ltsTask = parseJDL(jdl);
+            LTSTask ltsTask = generateLTSTask(jdl, taskId);
             new SubmitOperation(ltsTask).call();
         }
     }
 
-    private LTSTask parseJDL(String jdl) {
+    private LTSTask generateLTSTask(String jdl, String taskId) {
         // TODO(zj): to be implemented
         return null;
     }
