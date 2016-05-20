@@ -30,7 +30,7 @@ public class SubmitOperationTest {
         job.setReplaceOnExist(true);
         job.setParam("cronStartTime", String.valueOf(new Date().getTime()));
         ltsTask.add(job);
-        submitOperation = new SubmitOperation(ltsTask);
+        submitOperation = new SubmitOperation(ltsTask, "", "", "");
     }
 
     @Test
@@ -40,4 +40,5 @@ public class SubmitOperationTest {
         Assert.assertTrue(command.getParams()
                 .containsKey(HttpCmdParamNames.PARAM_KEY_FOR_SUBMIT_OPERATION));
     }
+
 }

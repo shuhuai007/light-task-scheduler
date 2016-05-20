@@ -31,21 +31,6 @@ public class LTSClientTest {
     }
 
     @Test
-    public void submitWithCorrectJDLTest() throws Exception {
-        String JDL = "{\"taskName\": \"log_processing_etl\" }";
-        String taskId = "1";
-        ltsClient = PowerMockito.spy(new LTSClient(JOB_TRACKER_URL));
-        PowerMockito.doReturn(true).when(ltsClient, "verifyJDL", JDL);
-        LTSTask ltsTask = PowerMockito.mock(LTSTask.class);
-        PowerMockito.doReturn(ltsTask).when(ltsClient, "generateLTSTask", JDL, taskId);
-        SubmitOperation submitOperation = PowerMockito.mock(SubmitOperation.class);
-        PowerMockito.whenNew(SubmitOperation.class).withArguments(ltsTask)
-                .thenReturn(submitOperation);
-        ltsClient.submit(JDL, taskId);
-        Mockito.verify(submitOperation).call();
-    }
-
-    @Test
     public void submitWithExceptionTest() throws Exception {
         String JDL = "{\"taskName\": sdf }";
         String taskId = "1";

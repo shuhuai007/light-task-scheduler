@@ -11,6 +11,7 @@ public class LTSClient {
     private String jobTrackerUrl;
     private String zookeeperIP;
     private String zookeeperPort;
+    private String jobTrackerGroupName;
 
     public LTSClient() {
     }
@@ -29,10 +30,12 @@ public class LTSClient {
      *
      * @param zookeeperIP ip points to zookeeper
      * @param zookeeperPort port of zookeeper server
+     * @param jobTrackerGroupName group name of jobTracker
      */
-    public LTSClient(String zookeeperIP, String zookeeperPort) {
+    public LTSClient(String zookeeperIP, String zookeeperPort, String jobTrackerGroupName) {
         this.zookeeperIP = zookeeperIP;
         this.zookeeperPort = zookeeperPort;
+        this.jobTrackerGroupName = jobTrackerGroupName;
     }
 
     /**
@@ -48,7 +51,7 @@ public class LTSClient {
         } else {
             // TODO(zj): to be implemented
             LTSTask ltsTask = generateLTSTask(jdl, taskId);
-            new SubmitOperation(ltsTask).call();
+            new SubmitOperation(ltsTask, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
         }
     }
 

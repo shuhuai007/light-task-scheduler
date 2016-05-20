@@ -13,7 +13,9 @@ import com.github.ltsopensource.core.json.JSON;
 public class SubmitOperation extends Operation{
     private LTSTask ltsTask;
 
-    public SubmitOperation(LTSTask ltsTask) {
+    public SubmitOperation(LTSTask ltsTask, String zookeeperIP,
+                           String zookeeperPort, String jobTrackerGroupName) {
+        super(zookeeperIP, zookeeperPort, jobTrackerGroupName);
         this.ltsTask = ltsTask;
     }
 

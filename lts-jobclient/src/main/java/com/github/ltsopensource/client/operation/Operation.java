@@ -1,18 +1,28 @@
 package com.github.ltsopensource.client.operation;
 
 import com.github.ltsopensource.client.LTSClientException;
+import com.github.ltsopensource.client.JobTrackerInfoUtils;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.cmd.HttpCmdClient;
 import com.github.ltsopensource.cmd.HttpCmdResponse;
 import com.github.ltsopensource.core.cluster.Node;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A base class of all the operations, such as {@link SubmitOperation},etc.
  */
 public abstract class Operation {
+    private String zookeeperIP;
+    private String zookeeperPort;
+    private String jobTrackerGroupName;
+
+    public Operation(String zookeeperIP, String zookeeperPort, String jobTrackerGroupName) {
+        this.zookeeperIP = zookeeperIP;
+        this.zookeeperPort = zookeeperPort;
+        this.jobTrackerGroupName = jobTrackerGroupName;
+    }
+
     public Void call() throws LTSClientException {
         HttpCmd httpCmd = generateHttpCommand();
         List<Node> jobTrackerNodeList = getJobTrackerNodeList();
@@ -34,14 +44,7 @@ public abstract class Operation {
     }
 
     protected List<Node> getJobTrackerNodeList() {
-        // TODO (zj): to be implemented
-        List<Node> jobTrackerNodeList = new ArrayList<Node>();
-        Node jobTrackerNode = new Node();
-        jobTrackerNode.setIdentity("JT_192.168.14.152_23542_16-25-53.983");
-        jobTrackerNode.setIp("192.168.14.152");
-        jobTrackerNode.setHttpCmdPort(8719);
-        jobTrackerNodeList.add(jobTrackerNode);
-        return jobTrackerNodeList;
+        return JobTrackerInfoUtils.getJobTrackerList(zookeeperIP, zookeeperPort, jobTrackerGroupName);
     }
 
     public abstract HttpCmd generateHttpCommand();
