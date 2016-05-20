@@ -1,7 +1,7 @@
 package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.SubmitOperation;
-import com.github.ltsopensource.client.domain.LTSTask;
+import com.github.ltsopensource.core.domain.LTSTask;
 
 /**
  * Client API to submit and manage lts task.

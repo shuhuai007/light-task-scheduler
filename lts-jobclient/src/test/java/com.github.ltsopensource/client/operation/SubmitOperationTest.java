@@ -1,10 +1,10 @@
 package com.github.ltsopensource.client.operation;
 
-import com.github.ltsopensource.client.domain.LTSTask;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
 import com.github.ltsopensource.core.domain.Job;
+import com.github.ltsopensource.core.domain.LTSTask;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

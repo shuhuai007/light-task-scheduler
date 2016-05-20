@@ -1,10 +1,10 @@
 package com.github.ltsopensource.client.operation;
 
-import com.github.ltsopensource.client.domain.LTSTask;
 import com.github.ltsopensource.cmd.DefaultHttpCmd;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
+import com.github.ltsopensource.core.domain.LTSTask;
 import com.github.ltsopensource.core.json.JSON;
 
 /**

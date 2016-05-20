@@ -1,6 +1,5 @@
-package com.github.ltsopensource.client.domain;
+package com.github.ltsopensource.core.domain;
 
-import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.json.JSON;
 
 import java.io.Serializable;
