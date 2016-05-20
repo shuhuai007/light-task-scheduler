@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is for getting jobtracker node list from zookeeper.
+ * This is for getting jobTracker node list from zookeeper.
  */
 public class JobTrackerInfoUtils {
 

@@ -64,5 +64,4 @@ public class LTSClientTest {
         String planTime = "2016-11-01T23:00Z";
         ltsClient.reRun(taskId, planTime);
     }
-
 }
