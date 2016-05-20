@@ -17,4 +17,6 @@ public interface HttpCmdNames {
 
     String HTTP_CMD_JOB_TERMINATE = "job_terminate_cmd";
 
+    String HTTP_CMD_SUBMIT_LTS_TASK = "lts_task_submit_cmd";
+
 }

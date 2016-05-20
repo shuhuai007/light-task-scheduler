@@ -1,6 +1,5 @@
 package com.github.ltsopensource.client.operation;
 
-import com.github.ltsopensource.client.LTSClientException;
 import com.github.ltsopensource.client.domain.LTSTask;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
@@ -37,7 +36,7 @@ public class SubmitOperationTest {
     @Test
     public void generateHttpCommandTest() {
         HttpCmd command = submitOperation.generateHttpCommand();
-        Assert.assertEquals(HttpCmdNames.HTTP_CMD_ADD_JOB, command.getCommand());
+        Assert.assertEquals(HttpCmdNames.HTTP_CMD_SUBMIT_LTS_TASK, command.getCommand());
         Assert.assertTrue(command.getParams()
                 .containsKey(HttpCmdParamNames.PARAM_KEY_FOR_SUBMIT_OPERATION));
     }

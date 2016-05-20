@@ -19,7 +19,7 @@ public class SubmitOperation extends Operation{
 
     public HttpCmd generateHttpCommand() {
         HttpCmd httpCmd = new DefaultHttpCmd();
-        httpCmd.setCommand(HttpCmdNames.HTTP_CMD_ADD_JOB);
+        httpCmd.setCommand(HttpCmdNames.HTTP_CMD_SUBMIT_LTS_TASK);
         httpCmd.addParam(HttpCmdParamNames.PARAM_KEY_FOR_SUBMIT_OPERATION,
                 JSON.toJSONString(ltsTask));
         return httpCmd;
