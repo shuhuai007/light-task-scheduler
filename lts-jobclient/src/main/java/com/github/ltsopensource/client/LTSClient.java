@@ -8,19 +8,31 @@ import com.github.ltsopensource.client.domain.LTSTask;
  */
 public class LTSClient {
 
-    private String jobTrackerUrl = null;
+    private String jobTrackerUrl;
+    private String zookeeperIP;
+    private String zookeeperPort;
 
-
-    protected LTSClient() {
+    public LTSClient() {
     }
 
     /**
-     * Create a Workflow client instance.
+     * Create a lts client instance.
      *
      * @param jobTrackerUrl URL of the jobTracker instance it will interact with.
      */
     public LTSClient(String jobTrackerUrl) {
         this.jobTrackerUrl = jobTrackerUrl;
+    }
+
+    /**
+     * Create a lts client instance.
+     *
+     * @param zookeeperIP ip points to zookeeper
+     * @param zookeeperPort port of zookeeper server
+     */
+    public LTSClient(String zookeeperIP, String zookeeperPort) {
+        this.zookeeperIP = zookeeperIP;
+        this.zookeeperPort = zookeeperPort;
     }
 
     /**
