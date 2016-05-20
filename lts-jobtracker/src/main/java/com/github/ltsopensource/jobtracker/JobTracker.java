@@ -6,6 +6,7 @@ import com.github.ltsopensource.core.spi.ServiceLoader;
 import com.github.ltsopensource.jobtracker.channel.ChannelManager;
 import com.github.ltsopensource.jobtracker.cmd.AddJobHttpCmd;
 import com.github.ltsopensource.jobtracker.cmd.LoadJobHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.SubmitLTSTaskHttpCmd;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerNode;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
@@ -73,8 +74,9 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
 
 
         appContext.getHttpCmdServer().registerCommands(
-                new LoadJobHttpCmd(appContext),     // 手动加载任务
-                new AddJobHttpCmd(appContext));     // 添加任务
+                new LoadJobHttpCmd(appContext),
+                new AddJobHttpCmd(appContext),
+                new SubmitLTSTaskHttpCmd(appContext));
 
         if(appContext.getOldDataHandler() == null){
             appContext.setOldDataHandler(new OldDataDeletePolicy());
