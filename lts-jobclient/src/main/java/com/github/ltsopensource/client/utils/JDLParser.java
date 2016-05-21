@@ -30,7 +30,10 @@ public class JDLParser {
      * @return lts task object
      */
     public static LTSTask generateLTSTask(String jdl, String taskId) {
-        return null;
+        JDLObject jdlObject = parse(jdl);
+        LTSTask ltsTask = new LTSTask();
+
+        return ltsTask;
     }
 
     public static JDLObject parse(String jdl) {

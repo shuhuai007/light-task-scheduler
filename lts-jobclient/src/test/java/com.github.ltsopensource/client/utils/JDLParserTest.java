@@ -1,13 +1,68 @@
 package com.github.ltsopensource.client.utils;
 
 import com.github.ltsopensource.client.jdl.JDLObject;
+import com.github.ltsopensource.core.domain.LTSTask;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for {@link JDLParser}.
  */
 public class JDLParserTest {
+
+    private String testJDL;
+
+    @Before
+    public void before() {
+        testJDL =
+            "{" +
+                    "\"engine\":\"lts\"" + "," +
+                    "\"taskName\":\"test_task\"" + "," +
+                    "\"depends\":[\"100\", \"200\"]" + "," +
+                    "\"coordinator\":{" +
+                        "\"frequency\"" + ":" + "\"10 * * * * ?\"" + "," +
+                        "\"start\""     + ":" + "\"2016-01-07T24:00Z\"" + "," +
+                        "\"end\""       + ":" + "\"2016-01-08T23:00Z\"" + "," +
+                        "\"controls\""  + ":" + "{" +
+                                "\"timeout\":\"-1\"," +
+                                "\"concurrency\":1," +
+                                "\"execution\":\"FIFO\"," +
+                                "\"throttle\":3 " +
+                        "}" +
+                     "}" + "," +
+
+                    "\"workflow\"" + ":" + "{" +
+                        "\"start\"" + ":" + "\"start_node_name\"" + "," +
+                        "\"fork\"" + ":" + "[" +
+                          "{" +
+                               "\"name\":" + "\"fork_node1\"," +
+                               "\"paths\":" + "[\"node2\"," + "\"node3\"]," +
+                               "\"join\":" + "[{\"name\":\"node4\", \"to\":\"join_node_name\"}]" +
+                           "}" +
+                       "]" + "," +
+                       "\"jobs\":" + "[" +
+                            "{" +
+                                "\"type\":" +"\"shell\"" + "," +
+                                "\"name\":" +"\"test\"" + "," +
+                                "\"retryMax\":" +"2" + "," +
+                                "\"retryInterval\":" +"1" + "," +
+                                "\"prepare\":" +"\"this is prepare operation\"" + "," +
+                                "\"decision\":" +"[]" + "," +
+                                "\"configuration\":" +"[" +
+                                    "{\"name\":\"key1\",\"value\":\"value1\"}" + "," +
+                                    "{\"name\":\"key2\",\"value\":\"value2\"}" +
+                                "]" + "," +
+                                "\"exec\":" + "\"echo good morning\"" + "," +
+                                "\"files\":" + "[\"f1\",\"f2\",\"f3\"]" + "," +
+                                "\"arguments\":" + "[\"a1\", \"a2\", \"a3\"]" + "," +
+                                "\"ok\":" + "\"next_node\"" + "," +
+                                "\"error\":" + "\"fail\"" +
+                            "}" +
+                       "]" +
+                   "}"  +
+            "}";
+    }
 
     @Test
     public void verifyJDLWithFalseTest() {
@@ -32,54 +87,7 @@ public class JDLParserTest {
         Assert.assertEquals("lts", jdlObject.getEngine());
         Assert.assertEquals(null, jdlObject.getTaskName());
 
-        jdl =
-        "{" +
-                "\"engine\":\"lts\"" + "," +
-                "\"taskName\":\"test_task\"" + "," +
-                "\"depends\":[\"100\", \"200\"]" + "," +
-                "\"coordinator\":{" +
-                    "\"frequency\"" + ":" + "\"10 * * * * ?\"" + "," +
-                    "\"start\""     + ":" + "\"2016-01-07T24:00Z\"" + "," +
-                    "\"end\""       + ":" + "\"2016-01-08T23:00Z\"" + "," +
-                    "\"controls\""  + ":" + "{" +
-                            "\"timeout\":\"-1\"," +
-                            "\"concurrency\":1," +
-                            "\"execution\":\"FIFO\"," +
-                            "\"throttle\":3 " +
-                    "}" +
-                 "}" + "," +
-
-                "\"workflow\"" + ":" + "{" +
-                    "\"start\"" + ":" + "\"start_node_name\"" + "," +
-                    "\"fork\"" + ":" + "[" +
-                      "{" +
-                           "\"name\":" + "\"fork_node1\"," +
-                           "\"paths\":" + "[\"node2\"," + "\"node3\"]," +
-                           "\"join\":" + "[{\"name\":\"node4\", \"to\":\"join_node_name\"}]" +
-                       "}" +
-                   "]" + "," +
-                   "\"jobs\":" + "[" +
-                        "{" +
-                            "\"type\":" +"\"shell\"" + "," +
-                            "\"name\":" +"\"test\"" + "," +
-                            "\"retryMax\":" +"2" + "," +
-                            "\"retryInterval\":" +"1" + "," +
-                            "\"prepare\":" +"\"this is prepare operation\"" + "," +
-                            "\"decision\":" +"[]" + "," +
-                            "\"configuration\":" +"[" +
-                                "{\"name\":\"key1\",\"value\":\"value1\"}" + "," +
-                                "{\"name\":\"key2\",\"value\":\"value2\"}" +
-                            "]" + "," +
-                            "\"exec\":" + "\"echo good morning\"" + "," +
-                            "\"files\":" + "[\"f1\",\"f2\",\"f3\"]" + "," +
-                            "\"arguments\":" + "[\"a1\", \"a2\", \"a3\"]" + "," +
-                            "\"ok\":" + "\"next_node\"" + "," +
-                            "\"error\":" + "\"fail\"" +
-                        "}" +
-                   "]" +
-               "}"  +
-        "}";
-        jdlObject = JDLParser.parse(jdl);
+        jdlObject = JDLParser.parse(testJDL);
         Assert.assertEquals("lts", jdlObject.getEngine());
         Assert.assertEquals("test_task", jdlObject.getTaskName());
         Assert.assertEquals(2, jdlObject.getDepends().size());
@@ -120,5 +128,12 @@ public class JDLParserTest {
         Assert.assertEquals(3, jdlObject.getWorkflow().getJobs().get(0).getArguments().size());
         Assert.assertEquals("next_node", jdlObject.getWorkflow().getJobs().get(0).getOK());
         Assert.assertEquals("fail", jdlObject.getWorkflow().getJobs().get(0).getError());
+    }
+
+    @Test
+    public void generateLTSTaskTest() {
+        String taskId = "1";
+        LTSTask ltsTask = JDLParser.generateLTSTask(testJDL, taskId);
+        Assert.assertNotNull(ltsTask);
     }
 }
