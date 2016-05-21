@@ -1,7 +1,7 @@
 package com.github.ltsopensource.client.operation;
 
 import com.github.ltsopensource.client.LTSClientException;
-import com.github.ltsopensource.client.JobTrackerInfoUtils;
+import com.github.ltsopensource.client.utils.JobTrackerInfoUtils;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.cmd.HttpCmdClient;
 import com.github.ltsopensource.cmd.HttpCmdResponse;

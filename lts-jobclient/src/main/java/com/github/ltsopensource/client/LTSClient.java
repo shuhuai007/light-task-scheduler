@@ -1,6 +1,7 @@
 package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.SubmitOperation;
+import com.github.ltsopensource.client.utils.JDLParser;
 import com.github.ltsopensource.core.domain.LTSTask;
 
 /**
@@ -46,23 +47,14 @@ public class LTSClient {
      * @throws LTSClientException the LTS client exception
      */
     public void submit(String jdl, String taskId) throws LTSClientException {
-        if (!verifyJDL(jdl)) {
-            throw new LTSClientException();
-        } else {
+
+        if(JDLParser.verifyJDL(jdl)){
             // TODO(zj): to be implemented
-            LTSTask ltsTask = generateLTSTask(jdl, taskId);
+            LTSTask ltsTask = JDLParser.generateLTSTask(jdl, taskId);
             new SubmitOperation(ltsTask, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
+        } else {
+            throw new LTSClientException("jdl can pass validation, please check your jdl");
         }
-    }
-
-    private LTSTask generateLTSTask(String jdl, String taskId) {
-        // TODO(zj): to be implemented
-        return null;
-    }
-
-    private boolean verifyJDL(String jdl) {
-        // TODO(zj): to be implemented
-        return true;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.github.ltsopensource.client;
+package com.github.ltsopensource.client.utils;
 
 import com.github.ltsopensource.core.cluster.Config;
 import com.github.ltsopensource.core.cluster.Node;

@@ -1,6 +1,7 @@
 package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.SubmitOperation;
+import com.github.ltsopensource.client.utils.JDLParser;
 import com.github.ltsopensource.core.domain.LTSTask;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,7 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * Unit tests for {@link LTSClient}.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LTSClient.class})
+@PrepareForTest({LTSClient.class, JDLParser.class})
 public class LTSClientTest {
 
     private static final String JOB_TRACKER_URL = "127.0.0.1:8080";
@@ -35,7 +36,9 @@ public class LTSClientTest {
         String JDL = "{\"taskName\": sdf }";
         String taskId = "1";
         ltsClient = PowerMockito.spy(new LTSClient(JOB_TRACKER_URL));
-        PowerMockito.doReturn(false).when(ltsClient, "verifyJDL", JDL);
+        PowerMockito.mockStatic(JDLParser.class);
+        PowerMockito.when(JDLParser.verifyJDL(JDL)).thenReturn(false);
+
         thrown.expect(LTSClientException.class);
         ltsClient.submit(JDL, taskId);
     }
