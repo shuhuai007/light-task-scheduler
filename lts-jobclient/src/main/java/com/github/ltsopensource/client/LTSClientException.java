@@ -30,9 +30,9 @@ public class LTSClientException extends Exception {
     }
 
     /**
-     * Return the string representatio of the exception.
+     * Return the string representation of the exception.
      *
-     * @return the string representatio of the exception.
+     * @return the string representation of the exception.
      */
     public String toString() {
         if (errorCode == null) {
