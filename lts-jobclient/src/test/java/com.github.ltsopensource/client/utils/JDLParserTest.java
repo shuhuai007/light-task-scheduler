@@ -153,12 +153,14 @@ public class JDLParserTest {
     @Test
     public void generateLTSTaskTest() throws Exception {
         String taskId = "1";
-        LTSTask ltsTask = JDLParser.generateLTSTask(testJDL, taskId);
+        String testTaskTrackerGroupName = "test_taskTrackerGroup";
+        LTSTask ltsTask = JDLParser.generateLTSTask(testJDL, taskId, testTaskTrackerGroupName);
         Assert.assertNotNull(ltsTask);
         Assert.assertTrue(ltsTask.getDag().size() > 1);
 
         // Check start job
         Assert.assertEquals("1", ltsTask.getDag().get(0).getWorkflowId());
+        Assert.assertEquals(testTaskTrackerGroupName, ltsTask.getStart().getTaskTrackerNodeGroup());
         Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.getStart().getJobName());
         Assert.assertEquals("test_task", ltsTask.getDag().get(0).getWorkflowName());
         Assert.assertEquals(2, ltsTask.getDag().get(0).getWorkflowDepends().size());

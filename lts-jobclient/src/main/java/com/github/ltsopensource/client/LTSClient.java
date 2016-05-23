@@ -9,6 +9,7 @@ import com.github.ltsopensource.core.domain.LTSTask;
  */
 public class LTSClient {
 
+    private String taskTrackGroupName;
     private String jobTrackerUrl;
     private String zookeeperIP;
     private String zookeeperPort;
@@ -44,13 +45,12 @@ public class LTSClient {
      *
      * @param jdl JSON dispatch language to describe the whole task
      * @param taskId taskId generated from task database table
+     * @param taskTrackerGroupName node group name
      * @throws LTSClientException the LTS client exception
      */
-    public void submit(String jdl, String taskId) throws LTSClientException {
-
+    public void submit(String jdl, String taskId, String taskTrackerGroupName) throws LTSClientException {
         if(JDLParser.verifyJDL(jdl)){
-            // TODO(zj): to be implemented
-            LTSTask ltsTask = JDLParser.generateLTSTask(jdl, taskId);
+            LTSTask ltsTask = JDLParser.generateLTSTask(jdl, taskId, taskTrackerGroupName);
             new SubmitOperation(ltsTask, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
         } else {
             throw new LTSClientException("jdl can pass validation, please check your jdl");

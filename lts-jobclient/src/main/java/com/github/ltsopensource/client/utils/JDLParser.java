@@ -37,18 +37,20 @@ public class JDLParser {
      *
      * @param jdl jdl string
      * @param taskId generated from task database table
+     * @param taskTrackerGroupName node group name
      * @return lts task object
      */
-    public static LTSTask generateLTSTask(String jdl, String taskId) throws LTSClientException {
+    public static LTSTask generateLTSTask(String jdl, String taskId, String taskTrackerGroupName) throws
+            LTSClientException {
         LTSTask ltsTask = new LTSTask();
         JDLObject jdlObject = parse(jdl);
         try {
             // add start job
-            ltsTask.add(generateStartJob(jdlObject, taskId));
+            ltsTask.add(generateStartJob(jdlObject, taskId, taskTrackerGroupName));
             // add all the real jobs
             List<JobObject> jobObjectList = jdlObject.getWorkflow().getJobs();
             for(JobObject jobObject : jobObjectList) {
-                Job job = generateJob(jdlObject, taskId);
+                Job job = generateJob(jdlObject, taskId, taskTrackerGroupName);
                 if (jobObject.getType().equals(JobInfoConstants.WORKFLOW_JOBS_TYPE_SHELL)) {
                     job.setJobNodeType(JobNodeType.SHELL_JOB);
                 }
@@ -69,7 +71,7 @@ public class JDLParser {
                 ltsTask.add(job);
             }
             // add end job
-            ltsTask.add(generateEndJob(jdlObject, taskId));
+            ltsTask.add(generateEndJob(jdlObject, taskId, taskTrackerGroupName));
 
         } catch (Exception e) {
             throw new LTSClientException(e.getMessage());
@@ -96,8 +98,8 @@ public class JDLParser {
         return StringUtils.join(configList, JobInfoConstants.JOB_CONFIGURATION_ITEM_SEPARATOR);
     }
 
-    private static Job generateStartJob(JDLObject jdlObject, String taskId) throws Exception {
-        Job job = generateJob(jdlObject, taskId);
+    private static Job generateStartJob(JDLObject jdlObject, String taskId, String taskTrackGroupName) throws Exception {
+        Job job = generateJob(jdlObject, taskId, taskTrackGroupName);
         job.setJobName(JobInfoConstants.START_JOB_NAME);
         job.setJobNodeType(JobNodeType.START_JOB);
         job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, StringUtils.join(jdlObject.getWorkflow()
@@ -105,16 +107,18 @@ public class JDLParser {
         return job;
     }
 
-    private static Job generateEndJob(JDLObject jdlObject, String taskId) throws Exception {
-        Job job = generateJob(jdlObject, taskId);
+    private static Job generateEndJob(JDLObject jdlObject, String taskId, String taskTrackGroupName) throws
+            Exception {
+        Job job = generateJob(jdlObject, taskId, taskTrackGroupName);
         job.setJobName(JobInfoConstants.END_JOB_NAME);
         job.setJobNodeType(JobNodeType.END_JOB);
         job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, "");
         return job;
     }
 
-    private static Job generateJob(JDLObject jdlObject, String taskId) throws Exception {
+    private static Job generateJob(JDLObject jdlObject, String taskId, String taskTrackGroupName) throws Exception {
         Job job = new Job();
+        job.setTaskTrackerNodeGroup(taskTrackGroupName);
         job.setWorkflowId(taskId);
         job.setWorkflowName(jdlObject.getTaskName());
         job.setWorkflowDepends(jdlObject.getDepends());

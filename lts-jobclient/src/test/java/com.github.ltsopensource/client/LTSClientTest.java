@@ -35,12 +35,13 @@ public class LTSClientTest {
     public void submitWithExceptionTest() throws Exception {
         String JDL = "{\"taskName\": sdf }";
         String taskId = "1";
+        String taskTrackGroupName = "test";
         ltsClient = PowerMockito.spy(new LTSClient(JOB_TRACKER_URL));
         PowerMockito.mockStatic(JDLParser.class);
         PowerMockito.when(JDLParser.verifyJDL(JDL)).thenReturn(false);
 
         thrown.expect(LTSClientException.class);
-        ltsClient.submit(JDL, taskId);
+        ltsClient.submit(JDL, taskId, taskTrackGroupName);
     }
 
     @Test
