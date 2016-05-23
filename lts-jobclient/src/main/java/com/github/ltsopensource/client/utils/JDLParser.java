@@ -1,9 +1,7 @@
 package com.github.ltsopensource.client.utils;
 
-import com.github.ltsopensource.client.LTSClient;
 import com.github.ltsopensource.client.LTSClientException;
 import com.github.ltsopensource.client.jdl.ConfigurationObject;
-import com.github.ltsopensource.client.jdl.JDLConstants;
 import com.github.ltsopensource.client.jdl.JDLObject;
 import com.github.ltsopensource.client.jdl.JobObject;
 import com.github.ltsopensource.core.commons.utils.UTCDateUtils;
@@ -15,7 +13,6 @@ import com.github.ltsopensource.core.json.JSON;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,19 +49,23 @@ public class JDLParser {
             List<JobObject> jobObjectList = jdlObject.getWorkflow().getJobs();
             for(JobObject jobObject : jobObjectList) {
                 Job job = generateJob(jdlObject, taskId);
-                if (jobObject.getType().equals(JDLConstants.WORKFLOW_JOBS_TYPE_SHELL)) {
+                if (jobObject.getType().equals(JobInfoConstants.WORKFLOW_JOBS_TYPE_SHELL)) {
                     job.setJobNodeType(JobNodeType.SHELL_JOB);
                 }
                 job.setJobName(jobObject.getName());
                 job.setMaxRetryTimes(jobObject.getRetryMax());
                 job.setRetryInternal(jobObject.getRetryInterval());
-                job.setParam(JDLConstants.WORKFLOW_JOBS_PREPARE, jobObject.getPrepare());
-                job.setParam(JDLConstants.WORKFLOW_JOBS_DECISION, StringUtils.join(jobObject
+                job.setParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY, jobObject.getPrepare());
+                job.setParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY, StringUtils.join(jobObject
                         .getDecision(), JobInfoConstants.JOB_PARAM_DECISION_SEPARATOR));
-                job.setParam(JDLConstants.WORKFLOW_JOBS_CONFIGURATION,
+                job.setParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY,
                         transformConfiguration(jobObject.getConfiguration()));
                 job.setParam(JobInfoConstants.JOB_PARAM_EXEC_KEY, jobObject.getExec());
-
+                job.setParam(JobInfoConstants.JOB_PARAM_FILES_KEY, transformJobFiles(jobObject
+                        .getFiles()));
+                job.setParam(JobInfoConstants.JOB_PARAM_ARGUMENTS_KEY, transformArguments
+                        (jobObject.getArguments()));
+                job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, jobObject.getOK());
                 ltsTask.add(job);
             }
         } catch (Exception e) {
@@ -72,6 +73,14 @@ public class JDLParser {
         }
 
         return ltsTask;
+    }
+
+    private static String transformArguments(List<String> arguments) {
+        return StringUtils.join(arguments, JobInfoConstants.JOB_ARGUMENTS_SEPARATOR);
+    }
+
+    private static String transformJobFiles(List<String> files) {
+        return StringUtils.join(files, JobInfoConstants.JOB_FILES_SEPARATOR);
     }
 
     private static String transformConfiguration(List<ConfigurationObject> configuration) {
@@ -87,6 +96,8 @@ public class JDLParser {
     private static Job generateStartJob(JDLObject jdlObject, String taskId) throws Exception {
         Job job = generateJob(jdlObject, taskId);
         job.setJobNodeType(JobNodeType.START_JOB);
+        job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, StringUtils.join(jdlObject.getWorkflow()
+                .getStart(), ","));
         return job;
     }
 
@@ -100,16 +111,14 @@ public class JDLParser {
                 .getTimeInMillis());
         job.setEndTime(UTCDateUtils.getCalendar(jdlObject.getCoordinator().getEnd())
                 .getTimeInMillis());
-        job.setParam(JDLConstants.COORDINATOR_CONTROLS_TIMEOUT,
+        job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_TIMEOUT_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getTimeout()));
-        job.setParam(JDLConstants.COORDINATOR_CONTROLS_CONCURRENCY,
+        job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_CONCURRENCY_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getConcurrency()));
-        job.setParam(JDLConstants.COORDINATOR_CONTROLS_EXECUTION,
+        job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_EXECUTION_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getExecution()));
-        job.setParam(JDLConstants.COORDINATOR_CONTROLS_THROTTLE,
+        job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getThrottle()));
-        job.setParam(JobInfoConstants.JOB_CHILDREN_PARAM_KEY, StringUtils.join(jdlObject.getWorkflow()
-                .getStart(), ","));
         return job;
     }
 

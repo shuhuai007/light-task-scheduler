@@ -1,6 +1,5 @@
 package com.github.ltsopensource.client.utils;
 
-import com.github.ltsopensource.client.jdl.JDLConstants;
 import com.github.ltsopensource.client.jdl.JDLObject;
 import com.github.ltsopensource.core.commons.utils.UTCDateUtils;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
@@ -169,16 +168,16 @@ public class JDLParserTest {
                 ltsTask.getDag().get(0).getEndTime().longValue());
 
         Assert.assertEquals("-1", ltsTask.getDag().get(0)
-                .getParam(JDLConstants.COORDINATOR_CONTROLS_TIMEOUT));
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_TIMEOUT_KEY));
         Assert.assertEquals("1", ltsTask.getDag().get(0)
-                .getParam(JDLConstants.COORDINATOR_CONTROLS_CONCURRENCY));
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_CONCURRENCY_KEY));
         Assert.assertEquals("FIFO", ltsTask.getDag().get(0)
-                .getParam(JDLConstants.COORDINATOR_CONTROLS_EXECUTION));
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_EXECUTION_KEY));
         Assert.assertEquals("3", ltsTask.getDag().get(0)
-                .getParam(JDLConstants.COORDINATOR_CONTROLS_THROTTLE));
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY));
 
         Assert.assertEquals("node1" ,ltsTask.getStart().getParam(JobInfoConstants
-                .JOB_CHILDREN_PARAM_KEY));
+                .JOB_PARAM_CHILDREN_KEY));
         Assert.assertEquals(JobNodeType.START_JOB, ltsTask.getStart().getJobNodeType());
 
         // Check first actual job
@@ -188,18 +187,35 @@ public class JDLParserTest {
         Assert.assertEquals(2, ltsTask.getDag().get(1).getMaxRetryTimes());
         Assert.assertEquals(1, ltsTask.getDag().get(1).getRetryInternal());
         Assert.assertEquals("this is prepare operation", ltsTask.getDag().get(1).getParam
-                (JDLConstants.WORKFLOW_JOBS_PREPARE));
+                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY));
         Assert.assertEquals("", ltsTask.getDag().get(1).getParam
-                (JDLConstants.WORKFLOW_JOBS_DECISION));
-        Assert.assertEquals("key1:value1;key2:value2", ltsTask.getDag().get(1).getParam
-                (JDLConstants.WORKFLOW_JOBS_CONFIGURATION));
+                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY));
+        Assert.assertEquals(getConfigurationStr(), ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY));
         Assert.assertEquals("echo good morning", ltsTask.getDag().get(1).getParam
                 (JobInfoConstants.JOB_PARAM_EXEC_KEY));
+        Assert.assertEquals(getFilesStr(),
+                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_FILES_KEY));
+        Assert.assertEquals(getArgumentsStr(),
+                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_ARGUMENTS_KEY));
+        Assert.assertEquals("node2", ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
 
+    }
 
+    private String getFilesStr() {
+        return "f1" + JobInfoConstants.JOB_FILES_SEPARATOR +
+                "f2" + JobInfoConstants.JOB_FILES_SEPARATOR + "f3";
+    }
 
+    private String getArgumentsStr() {
+        return "a1" + JobInfoConstants.JOB_ARGUMENTS_SEPARATOR +
+                "a2" + JobInfoConstants.JOB_ARGUMENTS_SEPARATOR + "a3";
+    }
 
-
-
+    private String getConfigurationStr() {
+        return "key1" + JobInfoConstants.JOB_CONFIGURATION_KEY_VALUE_SEPARATOR +
+                "value1" + JobInfoConstants.JOB_CONFIGURATION_ITEM_SEPARATOR +
+                "key2" + JobInfoConstants.JOB_CONFIGURATION_KEY_VALUE_SEPARATOR + "value2";
     }
 }
