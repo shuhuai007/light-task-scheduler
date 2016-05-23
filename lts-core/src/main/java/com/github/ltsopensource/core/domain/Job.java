@@ -21,7 +21,6 @@ public class Job implements Serializable {
 
     private static final long serialVersionUID = 7881199011994149340L;
 
-    @NotNull
     private String taskId;
     /**
      * 优先级 (数值越大 优先级越低)
@@ -38,6 +37,11 @@ public class Job implements Serializable {
     private boolean needFeedback = false;
     // 该任务最大的重试次数
     private int maxRetryTimes = 0;
+
+    /**
+     * Retry internal of this job. (JDL: workflow->jobs->retryInterval)
+     */
+    private int retryInternal;
     /**
      * 执行表达式 和 quartz 的一样
      * 如果这个为空，表示立即执行的
@@ -66,22 +70,33 @@ public class Job implements Serializable {
      */
     private boolean relyOnPrevCycle = true;
     /**
-     * Workflow name(Task table:task_name).
+     * Workflow name. (JDL:taskName).
      */
     private String workflowName;
     /**
-     * Workflow dependencies(JDL:depends).
+     * Workflow dependencies. (JDL:depends)
      */
     private List<String> workflowDepends;
     /**
-     * The start time of workflow(JDL:coordinator->start).
+     * The start time of workflow. (JDL: coordinator->start)
      */
     private Long startTime;
+    /**
+     * The end time of workflow. (JDL: coordinator->end)
+     */
     private Long endTime;
+    /**
+     * Job node type.
+     */
     private JobNodeType jobNodeType;
+    /**
+     * Workflow id which this job belongs to, static id. (Task table:id)
+     */
     private String workflowId;
+    /**
+     * Job name of this job.
+     */
     private String jobName;
-    private int retryInternal;
 
     public Integer getPriority() {
         return priority;
@@ -221,9 +236,6 @@ public class Job implements Serializable {
     }
 
     public void checkField() throws JobSubmitException {
-        if (taskId == null) {
-            throw new JobSubmitException("taskId can not be null! job is " + toString());
-        }
         if (taskTrackerNodeGroup == null) {
             throw new JobSubmitException("taskTrackerNodeGroup can not be null! job is " + toString());
         }

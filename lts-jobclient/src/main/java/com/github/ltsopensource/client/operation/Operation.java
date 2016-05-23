@@ -44,7 +44,8 @@ public abstract class Operation {
     }
 
     protected List<Node> getJobTrackerNodeList() {
-        return JobTrackerInfoUtils.getJobTrackerList(zookeeperIP, zookeeperPort, jobTrackerGroupName);
+        return JobTrackerInfoUtils.getJobTrackerList(zookeeperIP, zookeeperPort,
+                jobTrackerGroupName);
     }
 
     public abstract HttpCmd generateHttpCommand();
