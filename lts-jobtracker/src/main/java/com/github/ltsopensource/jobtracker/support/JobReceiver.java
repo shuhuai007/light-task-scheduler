@@ -49,20 +49,20 @@ public class JobReceiver {
         if (CollectionUtils.isEmpty(jobs)) {
             return;
         }
-        JobReceiveException exception = null;
+        JobReceiveException jobReceiveException = null;
         for (Job job : jobs) {
             try {
                 addToQueue(job, request);
             } catch (Exception e) {
-                if (exception == null) {
-                    exception = new JobReceiveException(e);
+                if (jobReceiveException == null) {
+                    jobReceiveException = new JobReceiveException(e);
                 }
-                exception.addJob(job);
+                jobReceiveException.addJob(job);
             }
         }
 
-        if (exception != null) {
-            throw exception;
+        if (jobReceiveException != null) {
+            throw jobReceiveException;
         }
     }
 
@@ -77,9 +77,10 @@ public class JobReceiver {
                 LOGGER.warn("Job can not be null。{}", job);
                 return null;
             }
-            if (StringUtils.isEmpty(jobPo.getSubmitNodeGroup())) {
-                jobPo.setSubmitNodeGroup(request.getNodeGroup());
-            }
+            // TODO(zj): Should not set submitNodeGroup, because the LTSClient does not exist
+//            if (StringUtils.isEmpty(jobPo.getSubmitNodeGroup())) {
+//                jobPo.setSubmitNodeGroup(request.getNodeGroup());
+//            }
             // 设置 jobId
             jobPo.setJobId(JobUtils.generateJobId());
 

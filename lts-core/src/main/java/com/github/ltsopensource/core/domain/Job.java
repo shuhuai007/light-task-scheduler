@@ -57,7 +57,7 @@ public class Job implements Serializable {
      */
     private Long repeatInterval;
     /**
-     * 任务的最触发发时间
+     * 任务的最初触发发时间
      * 如果设置了 cronExpression， 那么这个字段没用
      */
     private Long triggerTime;
