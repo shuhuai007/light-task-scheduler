@@ -201,6 +201,25 @@ public class JDLParserTest {
         Assert.assertEquals("node2", ltsTask.getDag().get(1)
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
 
+        // Check second actual job
+        Assert.assertEquals("1", ltsTask.getDag().get(2).getWorkflowId());
+
+        // Check end job
+        Assert.assertNotNull(ltsTask.getEnd());
+        Assert.assertEquals(JobNodeType.END_JOB, ltsTask.getEnd().getJobNodeType());
+
+        // Check dependencies: start->node1->node2->end
+        Assert.assertEquals("node1", ltsTask.getStart()
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+        Assert.assertEquals("node2", ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+        Assert.assertEquals("end", ltsTask.getDag().get(2)
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+        Assert.assertEquals("", ltsTask.getEnd()
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+
+
+
     }
 
     private String getFilesStr() {

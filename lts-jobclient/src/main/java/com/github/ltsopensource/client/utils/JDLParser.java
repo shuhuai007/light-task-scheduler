@@ -43,9 +43,9 @@ public class JDLParser {
         LTSTask ltsTask = new LTSTask();
         JDLObject jdlObject = parse(jdl);
         try {
-            // add start node
+            // add start job
             ltsTask.add(generateStartJob(jdlObject, taskId));
-
+            // add all the real jobs
             List<JobObject> jobObjectList = jdlObject.getWorkflow().getJobs();
             for(JobObject jobObject : jobObjectList) {
                 Job job = generateJob(jdlObject, taskId);
@@ -68,6 +68,9 @@ public class JDLParser {
                 job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, jobObject.getOK());
                 ltsTask.add(job);
             }
+            // add end job
+            ltsTask.add(generateEndJob(jdlObject, taskId));
+
         } catch (Exception e) {
             throw new LTSClientException(e.getMessage());
         }
@@ -98,6 +101,13 @@ public class JDLParser {
         job.setJobNodeType(JobNodeType.START_JOB);
         job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, StringUtils.join(jdlObject.getWorkflow()
                 .getStart(), ","));
+        return job;
+    }
+
+    private static Job generateEndJob(JDLObject jdlObject, String taskId) throws Exception {
+        Job job = generateJob(jdlObject, taskId);
+        job.setJobNodeType(JobNodeType.END_JOB);
+        job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, "");
         return job;
     }
 
