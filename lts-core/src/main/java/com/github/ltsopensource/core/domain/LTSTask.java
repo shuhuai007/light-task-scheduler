@@ -39,10 +39,10 @@ public class LTSTask implements Serializable  {
     }
 
     /**
-     * Get start job.
+     * Retrieve start job.
      * @return start job
      */
-    public Job getStart() {
+    public Job retrieveStartJob() {
         if (dag != null && !dag.isEmpty()) {
             return dag.get(0);
         } else {
@@ -51,10 +51,10 @@ public class LTSTask implements Serializable  {
     }
 
     /**
-     * Get end job.
+     * Retrieve end job.
      * @return end job
      */
-    public Job getEnd() {
+    public Job retrieveEndJob() {
         if (dag != null && !dag.isEmpty()) {
             return dag.get(dag.size() - 1);
         } else {
@@ -91,7 +91,7 @@ public class LTSTask implements Serializable  {
             Job job = search(dag, jobName);
             job.setParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY, parents);
         }
-        this.getStart().setParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY, "");
+        this.retrieveStartJob().setParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY, "");
     }
 
     /**

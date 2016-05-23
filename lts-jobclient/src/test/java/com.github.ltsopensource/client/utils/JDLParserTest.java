@@ -160,8 +160,8 @@ public class JDLParserTest {
 
         // Check start job
         Assert.assertEquals("1", ltsTask.getDag().get(0).getWorkflowId());
-        Assert.assertEquals(testTaskTrackerGroupName, ltsTask.getStart().getTaskTrackerNodeGroup());
-        Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.getStart().getJobName());
+        Assert.assertEquals(testTaskTrackerGroupName, ltsTask.retrieveStartJob().getTaskTrackerNodeGroup());
+        Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.retrieveStartJob().getJobName());
         Assert.assertEquals("test_task", ltsTask.getDag().get(0).getWorkflowName());
         Assert.assertEquals(2, ltsTask.getDag().get(0).getWorkflowDepends().size());
         Assert.assertEquals("10 * * * * ?", ltsTask.getDag().get(0).getCronExpression());
@@ -179,9 +179,9 @@ public class JDLParserTest {
         Assert.assertEquals("3", ltsTask.getDag().get(0)
                 .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY));
 
-        Assert.assertEquals("node1" ,ltsTask.getStart().getParam(JobInfoConstants
+        Assert.assertEquals("node1" ,ltsTask.retrieveStartJob().getParam(JobInfoConstants
                 .JOB_PARAM_CHILDREN_KEY));
-        Assert.assertEquals(JobNodeType.START_JOB, ltsTask.getStart().getJobNodeType());
+        Assert.assertEquals(JobNodeType.START_JOB, ltsTask.retrieveStartJob().getJobNodeType());
 
         // Check first actual job
         Assert.assertEquals("1", ltsTask.getDag().get(1).getWorkflowId());
@@ -208,29 +208,29 @@ public class JDLParserTest {
         Assert.assertEquals("1", ltsTask.getDag().get(2).getWorkflowId());
 
         // Check end job
-        Assert.assertNotNull(ltsTask.getEnd());
-        Assert.assertEquals(JobInfoConstants.END_JOB_NAME, ltsTask.getEnd().getJobName());
-        Assert.assertEquals(JobNodeType.END_JOB, ltsTask.getEnd().getJobNodeType());
+        Assert.assertNotNull(ltsTask.retrieveEndJob());
+        Assert.assertEquals(JobInfoConstants.END_JOB_NAME, ltsTask.retrieveEndJob().getJobName());
+        Assert.assertEquals(JobNodeType.END_JOB, ltsTask.retrieveEndJob().getJobNodeType());
 
         // Check dependencies: start->node1->node2->end
-        Assert.assertEquals("node1", ltsTask.getStart()
+        Assert.assertEquals("node1", ltsTask.retrieveStartJob()
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
         Assert.assertEquals("node2", ltsTask.getDag().get(1)
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
         Assert.assertEquals("end", ltsTask.getDag().get(2)
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
-        Assert.assertEquals("", ltsTask.getEnd()
+        Assert.assertEquals("", ltsTask.retrieveEndJob()
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
 
         // Add inverse dependencies info for ltsTask
         ltsTask.reverseDependencies();
-        Assert.assertEquals("", ltsTask.getStart()
+        Assert.assertEquals("", ltsTask.retrieveStartJob()
                 .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
         Assert.assertEquals("start", ltsTask.getDag().get(1)
                 .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
         Assert.assertEquals("node1", ltsTask.getDag().get(2)
                 .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
-        Assert.assertEquals("node2", ltsTask.getEnd()
+        Assert.assertEquals("node2", ltsTask.retrieveEndJob()
                 .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
 
     }

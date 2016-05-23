@@ -76,6 +76,8 @@ public class JDLParser {
             throw new LTSClientException(e.getMessage());
         }
 
+        // reverse ltsTask to add parent dependencies
+        ltsTask.reverseDependencies();
         return ltsTask;
     }
 
