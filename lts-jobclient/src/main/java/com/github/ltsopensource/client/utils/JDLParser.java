@@ -98,6 +98,7 @@ public class JDLParser {
 
     private static Job generateStartJob(JDLObject jdlObject, String taskId) throws Exception {
         Job job = generateJob(jdlObject, taskId);
+        job.setJobName(JobInfoConstants.START_JOB_NAME);
         job.setJobNodeType(JobNodeType.START_JOB);
         job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, StringUtils.join(jdlObject.getWorkflow()
                 .getStart(), ","));
@@ -106,6 +107,7 @@ public class JDLParser {
 
     private static Job generateEndJob(JDLObject jdlObject, String taskId) throws Exception {
         Job job = generateJob(jdlObject, taskId);
+        job.setJobName(JobInfoConstants.END_JOB_NAME);
         job.setJobNodeType(JobNodeType.END_JOB);
         job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, "");
         return job;

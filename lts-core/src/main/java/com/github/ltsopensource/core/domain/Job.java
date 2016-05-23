@@ -7,7 +7,6 @@ import com.github.ltsopensource.core.exception.JobSubmitException;
 import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.support.CronExpression;
 import com.github.ltsopensource.remoting.annotation.NotNull;
-import sun.jvm.hotspot.runtime.PerfDataEntry;
 
 import java.io.Serializable;
 import java.util.Date;

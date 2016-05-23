@@ -159,6 +159,7 @@ public class JDLParserTest {
 
         // Check start job
         Assert.assertEquals("1", ltsTask.getDag().get(0).getWorkflowId());
+        Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.getStart().getJobName());
         Assert.assertEquals("test_task", ltsTask.getDag().get(0).getWorkflowName());
         Assert.assertEquals(2, ltsTask.getDag().get(0).getWorkflowDepends().size());
         Assert.assertEquals("10 * * * * ?", ltsTask.getDag().get(0).getCronExpression());
@@ -206,6 +207,7 @@ public class JDLParserTest {
 
         // Check end job
         Assert.assertNotNull(ltsTask.getEnd());
+        Assert.assertEquals(JobInfoConstants.END_JOB_NAME, ltsTask.getEnd().getJobName());
         Assert.assertEquals(JobNodeType.END_JOB, ltsTask.getEnd().getJobNodeType());
 
         // Check dependencies: start->node1->node2->end
@@ -218,7 +220,16 @@ public class JDLParserTest {
         Assert.assertEquals("", ltsTask.getEnd()
                 .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
 
-
+        // Add inverse dependencies info for ltsTask
+        ltsTask.reverseDependencies();
+        Assert.assertEquals("", ltsTask.getStart()
+                .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
+        Assert.assertEquals("start", ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
+        Assert.assertEquals("node1", ltsTask.getDag().get(2)
+                .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
+        Assert.assertEquals("node2", ltsTask.getEnd()
+                .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
 
     }
 

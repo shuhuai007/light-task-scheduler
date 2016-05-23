@@ -12,7 +12,7 @@ public class JobInfoConstants {
     public static final String JOB_FILES_SEPARATOR = ",";
     public static final String JOB_ARGUMENTS_SEPARATOR = ",";
 
-    public static final String JOB_PARENTS_PARAM_KEY = "job.parents";
+    public static final String JOB_PARAM_PARENTS_KEY = "job.parents";
     public static final String JOB_PARAM_CHILDREN_KEY = "job.children";
     public static final String JOB_PARAM_EXEC_KEY = "job.exec";
     public static final String JOB_PARAM_FILES_KEY = "job.files";
@@ -27,4 +27,8 @@ public class JobInfoConstants {
     public static final String JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY = "job.configuration";
 
     public static final String WORKFLOW_JOBS_TYPE_SHELL = "shell";
+    public static final String START_JOB_NAME = "start";
+    public static final String END_JOB_NAME = "end";
+
+
 }
