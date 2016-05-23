@@ -97,6 +97,7 @@ public class Job implements Serializable {
      * Job name of this job.
      */
     private String jobName;
+    private Long submitTime;
 
     public Integer getPriority() {
         return priority;
@@ -312,5 +313,13 @@ public class Job implements Serializable {
 
     public void setRetryInternal(int retryInternal) {
         this.retryInternal = retryInternal;
+    }
+
+    public Long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Long submitTime) {
+        this.submitTime = submitTime;
     }
 }
