@@ -9,15 +9,15 @@ import java.util.List;
  * Represent workflow info of {@link JDLObject}.
  */
 public class WorkflowObject {
-    private String start;
+    private List<String> start;
     private List<ForkObject> fork;
     private List<JobObject> jobs;
 
-    public String getStart() {
+    public List<String> getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(List<String> start) {
         this.start = start;
     }
 

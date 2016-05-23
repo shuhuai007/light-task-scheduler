@@ -9,7 +9,7 @@ import java.util.List;
 public class ForkObject {
     private String name;
     private List<String> paths;
-    private List<JoinObject> join;
+    private JoinObject join;
 
     public String getName() {
         return name;
@@ -27,11 +27,11 @@ public class ForkObject {
         this.paths = paths;
     }
 
-    public List<JoinObject> getJoin() {
+    public JoinObject getJoin() {
         return join;
     }
 
-    public void setJoin(List<JoinObject> join) {
+    public void setJoin(JoinObject join) {
         this.join = join;
     }
 }

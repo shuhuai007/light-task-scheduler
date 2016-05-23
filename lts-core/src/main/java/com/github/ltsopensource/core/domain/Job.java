@@ -6,10 +6,12 @@ import com.github.ltsopensource.core.exception.JobSubmitException;
 import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.support.CronExpression;
 import com.github.ltsopensource.remoting.annotation.NotNull;
+import sun.jvm.hotspot.runtime.PerfDataEntry;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,6 +65,19 @@ public class Job implements Serializable {
      * 是否依赖上一个执行周期(对于周期性任务才起作用)
      */
     private boolean relyOnPrevCycle = true;
+    /**
+     * Workflow name(Task table:task_name).
+     */
+    private String workflowName;
+    /**
+     * Workflow dependencies(JDL:depends).
+     */
+    private List<String> workflowDepends;
+    /**
+     * The start time of workflow(JDL:coordinator->start).
+     */
+    private Long startTime;
+    private Long endTime;
 
     public Integer getPriority() {
         return priority;
@@ -217,5 +232,37 @@ public class Job implements Serializable {
         if (repeatCount < -1) {
             throw new JobSubmitException("repeatCount invalid, must be great than -1! job is " + toString());
         }
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
+    }
+
+    public void setWorkflowDepends(List<String> workflowDependencyList) {
+        this.workflowDepends = workflowDependencyList;
+    }
+
+    public List<String> getWorkflowDepends() {
+        return workflowDepends;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
     }
 }

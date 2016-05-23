@@ -36,4 +36,20 @@ public class LTSTask implements Serializable  {
     public String toString() {
         return JSON.toJSONString(this);
     }
+
+    public Job getStart() {
+        if (dag != null && !dag.isEmpty()) {
+            return dag.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public Job getEnd() {
+        if (dag != null && !dag.isEmpty()) {
+            return dag.get(dag.size() - 1);
+        } else {
+            return null;
+        }
+    }
 }
