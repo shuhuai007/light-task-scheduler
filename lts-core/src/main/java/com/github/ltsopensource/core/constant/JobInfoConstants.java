@@ -22,9 +22,9 @@ public class JobInfoConstants {
             "coordinator.controls.concurrency";
     public static final String JOB_PARAM_COORDINATOR_CONTROLS_EXECUTION_KEY = "coordinator.controls.execution";
     public static final String JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY = "coordinator.controls.throttle";
-    public static final String JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY = "prepare";
-    public static final String JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY = "decision";
-    public static final String JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY = "configuration";
+    public static final String JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY = "job.prepare";
+    public static final String JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY = "job.decision";
+    public static final String JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY = "job.configuration";
 
     public static final String WORKFLOW_JOBS_TYPE_SHELL = "shell";
 }
