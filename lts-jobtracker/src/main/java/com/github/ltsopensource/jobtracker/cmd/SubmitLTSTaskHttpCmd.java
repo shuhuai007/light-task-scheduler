@@ -53,7 +53,7 @@ public class SubmitLTSTaskHttpCmd implements HttpCmdProc {
         try {
             LTSTask ltsTask = JSON.parse(ltsTaskJSON, LTSTask.class);
             if (ltsTask == null) {
-                response.setMsg("ltsTask can not be null");
+                response.setMsg("ltsTask can not be null, ltsTaskJson can't be parsed");
                 return response;
             }
 
@@ -61,14 +61,15 @@ public class SubmitLTSTaskHttpCmd implements HttpCmdProc {
             jobSubmitRequest.setJobs(ltsTask.getDag());
             appContext.getJobReceiver().receive(jobSubmitRequest);
 
-            LOGGER.info("add lts task succeed, {}", ltsTask);
+            LOGGER.info("submit lts task succeed, {}", ltsTask);
 
             response.setSuccess(true);
 
         } catch (Exception e) {
-            LOGGER.error("add  lts task error, message:", e);
-            response.setMsg("add  lts task error, message:" + e.getMessage());
+            LOGGER.error("submit  lts task error, message:", e);
+            response.setMsg("submit  lts task error, message:" + e.getMessage());
         }
+        LOGGER.debug("exit SubmitLTSTaskHttpCmd");
         return response;
     }
 
