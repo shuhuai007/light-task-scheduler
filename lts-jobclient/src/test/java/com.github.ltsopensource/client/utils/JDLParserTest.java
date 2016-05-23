@@ -4,6 +4,7 @@ import com.github.ltsopensource.client.jdl.JDLConstants;
 import com.github.ltsopensource.client.jdl.JDLObject;
 import com.github.ltsopensource.core.commons.utils.UTCDateUtils;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.domain.LTSTask;
 import org.junit.Assert;
 import org.junit.Before;
@@ -136,6 +137,8 @@ public class JDLParserTest {
         Assert.assertEquals(1, jdlObject.getWorkflow().getJobs().get(0).getRetryInterval());
         Assert.assertEquals("this is prepare operation", jdlObject.getWorkflow().getJobs().get(0)
                 .getPrepare());
+        Assert.assertEquals(0, jdlObject.getWorkflow().getJobs().get(0)
+                .getDecision().size());
         Assert.assertEquals(2, jdlObject.getWorkflow().getJobs().get(0).getConfiguration().size());
         Assert.assertEquals("key1", jdlObject.getWorkflow().getJobs().get(0).getConfiguration()
                 .get(0).getName());
@@ -153,8 +156,10 @@ public class JDLParserTest {
         String taskId = "1";
         LTSTask ltsTask = JDLParser.generateLTSTask(testJDL, taskId);
         Assert.assertNotNull(ltsTask);
-
         Assert.assertTrue(ltsTask.getDag().size() > 1);
+
+        // Check start job
+        Assert.assertEquals("1", ltsTask.getDag().get(0).getWorkflowId());
         Assert.assertEquals("test_task", ltsTask.getDag().get(0).getWorkflowName());
         Assert.assertEquals(2, ltsTask.getDag().get(0).getWorkflowDepends().size());
         Assert.assertEquals("10 * * * * ?", ltsTask.getDag().get(0).getCronExpression());
@@ -174,6 +179,27 @@ public class JDLParserTest {
 
         Assert.assertEquals("node1" ,ltsTask.getStart().getParam(JobInfoConstants
                 .JOB_CHILDREN_PARAM_KEY));
+        Assert.assertEquals(JobNodeType.START_JOB, ltsTask.getStart().getJobNodeType());
+
+        // Check first actual job
+        Assert.assertEquals("1", ltsTask.getDag().get(1).getWorkflowId());
+        Assert.assertEquals(JobNodeType.SHELL_JOB, ltsTask.getDag().get(1).getJobNodeType());
+        Assert.assertEquals("node1", ltsTask.getDag().get(1).getJobName());
+        Assert.assertEquals(2, ltsTask.getDag().get(1).getMaxRetryTimes());
+        Assert.assertEquals(1, ltsTask.getDag().get(1).getRetryInternal());
+        Assert.assertEquals("this is prepare operation", ltsTask.getDag().get(1).getParam
+                (JDLConstants.WORKFLOW_JOBS_PREPARE));
+        Assert.assertEquals("", ltsTask.getDag().get(1).getParam
+                (JDLConstants.WORKFLOW_JOBS_DECISION));
+        Assert.assertEquals("key1:value1;key2:value2", ltsTask.getDag().get(1).getParam
+                (JDLConstants.WORKFLOW_JOBS_CONFIGURATION));
+        Assert.assertEquals("echo good morning", ltsTask.getDag().get(1).getParam
+                (JobInfoConstants.JOB_PARAM_EXEC_KEY));
+
+
+
+
+
 
     }
 }

@@ -20,6 +20,7 @@ public class JobObject {
     private List<String> arguments;
     private String OK;
     private String error;
+    private List<String> decision;
 
     public String getType() {
         return type;
@@ -107,5 +108,13 @@ public class JobObject {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public List<String> getDecision() {
+        return decision;
+    }
+
+    public void setDecision(List<String> decision) {
+        this.decision = decision;
     }
 }

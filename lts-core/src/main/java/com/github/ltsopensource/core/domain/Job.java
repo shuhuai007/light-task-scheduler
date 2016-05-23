@@ -2,6 +2,7 @@ package com.github.ltsopensource.core.domain;
 
 
 import com.github.ltsopensource.core.commons.utils.StringUtils;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.exception.JobSubmitException;
 import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.support.CronExpression;
@@ -78,6 +79,10 @@ public class Job implements Serializable {
      */
     private Long startTime;
     private Long endTime;
+    private JobNodeType jobNodeType;
+    private String workflowId;
+    private String jobName;
+    private int retryInternal;
 
     public Integer getPriority() {
         return priority;
@@ -264,5 +269,37 @@ public class Job implements Serializable {
 
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
+    }
+
+    public JobNodeType getJobNodeType() {
+        return jobNodeType;
+    }
+
+    public void setJobNodeType(JobNodeType jobNodeType) {
+        this.jobNodeType = jobNodeType;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public int getRetryInternal() {
+        return retryInternal;
+    }
+
+    public void setRetryInternal(int retryInternal) {
+        this.retryInternal = retryInternal;
     }
 }
