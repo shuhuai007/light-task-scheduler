@@ -24,7 +24,6 @@ public class JDLParser {
         // TODO(zj): to be implemented
         try {
             JDLObject jdlObject = JSON.parse(jdl, JDLObject.class);
-//            System.out.println(jdlObject.getEngine());
         } catch (Exception e) {
             return false;
         }
