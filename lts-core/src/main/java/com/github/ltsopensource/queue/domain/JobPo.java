@@ -1,5 +1,6 @@
 package com.github.ltsopensource.queue.domain;
 
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.json.JSON;
 
@@ -98,6 +99,15 @@ public class JobPo {
     private Boolean relyOnPrevCycle = true;
     // 最后生成的triggerTime
     private Long lastGenerateTriggerTime;
+    private Long submitTime;
+    private String workflowId;
+    private String workflowName;
+    private String workflowDepends;
+    private Long startTime = null;
+    private Long endTime = null;
+    private String jobName;
+    private JobNodeType jobNodeType;
+    private int retryInternal;
 
     public JobType getJobType() {
         return jobType;
@@ -316,5 +326,77 @@ public class JobPo {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public Long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Long submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
+    }
+
+    public String getWorkflowDepends() {
+        return workflowDepends;
+    }
+
+    public void setWorkflowDepends(String workflowDepends) {
+        this.workflowDepends = workflowDepends;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public JobNodeType getJobNodeType() {
+        return jobNodeType;
+    }
+
+    public void setJobNodeType(JobNodeType jobNodeType) {
+        this.jobNodeType = jobNodeType;
+    }
+
+    public int getRetryInternal() {
+        return retryInternal;
+    }
+
+    public void setRetryInternal(int retryInternal) {
+        this.retryInternal = retryInternal;
     }
 }

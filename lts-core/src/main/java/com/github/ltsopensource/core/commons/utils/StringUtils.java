@@ -6,6 +6,8 @@ import com.github.ltsopensource.core.logger.support.MessageFormatter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
@@ -201,5 +203,13 @@ public final class StringUtils {
         }
         sb.append(str.substring(1));
         return sb.toString();
+    }
+
+    public static String join(Collection collection, String separator) {
+        return org.apache.commons.lang.StringUtils.join(collection, separator);
+    }
+
+    public static String join(Iterator iterator, String separator) {
+        return org.apache.commons.lang.StringUtils.join(iterator, separator);
     }
 }

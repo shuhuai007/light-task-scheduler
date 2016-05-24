@@ -12,6 +12,9 @@ public class JobInfoConstants {
     public static final String JOB_FILES_SEPARATOR = ",";
     public static final String JOB_ARGUMENTS_SEPARATOR = ",";
 
+    public static final String JOB_PO_WORKFLOW_DEPENDS_SEPARATOR = ",";
+
+
     public static final String JOB_PARAM_PARENTS_KEY = "job.parents";
     public static final String JOB_PARAM_CHILDREN_KEY = "job.children";
     public static final String JOB_PARAM_EXEC_KEY = "job.exec";
@@ -33,5 +36,8 @@ public class JobInfoConstants {
     public static final String START_JOB_NAME = "start";
     public static final String END_JOB_NAME = "end";
 
-
+    /**
+     * Prefix of internal param key.
+     */
+    public static final String JOB_PO_INTERNAL_PARAM_KEY_PREFIX = "__LTS_";
 }

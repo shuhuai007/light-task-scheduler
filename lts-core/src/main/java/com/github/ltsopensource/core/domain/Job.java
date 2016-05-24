@@ -60,7 +60,7 @@ public class Job implements Serializable {
      * 任务的最初触发发时间
      * 如果设置了 cronExpression， 那么这个字段没用
      */
-    private Long triggerTime;
+    private Long triggerTime = null;
     /**
      * 当任务队列中存在这个任务的时候，是否替换更新
      */
@@ -80,11 +80,11 @@ public class Job implements Serializable {
     /**
      * The start time of workflow. (JDL: coordinator->start)
      */
-    private Long startTime;
+    private Long startTime = null;
     /**
      * The end time of workflow. (JDL: coordinator->end)
      */
-    private Long endTime;
+    private Long endTime = null;
     /**
      * Job node type.
      */

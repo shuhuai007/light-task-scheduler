@@ -4,6 +4,7 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.Constants;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.JobMeta;
 import com.github.ltsopensource.core.domain.JobRunResult;
@@ -24,20 +25,32 @@ public class JobDomainConverter {
 
     public static JobPo convert(Job job) {
         JobPo jobPo = new JobPo();
+        jobPo.setSubmitTime(job.getSubmitTime());
+        jobPo.setTaskTrackerNodeGroup(job.getTaskTrackerNodeGroup());
+        jobPo.setWorkflowId(job.getWorkflowId());
+        jobPo.setWorkflowName(job.getWorkflowName());
+        jobPo.setWorkflowDepends(StringUtils.join(job.getWorkflowDepends
+                (), JobInfoConstants.JOB_PO_WORKFLOW_DEPENDS_SEPARATOR));
+        jobPo.setStartTime(job.getStartTime());
+        jobPo.setEndTime(job.getEndTime());
+        jobPo.setJobName(job.getJobName());
+        jobPo.setJobNodeType(job.getJobNodeType());
+        jobPo.setMaxRetryTimes(job.getMaxRetryTimes());
+        jobPo.setRetryInternal(job.getRetryInternal());
+
+
         jobPo.setPriority(job.getPriority());
         jobPo.setTaskId(job.getTaskId());
-        jobPo.setRealTaskId(jobPo.getTaskId());
         jobPo.setRealTaskId(jobPo.getTaskId());
         jobPo.setGmtCreated(SystemClock.now());
         jobPo.setGmtModified(jobPo.getGmtCreated());
         jobPo.setSubmitNodeGroup(job.getSubmitNodeGroup());
-        jobPo.setTaskTrackerNodeGroup(job.getTaskTrackerNodeGroup());
 
         if (CollectionUtils.isNotEmpty(job.getExtParams())) {
             Set<String> removeKeySet = null;
             for (Map.Entry<String, String> entry : job.getExtParams().entrySet()) {
                 String key = entry.getKey();
-                if (key.startsWith("__LTS_")) {
+                if (key.startsWith(JobInfoConstants.JOB_PO_INTERNAL_PARAM_KEY_PREFIX)) {
                     jobPo.setInternalExtParam(key, entry.getValue());
                     removeKeySet = CollectionUtils.newHashSetOnNull(removeKeySet);
                     removeKeySet.add(key);
@@ -64,7 +77,6 @@ public class JobDomainConverter {
         jobPo.setExtParams(job.getExtParams());
         jobPo.setNeedFeedback(job.isNeedFeedback());
         jobPo.setCronExpression(job.getCronExpression());
-        jobPo.setMaxRetryTimes(job.getMaxRetryTimes());
         jobPo.setRelyOnPrevCycle(job.isRelyOnPrevCycle());
         jobPo.setRepeatCount(job.getRepeatCount());
         if (!jobPo.isCron()) {
