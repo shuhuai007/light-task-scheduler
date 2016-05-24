@@ -121,10 +121,10 @@ public class JDLParser {
         return job;
     }
 
-    private static Job generateJob(JDLObject jdlObject, String taskId, String taskTrackGroupName, Long submitTime) throws Exception {
+    private static Job generateJob(JDLObject jdlObject, String taskId, String taskTrackerGroupName, Long submitTime) throws Exception {
         Job job = new Job();
         job.setSubmitTime(submitTime);
-        job.setTaskTrackerNodeGroup(taskTrackGroupName);
+        job.setTaskTrackerNodeGroup(taskTrackerGroupName);
         job.setWorkflowId(taskId);
         job.setWorkflowName(jdlObject.getTaskName());
         job.setWorkflowDepends(jdlObject.getDepends());
