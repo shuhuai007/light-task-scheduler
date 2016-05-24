@@ -79,6 +79,7 @@ public class JobDomainConverter {
         jobPo.setCronExpression(job.getCronExpression());
         jobPo.setRelyOnPrevCycle(job.isRelyOnPrevCycle());
         jobPo.setRepeatCount(job.getRepeatCount());
+        // set trigger time for non-cron job (including realTime, triggerTime, repeat job)
         if (!jobPo.isCron()) {
             if (job.getTriggerTime() == null) {
                 jobPo.setTriggerTime(SystemClock.now());

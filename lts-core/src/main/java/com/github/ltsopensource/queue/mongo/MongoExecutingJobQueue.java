@@ -91,4 +91,9 @@ public class MongoExecutingJobQueue extends AbstractMongoJobQueue implements Exe
         return query.get();
     }
 
+    @Override
+    public JobPo getJob(String workflowId, Long submitTime, String jobName, Long triggerTime) {
+        return null;
+    }
+
 }

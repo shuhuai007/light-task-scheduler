@@ -40,4 +40,6 @@ public class JobInfoConstants {
      * Prefix of internal param key.
      */
     public static final String JOB_PO_INTERNAL_PARAM_KEY_PREFIX = "__LTS_";
+    public static final String LTS_IGNORE_ADD_ON_EXECUTING = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
+            "ignoreAddOnExecuting";
 }

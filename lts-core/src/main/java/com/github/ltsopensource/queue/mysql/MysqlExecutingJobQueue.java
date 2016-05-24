@@ -87,6 +87,20 @@ public class MysqlExecutingJobQueue extends AbstractMysqlJobQueue implements Exe
                 .single(RshHolder.JOB_PO_RSH);
     }
 
+    @Override
+    public JobPo getJob(String workflowId, Long submitTime, String jobName, Long triggerTime) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime.longValue())
+                .and("job_name = ?", jobName)
+                .and("trigger_time = ?", triggerTime.longValue())
+                .single(RshHolder.JOB_PO_RSH);
+    }
+
     private String getTableName() {
         return JobQueueUtils.EXECUTING_JOB_QUEUE;
     }

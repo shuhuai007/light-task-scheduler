@@ -37,4 +37,6 @@ public interface ExecutingJobQueue extends JobQueue {
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
 
     JobPo getJob(String jobId);
+
+    JobPo getJob(String workflowId, Long submitTime, String jobName, Long triggerTime);
 }

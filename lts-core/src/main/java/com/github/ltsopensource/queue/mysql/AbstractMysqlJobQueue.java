@@ -48,7 +48,17 @@ public abstract class AbstractMysqlJobQueue extends JdbcAbstractAccess implement
                         "trigger_time",
                         "repeat_count",
                         "repeated_count",
-                        "repeat_interval")
+                        "repeat_interval",
+                        "last_generate_trigger_time",
+                        "submit_time",
+                        "workflow_id",
+                        "workflow_name",
+                        "workflow_depends",
+                        "start_time",
+                        "end_time",
+                        "job_name",
+                        "job_node_type",
+                        "retry_internal")
                 .values(jobPo.getJobId(),
                         jobPo.getJobType() == null ? null : jobPo.getJobType().name(),
                         jobPo.getPriority(),
@@ -70,7 +80,17 @@ public abstract class AbstractMysqlJobQueue extends JdbcAbstractAccess implement
                         jobPo.getTriggerTime(),
                         jobPo.getRepeatCount(),
                         jobPo.getRepeatedCount(),
-                        jobPo.getRepeatInterval())
+                        jobPo.getRepeatInterval(),
+                        jobPo.getLastGenerateTriggerTime(),
+                        jobPo.getSubmitTime(),
+                        jobPo.getWorkflowId(),
+                        jobPo.getWorkflowName(),
+                        jobPo.getWorkflowDepends(),
+                        jobPo.getStartTime(),
+                        jobPo.getEndTime(),
+                        jobPo.getJobName(),
+                        jobPo.getJobNodeType(),
+                        jobPo.getRetryInternal())
                 .doInsert() == 1;
     }
 

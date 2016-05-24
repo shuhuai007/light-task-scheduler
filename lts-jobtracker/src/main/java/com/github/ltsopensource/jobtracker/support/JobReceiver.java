@@ -4,9 +4,10 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.Assert;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
-import com.github.ltsopensource.core.commons.utils.StringUtils;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.Job;
+import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.exception.JobReceiveException;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
@@ -25,8 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Robert HG (254963746@qq.com) on 8/1/14.
- *         任务处理器
+ * JobReceiver is to resolve the submission process of job.
  */
 public class JobReceiver {
 
@@ -81,11 +81,11 @@ public class JobReceiver {
 //            if (StringUtils.isEmpty(jobPo.getSubmitNodeGroup())) {
 //                jobPo.setSubmitNodeGroup(request.getNodeGroup());
 //            }
-            // 设置 jobId
+            // set jobId.
             jobPo.setJobId(JobUtils.generateJobId());
 
-            // 添加任务
-            addJob(job, jobPo);
+            // add job into related queue
+            addJob(jobPo);
 
             success = true;
             code = BizLogCode.SUCCESS;
@@ -116,33 +116,32 @@ public class JobReceiver {
     }
 
     /**
-     * 添加任务
+     * Add jobPo into related queue in order to complete the process of submission.
+     *
+     * @param jobPo job info to be added
+     * @throws DupEntryException if the same job has been already running
      */
-    private void addJob(Job job, JobPo jobPo) throws DupEntryException {
-        if (job.isCron()) {
+    public void addJob(JobPo jobPo) throws DupEntryException {
+        JobType jobType = jobPo.getJobType();
+        if (jobType.equals(JobType.CRON)) {
             addCronJob(jobPo);
-        } else if (job.isRepeatable()) {
+        } else if (jobType.equals(JobType.REPEAT)) {
             addRepeatJob(jobPo);
         } else {
-            if (needAdd2WaitingJobQueue(jobPo)) {
-//                appContext.getExecutableJobQueue().add(jobPo);
+            // For realTime job and triggerTime job
+            if (!shouldIgnore(jobPo)) {
                 appContext.getWaitingJobQueue().add(jobPo);
             }
         }
     }
 
-    private boolean needAdd2WaitingJobQueue(JobPo jobPo) {
-        boolean needAdd2WaitingJobQueue = true;
-        if (shouldIgnoreAddOnExecuting(jobPo)) {
-            if (appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(), jobPo.getTaskId()) != null) {
-                needAdd2WaitingJobQueue = false;
-            }
-        }
-        return needAdd2WaitingJobQueue;
+    private boolean shouldIgnore(JobPo jobPo) {
+        return shouldIgnoreAddOnExecuting(jobPo) && isRunning(jobPo);
     }
 
     private boolean shouldIgnoreAddOnExecuting(JobPo jobPo) {
-        String ignoreAddOnExecuting = CollectionUtils.getValue(jobPo.getInternalExtParams(), "__LTS_ignoreAddOnExecuting");
+        String ignoreAddOnExecuting = CollectionUtils.getValue(jobPo.getInternalExtParams(),
+                JobInfoConstants.LTS_IGNORE_ADD_ON_EXECUTING);
         return ignoreAddOnExecuting != null && "true".equals(ignoreAddOnExecuting);
     }
 
@@ -174,7 +173,7 @@ public class JobReceiver {
 
         // 2. 重新添加任务
         try {
-            addJob(job, jobPo);
+            addJob(jobPo);
         } catch (DupEntryException e) {
             // 一般不会走到这里
             LOGGER.warn("Job already exist twice. {}", job);
@@ -213,8 +212,8 @@ public class JobReceiver {
      * @return whether the {@code jobPo} is running in the {@link ExecutingJobQueue}.
      */
     private boolean isRunning(JobPo jobPo) {
-        return appContext.getExecutingJobQueue().getJob(jobPo.getTaskTrackerNodeGroup(),
-                jobPo.getTaskId()) != null;
+        return appContext.getExecutingJobQueue().getJob(jobPo.getWorkflowId(),jobPo.getSubmitTime(),
+                jobPo.getJobName(), jobPo.getTriggerTime()) != null;
     }
 
     /**
