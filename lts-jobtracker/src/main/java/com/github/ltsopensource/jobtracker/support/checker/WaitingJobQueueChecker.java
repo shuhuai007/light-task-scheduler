@@ -179,7 +179,7 @@ public class WaitingJobQueueChecker {
         LOGGER.debug("parents size:" + parentNames.length);
 
         for (String parentName : parentNames) {
-            // TODO(zj): workflow_id, job_name, trigger_time
+            // TODO(zj): workflow_id, submit_time, job_name, trigger_time
             JobLogPo parentLog = appContext.getJobLogger().search(workflowId, parentName);
             LOGGER.debug("parentLog:" + parentLog);
 
