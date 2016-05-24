@@ -64,22 +64,23 @@ public class JobDomainConverter {
         }
 
         // 设置JobType
-        if (job.isCron()) {
-            jobPo.setJobType(JobType.CRON);
-        } else if (job.isRepeatable()) {
-            jobPo.setJobType(JobType.REPEAT);
-        } else if (job.getTriggerTime() == null) {
-            jobPo.setJobType(JobType.REAL_TIME);
-        } else {
-            jobPo.setJobType(JobType.TRIGGER_TIME);
-        }
+//        if (job.isCron()) {
+//            jobPo.setJobType(JobType.CRON);
+//        } else if (job.isRepeatable()) {
+//            jobPo.setJobType(JobType.REPEAT);
+//        } else if (job.getTriggerTime() == null) {
+//            jobPo.setJobType(JobType.REAL_TIME);
+//        } else {
+//            jobPo.setJobType(JobType.TRIGGER_TIME);
+//        }
+        jobPo.setJobType(job.getJobType());
 
         jobPo.setExtParams(job.getExtParams());
         jobPo.setNeedFeedback(job.isNeedFeedback());
         jobPo.setCronExpression(job.getCronExpression());
         jobPo.setRelyOnPrevCycle(job.isRelyOnPrevCycle());
         jobPo.setRepeatCount(job.getRepeatCount());
-        // set trigger time for non-cron job (including realTime, triggerTime, repeat job)
+        // set trigger time for single period job (including realTime, triggerTime, repeat job)
         if (!jobPo.isCron()) {
             if (job.getTriggerTime() == null) {
                 jobPo.setTriggerTime(SystemClock.now());

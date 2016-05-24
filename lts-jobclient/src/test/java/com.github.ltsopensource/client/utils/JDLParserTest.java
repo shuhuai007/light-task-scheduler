@@ -159,55 +159,10 @@ public class JDLParserTest {
         Assert.assertTrue(ltsTask.getDag().size() > 1);
 
         // Check start job
-        Assert.assertEquals("1", ltsTask.retrieveStartJob().getWorkflowId());
-        Assert.assertNotNull(ltsTask.retrieveStartJob().getSubmitTime());
-        Assert.assertEquals(testTaskTrackerGroupName,
-                ltsTask.retrieveStartJob().getTaskTrackerNodeGroup());
-        Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.retrieveStartJob().getJobName());
-        Assert.assertEquals("test_task", ltsTask.retrieveStartJob().getWorkflowName());
-        Assert.assertEquals(2, ltsTask.retrieveStartJob().getWorkflowDepends().size());
-        Assert.assertEquals("10 * * * * ?", ltsTask.retrieveStartJob().getCronExpression());
-        Assert.assertEquals(UTCDateUtils.getCalendar("2016-01-07T17:15:44.000Z").getTimeInMillis(),
-                ltsTask.retrieveStartJob().getStartTime().longValue());
-        Assert.assertEquals(UTCDateUtils.getCalendar("2016-01-08T17:15:44.000Z").getTimeInMillis(),
-                ltsTask.retrieveStartJob().getEndTime().longValue());
-
-        Assert.assertEquals("-1", ltsTask.retrieveStartJob()
-                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_TIMEOUT_KEY));
-        Assert.assertEquals("1", ltsTask.retrieveStartJob()
-                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_CONCURRENCY_KEY));
-        Assert.assertEquals("FIFO", ltsTask.retrieveStartJob()
-                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_EXECUTION_KEY));
-        Assert.assertEquals("3", ltsTask.retrieveStartJob()
-                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY));
-
-        Assert.assertEquals("node1" ,ltsTask.retrieveStartJob().getParam(JobInfoConstants
-                .JOB_PARAM_CHILDREN_KEY));
-        Assert.assertEquals(JobNodeType.START_JOB, ltsTask.retrieveStartJob().getJobNodeType());
+        checkStartJob(testTaskTrackerGroupName, ltsTask);
 
         // Check first actual job
-        Assert.assertEquals("1", ltsTask.getDag().get(1).getWorkflowId());
-        Assert.assertNotNull(ltsTask.getDag().get(1).getSubmitTime());
-        Assert.assertEquals(ltsTask.retrieveStartJob().getSubmitTime(), ltsTask.getDag().get(1)
-                .getSubmitTime());
-        Assert.assertEquals(JobNodeType.SHELL_JOB, ltsTask.getDag().get(1).getJobNodeType());
-        Assert.assertEquals("node1", ltsTask.getDag().get(1).getJobName());
-        Assert.assertEquals(2, ltsTask.getDag().get(1).getMaxRetryTimes());
-        Assert.assertEquals(1, ltsTask.getDag().get(1).getRetryInternal());
-        Assert.assertEquals("this is prepare operation", ltsTask.getDag().get(1).getParam
-                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY));
-        Assert.assertEquals("", ltsTask.getDag().get(1).getParam
-                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY));
-        Assert.assertEquals(getConfigurationStr(), ltsTask.getDag().get(1)
-                .getParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY));
-        Assert.assertEquals("echo good morning", ltsTask.getDag().get(1).getParam
-                (JobInfoConstants.JOB_PARAM_EXEC_KEY));
-        Assert.assertEquals(getFilesStr(),
-                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_FILES_KEY));
-        Assert.assertEquals(getArgumentsStr(),
-                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_ARGUMENTS_KEY));
-        Assert.assertEquals("node2", ltsTask.getDag().get(1)
-                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+        checkFirstActualJob(ltsTask);
 
         // Check second actual job
         Assert.assertEquals("1", ltsTask.getDag().get(2).getWorkflowId());
@@ -238,6 +193,59 @@ public class JDLParserTest {
         Assert.assertEquals("node2", ltsTask.retrieveEndJob()
                 .getParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY));
 
+    }
+
+    private void checkFirstActualJob(LTSTask ltsTask) {
+        Assert.assertEquals("1", ltsTask.getDag().get(1).getWorkflowId());
+        Assert.assertNotNull(ltsTask.getDag().get(1).getSubmitTime());
+        Assert.assertEquals(ltsTask.retrieveStartJob().getSubmitTime(), ltsTask.getDag().get(1)
+                .getSubmitTime());
+        Assert.assertEquals(JobNodeType.SHELL_JOB, ltsTask.getDag().get(1).getJobNodeType());
+        Assert.assertEquals("node1", ltsTask.getDag().get(1).getJobName());
+        Assert.assertEquals(2, ltsTask.getDag().get(1).getMaxRetryTimes());
+        Assert.assertEquals(1, ltsTask.getDag().get(1).getRetryInternal());
+        Assert.assertEquals("this is prepare operation", ltsTask.getDag().get(1).getParam
+                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_PREPARE_KEY));
+        Assert.assertEquals("", ltsTask.getDag().get(1).getParam
+                (JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_DECISION_KEY));
+        Assert.assertEquals(getConfigurationStr(), ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY));
+        Assert.assertEquals("echo good morning", ltsTask.getDag().get(1).getParam
+                (JobInfoConstants.JOB_PARAM_EXEC_KEY));
+        Assert.assertEquals(getFilesStr(),
+                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_FILES_KEY));
+        Assert.assertEquals(getArgumentsStr(),
+                ltsTask.getDag().get(1).getParam(JobInfoConstants.JOB_PARAM_ARGUMENTS_KEY));
+        Assert.assertEquals("node2", ltsTask.getDag().get(1)
+                .getParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY));
+    }
+
+    private void checkStartJob(String testTaskTrackerGroupName, LTSTask ltsTask) throws Exception {
+        Assert.assertEquals("1", ltsTask.retrieveStartJob().getWorkflowId());
+        Assert.assertNotNull(ltsTask.retrieveStartJob().getSubmitTime());
+        Assert.assertEquals(testTaskTrackerGroupName,
+                ltsTask.retrieveStartJob().getTaskTrackerNodeGroup());
+        Assert.assertEquals(JobInfoConstants.START_JOB_NAME, ltsTask.retrieveStartJob().getJobName());
+        Assert.assertEquals("test_task", ltsTask.retrieveStartJob().getWorkflowName());
+        Assert.assertEquals(2, ltsTask.retrieveStartJob().getWorkflowDepends().size());
+        Assert.assertEquals("10 * * * * ?", ltsTask.retrieveStartJob().getCronExpression());
+        Assert.assertEquals(UTCDateUtils.getCalendar("2016-01-07T17:15:44.000Z").getTimeInMillis(),
+                ltsTask.retrieveStartJob().getStartTime().longValue());
+        Assert.assertEquals(UTCDateUtils.getCalendar("2016-01-08T17:15:44.000Z").getTimeInMillis(),
+                ltsTask.retrieveStartJob().getEndTime().longValue());
+
+        Assert.assertEquals("-1", ltsTask.retrieveStartJob()
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_TIMEOUT_KEY));
+        Assert.assertEquals("1", ltsTask.retrieveStartJob()
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_CONCURRENCY_KEY));
+        Assert.assertEquals("FIFO", ltsTask.retrieveStartJob()
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_EXECUTION_KEY));
+        Assert.assertEquals("3", ltsTask.retrieveStartJob()
+                .getParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY));
+
+        Assert.assertEquals("node1" ,ltsTask.retrieveStartJob().getParam(JobInfoConstants
+                .JOB_PARAM_CHILDREN_KEY));
+        Assert.assertEquals(JobNodeType.START_JOB, ltsTask.retrieveStartJob().getJobNodeType());
     }
 
     private String getFilesStr() {

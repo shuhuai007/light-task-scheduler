@@ -78,8 +78,12 @@ public class JDLParser {
             throw new LTSClientException(e.getMessage());
         }
 
-        // reverse ltsTask to add parent dependencies
+        // Reverse ltsTask to add parent dependencies.
         ltsTask.reverseDependencies();
+        // Set job type for all the jobs.
+        ltsTask.updateJobType();
+        // Repair trigger time for single period task, including realTime task and triggerTime task.
+        ltsTask.updateTriggerTime();
         return ltsTask;
     }
 

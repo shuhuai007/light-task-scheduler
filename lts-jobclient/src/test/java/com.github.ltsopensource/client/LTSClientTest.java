@@ -68,4 +68,77 @@ public class LTSClientTest {
         String planTime = "2016-11-01T23:00Z";
         ltsClient.reRun(taskId, planTime);
     }
+
+    @Test
+    public void submitWithSuccessTest() throws Exception {
+        String JDL = "{\"taskName\": sdf }";
+        JDL =
+            "{" +
+                    "\"engine\":\"lts\"" + "," +
+                    "\"taskName\":\"test_task\"" + "," +
+                    "\"depends\":[\"100\", \"200\"]" + "," +
+                    "\"coordinator\":{" +
+                        "\"frequency\"" + ":" + "\"10 * * * * ?\"" + "," +
+                        "\"start\""     + ":" + "\"2016-01-07T17:15:44.000Z\"" + "," +
+                        "\"end\""       + ":" + "\"2016-01-08T17:15:44.000Z\"" + "," +
+                        "\"controls\""  + ":" + "{" +
+                                "\"timeout\":\"-1\"," +
+                                "\"concurrency\":1," +
+                                "\"execution\":\"FIFO\"," +
+                                "\"throttle\":3 " +
+                        "}" +
+                     "}" + "," +
+
+                    "\"workflow\"" + ":" + "{" +
+                        "\"start\"" + ":" + "[\"node1\"]" + "," +
+                        "\"fork\"" + ":" + "[" +
+                          "{" +
+                               "\"name\":" + "\"fork_node1\"," +
+                               "\"paths\":" + "[\"node2\"," + "\"node3\"]," +
+                               "\"join\":" + "{\"name\":\"node4\", \"to\":\"join_node_name\"}" +
+                           "}" +
+                       "]" + "," +
+                       "\"jobs\":" + "[" +
+                            "{" +
+                                "\"type\":" +"\"shell\"" + "," +
+                                "\"name\":" +"\"node1\"" + "," +
+                                "\"retryMax\":" +"2" + "," +
+                                "\"retryInterval\":" +"1" + "," +
+                                "\"prepare\":" +"\"this is prepare operation\"" + "," +
+                                "\"decision\":" +"[]" + "," +
+                                "\"configuration\":" +"[" +
+                                    "{\"name\":\"key1\",\"value\":\"value1\"}" + "," +
+                                    "{\"name\":\"key2\",\"value\":\"value2\"}" +
+                                "]" + "," +
+                                "\"exec\":" + "\"echo good morning\"" + "," +
+                                "\"files\":" + "[\"f1\",\"f2\",\"f3\"]" + "," +
+                                "\"arguments\":" + "[\"a1\", \"a2\", \"a3\"]" + "," +
+                                "\"ok\":" + "\"node2\"" + "," +
+                                "\"error\":" + "\"fail\"" +
+                            "}" + "," +
+                            "{" +
+                                "\"type\":" +"\"shell\"" + "," +
+                                "\"name\":" +"\"node2\"" + "," +
+                                "\"retryMax\":" +"2" + "," +
+                                "\"retryInterval\":" +"1" + "," +
+                                "\"prepare\":" +"\"this is prepare operation\"" + "," +
+                                "\"decision\":" +"[]" + "," +
+                                "\"configuration\":" +"[" +
+                                    "{\"name\":\"key1\",\"value\":\"value1\"}" + "," +
+                                    "{\"name\":\"key2\",\"value\":\"value2\"}" +
+                                "]" + "," +
+                                "\"exec\":" + "\"echo good morning\"" + "," +
+                                "\"files\":" + "[\"f1\",\"f2\",\"f3\"]" + "," +
+                                "\"arguments\":" + "[\"a1\", \"a2\", \"a3\"]" + "," +
+                                "\"ok\":" + "\"end\"" + "," +
+                                "\"error\":" + "\"fail\"" +
+                            "}" +
+                       "]" +
+                    "}"  +
+            "}";
+        String taskId = "1";
+        String taskTrackGroupName = "test";
+        ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
+        ltsClient.submit(JDL, taskId, taskTrackGroupName);
+    }
 }

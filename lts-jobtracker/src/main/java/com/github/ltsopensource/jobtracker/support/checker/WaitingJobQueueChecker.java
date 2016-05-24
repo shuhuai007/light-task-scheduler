@@ -4,11 +4,12 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
+import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
-import com.github.ltsopensource.core.support.CronExpressionUtils;
 import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
@@ -128,46 +129,66 @@ public class WaitingJobQueueChecker {
 
     private boolean meetDependencies(JobPo jobPo) {
         // TODO (zj: keep the cron job in the waiting queue for testing)
-        if (jobPo.isCron()) {
-            List<String> parentList = JobUtils.getParentList(jobPo);
-            if (parentList == null) {
-                return checkPreviousWorkflow(jobPo);
-            } else {
-                return checkParents(jobPo, parentList);
-            }
+        boolean result = false;
+        switch (jobPo.getJobType()) {
+            case TRIGGER_TIME:
+            case REAL_TIME:
+                result = checkDependencies4SinglePeriodJob(jobPo);
+                break;
+            case CRON:
+                List<String> parentList = JobUtils.getParentList(jobPo);
+                if (parentList == null) {
+                    result = checkPreviousWorkflow(jobPo);
+                } else {
+                    result = checkParents(jobPo, parentList);
+                }
+                break;
+            case REPEAT:
+                result = checkDependencies4RepeatJob(jobPo);
+                break;
         }
+        return result;
+    }
 
+    private boolean checkDependencies4RepeatJob(JobPo jobPo) {
+        // TODO(zj): To be implemented
+        return false;
+    }
+
+    /**
+     * Check dependencies for single period job, which includes realTime job and triggerTime job.
+     *
+     * @param jobPo jobPo info for this job
+     * @return true if the jobPo meets the dependencies
+     */
+    private boolean checkDependencies4SinglePeriodJob(JobPo jobPo) {
         // TODO (zj: this job should wait until it's parents finish the execution.)
-        String parents = jobPo.getExtParams().get("parents");
-        LOGGER.info("......enter meetDependencies");
-        LOGGER.info("job task_id: " + jobPo.getTaskId() + ", parents: " + parents);
+        String parents = jobPo.getExtParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY);
+        LOGGER.debug("......enter meetDependencies");
+        LOGGER.debug("job name: " + jobPo.getJobName() + ", parents: " + parents);
         if (StringUtils.isEmpty(parents)) {
-            LOGGER.info("......exit meetDependencies, true");
+            LOGGER.info("......no parents, exit meetDependencies, true");
             return true;
         }
 
-        String workflowId = jobPo.getExtParams().get("wfInstanceId");
-        LOGGER.info("job workflowId: " + workflowId);
+        String workflowId = jobPo.getWorkflowId();
+        LOGGER.debug("job workflowId: " + workflowId);
 
-        String[] parentIds = StringUtils.splitWithTrim("\001", parents);
-        LOGGER.info("parentIds's size:" + parentIds.length);
+        String[] parentNames = StringUtils.splitWithTrim(parents,
+                JobInfoConstants.JOB_PARENTS_CHILDREN_SEPARATOR);
+        LOGGER.debug("parents size:" + parentNames.length);
 
-        for (String parentId : parentIds) {
-            LOGGER.info(" for loop, parentId:" + parentId);
-            LOGGER.info(" for loop, workflowId:" + workflowId);
-
-            JobLogPo parentLog = appContext.getJobLogger().search(workflowId, parentId);
-            LOGGER.info("parentLog:" + parentLog);
+        for (String parentName : parentNames) {
+            // TODO(zj): workflow_id, job_name, trigger_time
+            JobLogPo parentLog = appContext.getJobLogger().search(workflowId, parentName);
+            LOGGER.debug("parentLog:" + parentLog);
 
             if (parentLog == null) {
-                LOGGER.info("......exit meetDependencies, false");
-                LOGGER.info("\n\n");
+                LOGGER.debug("......exit meetDependencies, false");
                 return false;
             }
         }
-        LOGGER.info("......exit meetDependencies, true");
-        LOGGER.info("\n\n");
-
+        LOGGER.debug("......exit meetDependencies, true");
         return true;
     }
 

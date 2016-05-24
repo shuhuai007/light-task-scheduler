@@ -3,6 +3,7 @@ package com.github.ltsopensource.core.domain;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.json.JSON;
+import com.github.ltsopensource.core.support.SystemClock;
 
 import java.io.Serializable;
 import java.util.*;
@@ -109,5 +110,53 @@ public class LTSTask implements Serializable  {
             }
         }
         return null;
+    }
+
+    public void updateTriggerTime() {
+        if (isTriggerTime()) {
+            for (Job job : dag) {
+                job.setTriggerTime(job.getStartTime());
+            }
+        } else if (isRealTime()) {
+            for (Job job : dag) {
+                job.setTriggerTime(SystemClock.now());
+            }
+        }
+    }
+
+    private boolean isRealTime() {
+        return !isCronDag() && retrieveStartJob().getStartTime() == null;
+    }
+
+    private boolean isTriggerTime() {
+        return !isCronDag() && retrieveStartJob().getStartTime() != null;
+    }
+
+    /**
+     * Check if the dag is cron task.
+     *
+     * @return true if this dag is cron task
+     */
+    private boolean isCronDag() {
+        // Assume all the nodes of task has one same job type
+        return retrieveStartJob().isCron();
+    }
+
+    public void updateJobType() {
+        if (isCronDag()) {
+            updateJobType4Dag(JobType.CRON);
+        } else if (isRealTime()) {
+            updateJobType4Dag(JobType.REAL_TIME);
+        } else if (isTriggerTime()) {
+            updateJobType4Dag(JobType.TRIGGER_TIME);
+        } else {
+            // TODO(zj): To be implemented for repeat task
+        }
+    }
+
+    private void updateJobType4Dag(JobType jobType) {
+        for (Job job : dag) {
+            job.setJobType(jobType);
+        }
     }
 }

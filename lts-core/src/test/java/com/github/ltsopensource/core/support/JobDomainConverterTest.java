@@ -37,9 +37,8 @@ public class JobDomainConverterTest {
         Assert.assertNull(jobPo.getStartTime());
         Assert.assertNull(jobPo.getEndTime());
         // test trigger time for real time job.
-        Assert.assertNull(realTimeJob.getTriggerTime());
         Assert.assertNotNull(jobPo.getTriggerTime());
-        Assert.assertNotEquals(realTimeJob.getTriggerTime(), jobPo.getTriggerTime());
+        Assert.assertEquals(realTimeJob.getTriggerTime(), jobPo.getTriggerTime());
         // test job type.
         Assert.assertEquals(JobType.REAL_TIME, jobPo.getJobType());
     }

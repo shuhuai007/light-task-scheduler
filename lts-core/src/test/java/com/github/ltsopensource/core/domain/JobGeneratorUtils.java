@@ -3,6 +3,7 @@ package com.github.ltsopensource.core.domain;
 import com.github.ltsopensource.core.commons.utils.DateUtils;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.JobNodeType;
+import com.github.ltsopensource.core.support.SystemClock;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class JobGeneratorUtils {
     }
     public static Job createCronJob() {
         Job cronJob = new Job();
+        cronJob.setJobType(JobType.CRON);
         cronJob.setSubmitTime(new Date().getTime());
         cronJob.setCronExpression("10 * * * * ?");
         cronJob.setJobName("cron_job");
@@ -49,6 +51,7 @@ public class JobGeneratorUtils {
 
     public static Job createTriggerTimeJob() {
         Job triggerTimeJob = new Job();
+        triggerTimeJob.setJobType(JobType.TRIGGER_TIME);
         triggerTimeJob.setSubmitTime(new Date().getTime());
         triggerTimeJob.setCronExpression("");
         triggerTimeJob.setJobName("trigger_time_job");
@@ -66,6 +69,8 @@ public class JobGeneratorUtils {
 
     public static Job createRealTimeJob() {
         Job realTimeJob = new Job();
+        realTimeJob.setJobType(JobType.REAL_TIME);
+        realTimeJob.setTriggerTime(SystemClock.now());
         realTimeJob.setSubmitTime(new Date().getTime());
         realTimeJob.setCronExpression("");
         realTimeJob.setJobName("real_time_job");

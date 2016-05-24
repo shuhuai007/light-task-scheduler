@@ -98,6 +98,7 @@ public class Job implements Serializable {
      */
     private String jobName;
     private Long submitTime;
+    private JobType jobType;
 
     public Integer getPriority() {
         return priority;
@@ -321,5 +322,13 @@ public class Job implements Serializable {
 
     public void setSubmitTime(Long submitTime) {
         this.submitTime = submitTime;
+    }
+
+    public void setJobType(JobType jobType) {
+        this.jobType = jobType;
+    }
+
+    public JobType getJobType() {
+        return jobType;
     }
 }

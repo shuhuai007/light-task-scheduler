@@ -299,6 +299,20 @@ public class JobPo {
         internalExtParams.put(key, value);
     }
 
+    public String getExtParam(String key) {
+        if (extParams == null) {
+            return null;
+        }
+        return extParams.get(key);
+    }
+
+    public void setExtParam(String key, String value) {
+        if (extParams == null) {
+            extParams = new HashMap<String, String>();
+        }
+        extParams.put(key, value);
+    }
+
     public void setRunning(boolean running) {
         isRunning = running;
     }
