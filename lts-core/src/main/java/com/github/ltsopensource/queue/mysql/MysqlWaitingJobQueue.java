@@ -32,20 +32,6 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
         return getTableName();
     }
 
-//    @Override
-//    public boolean createQueue(String taskTrackerNodeGroup) {
-//        createTable(readSqlFile("sql/mysql/lts_waiting_job_queue.sql",
-//                getTableName()));
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean removeQueue(String taskTrackerNodeGroup) {
-//        return new DropTableSql(getSqlTemplate())
-//                .drop(JobQueueUtils.getExecutableQueueName(taskTrackerNodeGroup))
-//                .doDrop();
-//    }
-
     private String getTableName() {
         return JobQueueUtils.WAITING_JOB_QUEUE;
     }
