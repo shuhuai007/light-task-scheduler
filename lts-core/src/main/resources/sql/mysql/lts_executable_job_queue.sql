@@ -23,6 +23,15 @@ CREATE TABLE IF NOT EXISTS `{tableName}` (
   `repeated_count` int(11) DEFAULT '0' COMMENT '已经重复的次数',
   `repeat_interval` bigint(20) DEFAULT '0' COMMENT '重复间隔',
   `last_generate_trigger_time` bigint(20) DEFAULT '0' COMMENT '最后生成的triggerTime时间',
+  `submit_time` bigint(20) COMMENT 'submit time for the lts task',
+  `workflow_id` varchar(32) COMMENT 'workflow id ,which is the task_id of lts task table',
+  `workflow_name` varchar(128) COMMENT 'workflow name ,which is the task_name of lts task table',
+  `workflow_depends` varchar(64) COMMENT 'workflow depends,such as [100,200,230]',
+  `start_time` bigint(20) COMMENT 'start time of the lts task',
+  `end_time` bigint(20) COMMENT 'end time of the lts task',
+  `job_name` varchar(128) COMMENT 'job name',
+  `job_node_type` varchar(32) COMMENT 'job node type, shell/url/start/end/fork/join',
+  `retry_internal` bigint(20) DEFAULT '0' COMMENT 'retry internal of job',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_job_id` (`job_id`),
   UNIQUE KEY `idx_taskId_taskTrackerNodeGroup` (`task_id`, `task_tracker_node_group`),
@@ -31,4 +40,4 @@ CREATE TABLE IF NOT EXISTS `{tableName}` (
   KEY `idx_realTaskId_taskTrackerNodeGroup` (`real_task_id`, `task_tracker_node_group`),
   KEY `idx_triggerTime_priority_gmtCreated` (`trigger_time`,`priority`,`gmt_created`),
   KEY `idx_isRunning` (`is_running`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='等待执行任务';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='executable job queue, just wait time of job to meet';
