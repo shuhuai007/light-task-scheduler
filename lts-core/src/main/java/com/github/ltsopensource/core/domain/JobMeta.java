@@ -23,6 +23,11 @@ public class JobMeta implements Serializable {
     private Integer repeatedCount;
     private String realTaskId;
     private JobType jobType;
+    private Long gmtCreated;
+    private Long gmtModified;
+    private boolean running;
+    private String taskTrackerIdentity;
+    private Long lastGenerateTriggerTime;
 
     public JobMeta() {
     }
@@ -98,5 +103,45 @@ public class JobMeta implements Serializable {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public Long getGmtCreated() {
+        return gmtCreated;
+    }
+
+    public void setGmtCreated(Long gmtCreated) {
+        this.gmtCreated = gmtCreated;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public String getTaskTrackerIdentity() {
+        return taskTrackerIdentity;
+    }
+
+    public void setTaskTrackerIdentity(String taskTrackerIdentity) {
+        this.taskTrackerIdentity = taskTrackerIdentity;
+    }
+
+    public Long getLastGenerateTriggerTime() {
+        return lastGenerateTriggerTime;
+    }
+
+    public void setLastGenerateTriggerTime(Long lastGenerateTriggerTime) {
+        this.lastGenerateTriggerTime = lastGenerateTriggerTime;
     }
 }

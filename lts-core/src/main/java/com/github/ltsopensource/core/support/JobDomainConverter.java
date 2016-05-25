@@ -29,7 +29,7 @@ public class JobDomainConverter {
      * @param job job info
      * @return JobPo object
      */
-    public static JobPo convertJob2JobPo(Job job) {
+    public static JobPo convert2JobPo(Job job) {
         JobPo jobPo = new JobPo();
         jobPo.setSubmitTime(job.getSubmitTime());
         jobPo.setTaskTrackerNodeGroup(job.getTaskTrackerNodeGroup());
@@ -100,6 +100,13 @@ public class JobDomainConverter {
      */
     public static JobMeta convert2JobMeta(JobPo jobPo) {
         Job job = new Job();
+        job.setJobType(jobPo.getJobType());
+        job.setSubmitTime(jobPo.getSubmitTime());
+        job.setWorkflowId(jobPo.getWorkflowId());
+        job.setWorkflowName(jobPo.getWorkflowName());
+        job.setWorkflowDepends(CollectionUtils.arrayToList(
+                StringUtils.splitWithTrim(jobPo.getWorkflowDepends(),
+                        JobInfoConstants.JOB_PO_WORKFLOW_DEPENDS_SEPARATOR)));
         job.setPriority(jobPo.getPriority());
         job.setExtParams(jobPo.getExtParams());
         job.setSubmitNodeGroup(jobPo.getSubmitNodeGroup());
@@ -112,6 +119,12 @@ public class JobDomainConverter {
         job.setRelyOnPrevCycle(jobPo.getRelyOnPrevCycle() == null ? true : jobPo.getRelyOnPrevCycle());
         job.setRepeatCount(jobPo.getRepeatCount());
         job.setRepeatInterval(jobPo.getRepeatInterval());
+        job.setStartTime(jobPo.getStartTime());
+        job.setEndTime(jobPo.getEndTime());
+        job.setJobName(jobPo.getJobName());
+        job.setJobNodeType(jobPo.getJobNodeType());
+        job.setRetryInternal(jobPo.getRetryInternal());
+
         JobMeta jobMeta = new JobMeta();
         jobMeta.setJobId(jobPo.getJobId());
         jobMeta.setJob(job);
@@ -120,6 +133,10 @@ public class JobDomainConverter {
         jobMeta.setRetryTimes(jobPo.getRetryTimes() == null ? 0 : jobPo.getRetryTimes());
         jobMeta.setRepeatedCount(jobPo.getRepeatedCount());
         jobMeta.setJobType(jobPo.getJobType());
+        jobMeta.setGmtCreated(SystemClock.now());
+        jobMeta.setGmtModified(jobMeta.getGmtCreated());
+        jobMeta.setRunning(jobPo.isRunning());
+        jobMeta.setLastGenerateTriggerTime(jobPo.getLastGenerateTriggerTime());
         return jobMeta;
     }
 
@@ -146,6 +163,20 @@ public class JobDomainConverter {
         jobLogPo.setRepeatCount(job.getRepeatCount());
         jobLogPo.setRepeatedCount(jobMeta.getRepeatedCount());
         jobLogPo.setRepeatInterval(job.getRepeatInterval());
+        jobLogPo.setLastGenerateTriggerTime(jobMeta.getLastGenerateTriggerTime());
+        jobLogPo.setTaskTrackerIdentity(jobMeta.getTaskTrackerIdentity());
+
+        jobLogPo.setSubmitTime(job.getSubmitTime());
+        jobLogPo.setWorkflowId(job.getWorkflowId());
+        jobLogPo.setWorkflowName(job.getWorkflowName());
+        jobLogPo.setWorkflowDepends(StringUtils.join(job.getWorkflowDepends(), JobInfoConstants
+                .JOB_PO_WORKFLOW_DEPENDS_SEPARATOR));
+        jobLogPo.setStartTime(job.getStartTime());
+        jobLogPo.setEndTime(job.getEndTime());
+        jobLogPo.setJobName(job.getJobName());
+        jobLogPo.setJobNodeType(job.getJobNodeType());
+        jobLogPo.setRetryInternal(job.getRetryInternal());
+
         return jobLogPo;
     }
 

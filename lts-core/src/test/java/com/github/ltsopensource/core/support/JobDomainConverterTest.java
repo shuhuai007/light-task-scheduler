@@ -4,6 +4,7 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.JobGeneratorUtils;
+import com.github.ltsopensource.core.domain.JobMeta;
 import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.queue.domain.JobPo;
 import org.apache.commons.lang.StringUtils;
@@ -18,17 +19,19 @@ public class JobDomainConverterTest {
     private Job realTimeJob;
     private Job triggerTimeJob;
     private Job cronJob;
+    private JobPo cronJobPo;
 
     @Before
     public void before() {
         realTimeJob = JobGeneratorUtils.createRealTimeJob();
         triggerTimeJob = JobGeneratorUtils.createTriggerTimeJob();
         cronJob = JobGeneratorUtils.createCronJob();
+        cronJobPo = JobDomainConverter.convert2JobPo(cronJob);
     }
 
     @Test
     public void convertRealTimeJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convertJob2JobPo(realTimeJob);
+        JobPo jobPo = JobDomainConverter.convert2JobPo(realTimeJob);
         testCommonFields4JobPo(jobPo, realTimeJob);
 
         // test cron expression for real time job.
@@ -46,7 +49,7 @@ public class JobDomainConverterTest {
 
     @Test
     public void convertTriggerTimeJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convertJob2JobPo(triggerTimeJob);
+        JobPo jobPo = JobDomainConverter.convert2JobPo(triggerTimeJob);
         testCommonFields4JobPo(jobPo, triggerTimeJob);
 
         // test cron expression for trigger time job.
@@ -64,7 +67,7 @@ public class JobDomainConverterTest {
 
     @Test
     public void convertCronJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convertJob2JobPo(cronJob);
+        JobPo jobPo = JobDomainConverter.convert2JobPo(cronJob);
         testCommonFields4JobPo(jobPo, cronJob);
 
         // test cron expression for cron job.
@@ -105,8 +108,8 @@ public class JobDomainConverterTest {
     }
 
     @Test
-    public void convert2JobLogPoTest() {
-        JobPo jobPo = JobDomainConverter.convertJob2JobPo(cronJob);
+    public void convert2JobLogWithJobPoTest() {
+        JobPo jobPo = JobDomainConverter.convert2JobPo(cronJob);
         jobPo.setLastGenerateTriggerTime(SystemClock.now());
         JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         Assert.assertNotNull(jobLogPo.getGmtCreated());
@@ -143,7 +146,106 @@ public class JobDomainConverterTest {
 
     @Test
     public void convert2JobMetaTest() {
+        JobPo jobPo = cronJobPo;
+        JobMeta jobMeta = JobDomainConverter.convert2JobMeta(jobPo);
+
+        // check JobMeta's Job fields.
+        Assert.assertEquals(jobPo.getJobType(), jobMeta.getJob().getJobType());
+        Assert.assertEquals(jobPo.getSubmitTime(), jobMeta.getJob().getSubmitTime());
+        Assert.assertEquals(jobPo.getTaskTrackerNodeGroup(),
+                jobMeta.getJob().getTaskTrackerNodeGroup());
+        Assert.assertEquals(jobPo.getWorkflowId(), jobMeta.getJob().getWorkflowId());
+        Assert.assertEquals(jobPo.getWorkflowName(), jobMeta.getJob().getWorkflowName());
+        Assert.assertEquals(jobPo.getWorkflowDepends(),
+                StringUtils.join(jobMeta.getJob().getWorkflowDepends(),
+                        JobInfoConstants.JOB_PO_WORKFLOW_DEPENDS_SEPARATOR));
+        Assert.assertEquals(jobPo.getCronExpression(), jobMeta.getJob().getCronExpression());
+        Assert.assertEquals(jobPo.getStartTime(), jobMeta.getJob().getStartTime());
+        Assert.assertEquals(jobPo.getEndTime(), jobMeta.getJob().getEndTime());
+        Assert.assertEquals(jobPo.getJobName(), jobMeta.getJob().getJobName());
+        Assert.assertEquals(jobPo.getJobNodeType(), jobMeta.getJob().getJobNodeType());
+        Assert.assertEquals(jobPo.getMaxRetryTimes().intValue(), jobMeta.getJob().getMaxRetryTimes());
+        Assert.assertEquals(jobPo.getRetryInternal(), jobMeta.getJob().getRetryInternal());
+        Assert.assertEquals(jobPo.getTaskId(), jobMeta.getJob().getTaskId());
+        Assert.assertEquals(jobPo.getPriority(), jobMeta.getJob().getPriority());
+        Assert.assertEquals(jobPo.getRepeatCount().intValue(), jobMeta.getJob().getRepeatCount());
+        Assert.assertEquals(jobPo.getRepeatInterval(), jobMeta.getJob().getRepeatInterval());
+        Assert.assertEquals(jobPo.getSubmitNodeGroup(), jobMeta.getJob().getSubmitNodeGroup());
+        Assert.assertEquals(jobPo.getTriggerTime(), jobMeta.getJob().getTriggerTime());
+        Assert.assertEquals(jobPo.getExtParams(), jobMeta.getJob().getExtParams());
+        Assert.assertEquals(jobPo.getRelyOnPrevCycle(), jobMeta.getJob().isRelyOnPrevCycle());
+        Assert.assertEquals(jobPo.isNeedFeedback(), jobMeta.getJob().isNeedFeedback());
+
+        // check JobMeta's self part fields.
+        Assert.assertEquals(jobPo.getJobId(), jobMeta.getJobId());
+        Assert.assertEquals(jobPo.getRealTaskId(), jobMeta.getRealTaskId());
+        Assert.assertNotNull(jobMeta.getGmtCreated());
+        Assert.assertNotNull(jobMeta.getGmtModified());
+        Assert.assertEquals(jobPo.getInternalExtParams(), jobMeta.getInternalExtParams());
+        Assert.assertEquals(jobPo.isRunning(), jobMeta.isRunning());
+        Assert.assertEquals(jobPo.getTaskTrackerIdentity(), jobMeta.getTaskTrackerIdentity());
+        Assert.assertEquals(jobPo.getRetryTimes().intValue(), jobMeta.getRetryTimes());
+        Assert.assertEquals(jobPo.getRepeatedCount(), jobMeta.getRepeatedCount());
+        Assert.assertEquals(jobPo.getLastGenerateTriggerTime(), jobMeta.getLastGenerateTriggerTime());
+    }
+
+    @Test
+    public void convert2JobLogWithJobMetaTest() {
+        cronJobPo.setRepeatedCount(10);
+        JobMeta jobMetaAsParameter = generateJobMeta(cronJobPo);
+
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobMetaAsParameter);
+        // Check the jobMeta's self fields.
+        Assert.assertNotNull(jobLogPo.getGmtCreated());
+        Assert.assertEquals(jobMetaAsParameter.getInternalExtParams(), jobLogPo
+                .getInternalExtParams());
+        Assert.assertEquals(jobMetaAsParameter.getJobId(), jobLogPo.getJobId());
+        Assert.assertEquals(jobMetaAsParameter.getRealTaskId(), jobLogPo.getRealTaskId());
+        Assert.assertEquals(jobMetaAsParameter.getJobType(), jobLogPo.getJobType());
+        Assert.assertEquals(jobMetaAsParameter.getLastGenerateTriggerTime(),
+                jobLogPo.getLastGenerateTriggerTime());
+        Assert.assertEquals(jobMetaAsParameter.getRepeatedCount(), jobLogPo.getRepeatedCount());
+        Assert.assertEquals(jobMetaAsParameter.getRetryTimes(), jobLogPo.getRetryTimes().intValue());
+        Assert.assertEquals(jobMetaAsParameter.getTaskTrackerIdentity(),
+                jobLogPo.getTaskTrackerIdentity());
+
+        // Check the jobMeta's job fields
+        Assert.assertEquals(jobMetaAsParameter.getJob().getJobType(), jobLogPo.getJobType());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getSubmitTime(), jobLogPo.getSubmitTime());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getTaskTrackerNodeGroup(),
+                jobLogPo.getTaskTrackerNodeGroup());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getWorkflowId(), jobLogPo.getWorkflowId());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getWorkflowName(), jobLogPo.getWorkflowName());
+        Assert.assertEquals(StringUtils.join(jobMetaAsParameter.getJob().getWorkflowDepends(),
+                JobInfoConstants.JOB_PO_WORKFLOW_DEPENDS_SEPARATOR), jobLogPo.getWorkflowDepends());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getCronExpression(), jobLogPo.getCronExpression());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getStartTime(), jobLogPo.getStartTime());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getEndTime(), jobLogPo.getEndTime());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getJobName(), jobLogPo.getJobName());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getJobNodeType(), jobLogPo.getJobNodeType());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getMaxRetryTimes(), jobLogPo
+                .getMaxRetryTimes().intValue());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getRetryInternal(),
+                jobLogPo.getRetryInternal());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getTaskId(), jobLogPo.getTaskId());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getPriority(), jobLogPo.getPriority());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getRepeatCount(),
+                jobLogPo.getRepeatCount().intValue());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getRepeatInterval(),
+                jobLogPo.getRepeatInterval());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getSubmitNodeGroup(),
+                jobLogPo.getSubmitNodeGroup());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getTriggerTime(),
+                jobLogPo.getTriggerTime());
+        Assert.assertEquals(jobMetaAsParameter.getJob().getExtParams(),
+                jobLogPo.getExtParams());
+        Assert.assertEquals(jobMetaAsParameter.getJob().isRelyOnPrevCycle(), jobLogPo
+                .getDepPreCycle());
+        Assert.assertEquals(jobMetaAsParameter.getJob().isNeedFeedback(), jobLogPo.isNeedFeedback());
 
     }
 
+    private JobMeta generateJobMeta(JobPo cronJobPo) {
+        return JobDomainConverter.convert2JobMeta(cronJobPo);
+    }
 }
