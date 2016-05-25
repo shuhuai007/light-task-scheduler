@@ -23,4 +23,15 @@ public interface JobLogger {
 
     public JobLogPo search(String workflowStaticId, String submitInstanceId, Long triggerTime,
                           String taskId);
+
+    /**
+     * Get {@link JobLogPo} object according to workflowId, submitTime, jobName, triggerTime.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param submitTime submit time of the lts task
+     * @param jobName job name of this job
+     * @param triggerTime plan time of this job
+     * @return JobLogPo if exists
+     */
+    JobLogPo getJobLogPo(String workflowId, Long submitTime, String jobName, Long triggerTime);
 }

@@ -47,13 +47,21 @@ public class SmartJobLogger implements JobLogger {
 
     @Override
     public JobLogPo search(String workflowId, String taskId) {
-        // TODO (zj: need to implement)
+        // TODO(zj): need to implement)
         return delegate.search(workflowId, taskId);
     }
 
     @Override
-    public JobLogPo search(String workflowStaticId, String submitInstanceId, Long triggerTime, String taskId) {
-        // TODO (zj: need to implement)
+    public JobLogPo search(String workflowStaticId, String submitInstanceId,
+                           Long triggerTime, String taskId) {
+        // TODO(zj): need to implement)
         return delegate.search(workflowStaticId, submitInstanceId, triggerTime, taskId);
+    }
+
+    @Override
+    public JobLogPo getJobLogPo(String workflowId, Long submitTime, String jobName,
+                                Long triggerTime) {
+        // TODO(zj): need to implement)
+        return delegate.getJobLogPo(workflowId, submitTime, jobName, triggerTime);
     }
 }

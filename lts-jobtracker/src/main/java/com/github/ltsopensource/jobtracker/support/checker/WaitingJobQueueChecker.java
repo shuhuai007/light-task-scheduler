@@ -6,7 +6,6 @@ import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
-import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
@@ -180,7 +179,8 @@ public class WaitingJobQueueChecker {
 
         for (String parentName : parentNames) {
             // TODO(zj): workflow_id, submit_time, job_name, trigger_time
-            JobLogPo parentLog = appContext.getJobLogger().search(workflowId, parentName);
+            JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(workflowId, jobPo
+                    .getSubmitTime(), parentName, jobPo.getTriggerTime());
             LOGGER.debug("parentLog:" + parentLog);
 
             if (parentLog == null) {

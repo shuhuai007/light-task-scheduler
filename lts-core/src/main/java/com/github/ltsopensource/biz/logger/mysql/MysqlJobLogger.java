@@ -190,8 +190,33 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
         return null;
     }
 
+    @Override
+    public JobLogPo getJobLogPo(String workflowId, Long submitTime, String jobName,
+                                Long triggerTime) {
+        // TODO(zj): need to refactor)
+        SelectSql sql = new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime.longValue())
+                .and("job_name = ?", jobName)
+                .and("trigger_time = ?", triggerTime.longValue())
+                .and("log_type = 'FINISHED'")
+                .orderBy()
+                .column("log_time", OrderByType.DESC);
+        LOGGER.info("......getJobLogPo(workflowId, submitTime, jobName, triggerTime): " +
+                sql.getSQL());
+        List<JobLogPo> rows = sql.list(RshHolder.JOB_LOGGER_LIST_RSH);
+        if (rows != null && rows.size() > 0) {
+            return rows.get(0);
+        }
+        return null;
+    }
+
     private String buildAndStatement4ExtParams(String key, String value) {
-        // TODO (zj: need to refactor)
+        // TODO(zj): need to implemented)
         String andStatement = "POSITION(" +
                 "'\"" + key + "\":" +
                 "\"" + value + "\"'" +
@@ -200,7 +225,7 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
     }
 
     private String buildAndStatement(String workflowId) {
-        // TODO (zj: need to refactor)
+        // TODO(zj): need to implemented)
         String andStatement = "POSITION(" +
                 "'\"" + "wfInstanceId" + "\":" +
                 "\"" + workflowId + "\"'" +
