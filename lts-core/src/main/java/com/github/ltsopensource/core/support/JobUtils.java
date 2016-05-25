@@ -85,7 +85,7 @@ public class JobUtils {
         if (StringUtils.isEmpty(parents)) {
             return null;
         }
-        String[] parentIds = StringUtils.splitWithTrim("\001", parents);
+        String[] parentIds = StringUtils.splitWithTrim(parents, "\001");
         return Arrays.asList(parentIds);
     }
 }

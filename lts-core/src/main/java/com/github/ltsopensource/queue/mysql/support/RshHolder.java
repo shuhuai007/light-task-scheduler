@@ -164,6 +164,21 @@ public class RshHolder {
                 jobLogPo.setRepeatCount(rs.getInt("repeat_count"));
                 jobLogPo.setRepeatedCount(rs.getInt("repeated_count"));
                 jobLogPo.setRepeatInterval(rs.getLong("repeat_interval"));
+                jobLogPo.setLastGenerateTriggerTime(rs.getLong("last_generate_trigger_time"));
+                jobLogPo.setSubmitTime(rs.getLong("submit_time"));
+                jobLogPo.setWorkflowId(rs.getString("workflow_id"));
+                jobLogPo.setWorkflowName(rs.getString("workflow_name"));
+                jobLogPo.setWorkflowDepends(rs.getString("workflow_depends"));
+                jobLogPo.setStartTime(rs.getLong("start_time"));
+                jobLogPo.setEndTime(rs.getLong("end_time"));
+                jobLogPo.setJobName(rs.getString("job_name"));
+                String jobNodeType = rs.getString("job_node_type");
+                if (StringUtils.isNotEmpty(jobType)) {
+                    jobLogPo.setJobNodeType(JobNodeType.valueOf(jobNodeType));
+                }
+                jobLogPo.setRetryInternal(rs.getInt("retry_internal"));
+                jobLogPo.setExecutingStart(rs.getLong("executing_start"));
+                jobLogPo.setExecutingEnd(rs.getLong("executing_end"));
                 result.add(jobLogPo);
             }
             return result;

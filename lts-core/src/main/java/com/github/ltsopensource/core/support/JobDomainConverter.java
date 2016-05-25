@@ -63,16 +63,6 @@ public class JobDomainConverter {
             }
         }
 
-        // 设置JobType
-//        if (job.isCron()) {
-//            jobPo.setJobType(JobType.CRON);
-//        } else if (job.isRepeatable()) {
-//            jobPo.setJobType(JobType.REPEAT);
-//        } else if (job.getTriggerTime() == null) {
-//            jobPo.setJobType(JobType.REAL_TIME);
-//        } else {
-//            jobPo.setJobType(JobType.TRIGGER_TIME);
-//        }
         jobPo.setJobType(job.getJobType());
 
         jobPo.setExtParams(job.getExtParams());

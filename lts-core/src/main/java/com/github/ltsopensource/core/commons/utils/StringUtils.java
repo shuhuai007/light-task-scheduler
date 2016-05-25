@@ -152,11 +152,11 @@ public final class StringUtils {
         return value.toString();
     }
 
-    public static String[] splitWithTrim(String spilt, String sequence) {
+    public static String[] splitWithTrim(String sequence, String separator) {
         if (isEmpty(sequence)) {
             return null;
         }
-        String[] values = sequence.split(spilt);
+        String[] values = sequence.split(separator);
         if (values.length == 0) {
             return values;
         }

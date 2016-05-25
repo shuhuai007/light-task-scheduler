@@ -224,14 +224,16 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
                 .from()
                 .table(getTableName())
                 .where("workflow_id = ?", workflowId)
-                .and("submit_time = ?", submitTime.longValue())
+                .and("submit_time = ?", submitTime)
                 .and("job_name = ?", jobName)
-                .and("trigger_time = ?", triggerTime.longValue())
+                .and("trigger_time = ?", triggerTime)
                 .and("log_type = 'FINISHED'")
                 .orderBy()
                 .column("log_time", OrderByType.DESC);
         LOGGER.info("......getJobLogPo(workflowId, submitTime, jobName, triggerTime): " +
                 sql.getSQL());
+        LOGGER.info("......getJobLogPo(workflowId, submitTime, jobName, triggerTime): " +
+                workflowId +"," + submitTime + "," + jobName + "," + triggerTime);
         List<JobLogPo> rows = sql.list(RshHolder.JOB_LOGGER_LIST_RSH);
         if (rows != null && rows.size() > 0) {
             return rows.get(0);

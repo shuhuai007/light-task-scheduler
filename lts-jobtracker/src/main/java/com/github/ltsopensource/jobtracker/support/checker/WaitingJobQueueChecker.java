@@ -197,8 +197,8 @@ public class WaitingJobQueueChecker {
     private boolean checkDependencies4SinglePeriodJob(JobPo jobPo) {
         // TODO (zj: this job should wait until it's parents finish the execution.)
         String parents = jobPo.getExtParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY);
-        LOGGER.debug("......enter meetDependencies");
-        LOGGER.debug("job name: " + jobPo.getJobName() + ", parents: " + parents);
+        LOGGER.info("......enter meetDependencies");
+        LOGGER.info("job name: " + jobPo.getJobName() + ", parents: " + parents);
         if (StringUtils.isEmpty(parents)) {
             LOGGER.info("......no parents, exit meetDependencies, true");
             return true;
@@ -210,22 +210,24 @@ public class WaitingJobQueueChecker {
         LOGGER.info("trigger_time: " + jobPo.getTriggerTime());
 
 
-        String[] parentNames = StringUtils.splitWithTrim(parents,
-                JobInfoConstants.JOB_PARENTS_CHILDREN_SEPARATOR);
-        LOGGER.debug("parents size:" + parentNames.length);
+        String[] parentNames = StringUtils.splitWithTrim(parents, JobInfoConstants
+                        .JOB_PARENTS_CHILDREN_SEPARATOR);
+        LOGGER.info("parents size:" + parentNames.length);
+        LOGGER.info("parents:" + parents);
 
         for (String parentName : parentNames) {
             // TODO(zj): workflow_id, submit_time, job_name, trigger_time
+            LOGGER.info("...........................parentName:" + parentName);
             JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(workflowId, jobPo
                     .getSubmitTime(), parentName, jobPo.getTriggerTime());
-            LOGGER.debug("parentLog:" + parentLog);
+            LOGGER.info("parentLog:" + parentLog);
 
             if (parentLog == null) {
-                LOGGER.debug("......exit meetDependencies, false");
+                LOGGER.info("......exit meetDependencies, false");
                 return false;
             }
         }
-        LOGGER.debug("......exit meetDependencies, true");
+        LOGGER.info("......exit meetDependencies, true");
         return true;
     }
 
