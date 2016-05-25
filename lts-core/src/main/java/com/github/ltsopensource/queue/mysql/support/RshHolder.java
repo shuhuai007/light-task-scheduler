@@ -87,7 +87,7 @@ public class RshHolder {
         jobPo.setWorkflowName(rs.getString("workflow_name"));
         jobPo.setWorkflowDepends(rs.getString("workflow_depends"));
         jobPo.setStartTime(rs.getLong("start_time"));
-        jobPo.setStartTime(rs.getLong("end_time"));
+        jobPo.setEndTime(rs.getLong("end_time"));
         jobPo.setJobName(rs.getString("job_name"));
         String jobNodeType = rs.getString("job_node_type");
         if (StringUtils.isNotEmpty(jobNodeType)) {
