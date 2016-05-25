@@ -171,7 +171,10 @@ public class WaitingJobQueueChecker {
         }
 
         String workflowId = jobPo.getWorkflowId();
-        LOGGER.debug("job workflowId: " + workflowId);
+        LOGGER.info("job workflowId: " + workflowId);
+        LOGGER.info("submit_time: " + jobPo.getSubmitTime());
+        LOGGER.info("trigger_time: " + jobPo.getTriggerTime());
+
 
         String[] parentNames = StringUtils.splitWithTrim(parents,
                 JobInfoConstants.JOB_PARENTS_CHILDREN_SEPARATOR);
