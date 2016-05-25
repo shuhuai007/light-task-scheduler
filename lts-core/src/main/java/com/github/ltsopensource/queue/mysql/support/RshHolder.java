@@ -4,6 +4,7 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.cluster.NodeType;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.JobRunResult;
 import com.github.ltsopensource.core.domain.JobType;
@@ -63,8 +64,11 @@ public class RshHolder {
         jobPo.setGmtModified(rs.getLong("gmt_modified"));
         jobPo.setSubmitNodeGroup(rs.getString("submit_node_group"));
         jobPo.setTaskTrackerNodeGroup(rs.getString("task_tracker_node_group"));
-        jobPo.setExtParams(JSON.parse(rs.getString("ext_params"), new TypeReference<HashMap<String, String>>() {
-        }));
+        jobPo.setExtParams(JSON.parse(rs.getString("ext_params"),
+                new TypeReference<HashMap<String, String>>() {}));
+        jobPo.setInternalExtParams(JSON.parse(rs.getString("internal_ext_params"),
+                new TypeReference<HashMap<String, String>>() {}));
+
         String jobType = rs.getString("job_type");
         if (StringUtils.isNotEmpty(jobType)) {
             jobPo.setJobType(JobType.valueOf(jobType));
@@ -77,6 +81,19 @@ public class RshHolder {
         jobPo.setRepeatCount(rs.getInt("repeat_count"));
         jobPo.setRepeatedCount(rs.getInt("repeated_count"));
         jobPo.setRepeatInterval(rs.getLong("repeat_interval"));
+
+        jobPo.setSubmitTime(rs.getLong("submit_time"));
+        jobPo.setWorkflowId(rs.getString("workflow_id"));
+        jobPo.setWorkflowName(rs.getString("workflow_name"));
+        jobPo.setWorkflowDepends(rs.getString("workflow_depends"));
+        jobPo.setStartTime(rs.getLong("start_time"));
+        jobPo.setStartTime(rs.getLong("end_time"));
+        jobPo.setJobName(rs.getString("job_name"));
+        String jobNodeType = rs.getString("job_node_type");
+        if (StringUtils.isNotEmpty(jobNodeType)) {
+            jobPo.setJobNodeType(JobNodeType.valueOf(jobNodeType));
+        }
+        jobPo.setRetryInternal(rs.getInt("retry_internal"));
         return jobPo;
     }
 
