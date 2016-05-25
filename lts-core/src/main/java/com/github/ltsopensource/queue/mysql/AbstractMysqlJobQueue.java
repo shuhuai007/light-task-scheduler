@@ -89,7 +89,7 @@ public abstract class AbstractMysqlJobQueue extends JdbcAbstractAccess implement
                         jobPo.getStartTime(),
                         jobPo.getEndTime(),
                         jobPo.getJobName(),
-                        jobPo.getJobNodeType(),
+                        jobPo.getJobNodeType().name(),
                         jobPo.getRetryInternal())
                 .doInsert() == 1;
     }
