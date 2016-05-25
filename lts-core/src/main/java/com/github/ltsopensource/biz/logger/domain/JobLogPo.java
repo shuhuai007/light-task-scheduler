@@ -82,6 +82,8 @@ public class JobLogPo {
     private Long endTime;
     private String jobName;
     private JobNodeType jobNodeType;
+    private Long executingStart;
+    private Long executingEnd;
 
     public JobType getJobType() {
         return jobType;
@@ -361,5 +363,21 @@ public class JobLogPo {
 
     public void setJobNodeType(JobNodeType jobNodeType) {
         this.jobNodeType = jobNodeType;
+    }
+
+    public Long getExecutingStart() {
+        return executingStart;
+    }
+
+    public void setExecutingStart(Long executingStart) {
+        this.executingStart = executingStart;
+    }
+
+    public Long getExecutingEnd() {
+        return executingEnd;
+    }
+
+    public void setExecutingEnd(Long executingEnd) {
+        this.executingEnd = executingEnd;
     }
 }

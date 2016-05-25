@@ -2,14 +2,12 @@ package com.github.ltsopensource.queue.mysql;
 
 import com.github.ltsopensource.admin.request.JobQueueReq;
 import com.github.ltsopensource.core.cluster.Config;
-import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.support.JobQueueUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.queue.WaitingJobQueue;
 import com.github.ltsopensource.queue.domain.JobPo;
 import com.github.ltsopensource.queue.mysql.support.RshHolder;
 import com.github.ltsopensource.store.jdbc.builder.DeleteSql;
-import com.github.ltsopensource.store.jdbc.builder.DropTableSql;
 import com.github.ltsopensource.store.jdbc.builder.SelectSql;
 import com.github.ltsopensource.store.jdbc.builder.UpdateSql;
 import com.github.ltsopensource.store.jdbc.exception.TableNotExistException;
@@ -116,5 +114,18 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
                 .from()
                 .table(getTableName())
                 .list(RshHolder.JOB_PO_LIST_RSH);
+    }
+
+    @Override
+    public boolean remove(String workflowId, Long submitTime, String jobName, Long triggerTime) {
+        return new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime.longValue())
+                .and("job_name = ?", jobName)
+                .and("trigger_time = ?", triggerTime.longValue())
+                .doDelete() == 1;
     }
 }

@@ -51,4 +51,15 @@ public interface WaitingJobQueue extends JobQueue {
      * Gets all the JobPo.
      */
     List<JobPo> getAllJobs();
+
+    /**
+     * Remove the {@link JobPo} object from waiting queue.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param submitTime submit time of the lts task
+     * @param jobName job name of this job
+     * @param triggerTime plan time of this job
+     * @return true if removed successfully
+     */
+    boolean remove(String workflowId, Long submitTime, String jobName, Long triggerTime);
 }

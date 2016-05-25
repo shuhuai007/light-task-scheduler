@@ -5,15 +5,19 @@ import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.constant.Level;
+import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.JobUtils;
+import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
+import com.github.ltsopensource.queue.WaitingJobQueue;
 import com.github.ltsopensource.queue.domain.JobPo;
 
 import java.util.Date;
@@ -75,24 +79,67 @@ public class WaitingJobQueueChecker {
 
     private void checkAndMove() {
         // get all the jobs in the waiting job queue
-        List<JobPo> allJobPoList = appContext.getWaitingJobQueue().getAllJobs();
+        List<JobPo> allJobPoList = getWaitingJobQueue().getAllJobs();
         LOGGER.info("waiting job queue size: " + allJobPoList.size());
         // check if the job can be moved into executable job queue, if so, do it, or do nothing.
         for (JobPo jobPo:allJobPoList) {
             if(meetDependencies(jobPo)) {
                 // TODO (zj: maybe should consider concurrency issue about two queues.)
-                appContext.getWaitingJobQueue().remove(jobPo.getTaskTrackerNodeGroup(), jobPo
-                        .getJobId());
-                if (isEndNodeJob(jobPo)) {
-                    // end node job is a dummy job, no need to be added into executable queue
-                    handleEndJob(jobPo);
-
-                } else {
-                    appContext.getExecutableJobQueue().add(jobPo);
+                getWaitingJobQueue().remove(jobPo.getWorkflowId(), jobPo.getSubmitTime(),
+                        jobPo.getJobName(), jobPo.getTriggerTime());
+                JobNodeType jobNodeType = jobPo.getJobNodeType();
+                switch (jobNodeType) {
+                    case START_JOB:
+                    case END_JOB:
+                        handleVirtualJob(jobPo);
+                        break;
+                    case FORK_JOB:
+                        break;
+                    case JOIN_JOB:
+                        break;
+                    case DECISION_JOB:
+                        break;
+                    case SHELL_JOB:
+                    case URL_JOB:
+                        appContext.getExecutableJobQueue().add(jobPo);
+                        break;
                 }
             }
         }
 
+    }
+
+    private void handleVirtualJob(JobPo jobPo) {
+        if(isSinglePeriodJob(jobPo)) {
+            // job finish, write log
+            writeLog(jobPo);
+        } else if (jobPo.getJobType().equals(JobType.CRON)) {
+            // TODO(zj): cron job
+        } else {
+            // repeat job
+        }
+    }
+
+    private void writeLog(JobPo jobPo) {
+        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        jobLogPo.setMsg("Job Finished");
+        jobLogPo.setLogType(LogType.FINISHED);
+        jobLogPo.setSuccess(true);
+        jobLogPo.setTaskTrackerIdentity(jobPo.getTaskTrackerIdentity());
+        jobLogPo.setLevel(Level.INFO);
+        jobLogPo.setLogTime(new Date().getTime());
+        jobLogPo.setExecutingStart(SystemClock.now());
+        jobLogPo.setExecutingEnd(SystemClock.now());
+        appContext.getJobLogger().log(jobLogPo);
+    }
+
+    private boolean isSinglePeriodJob(JobPo jobPo) {
+        return jobPo.getJobType().equals(JobType.REAL_TIME) ||
+                jobPo.getJobType().equals(JobType.TRIGGER_TIME);
+    }
+
+    private WaitingJobQueue getWaitingJobQueue() {
+        return appContext.getWaitingJobQueue();
     }
 
     /**
@@ -111,19 +158,6 @@ public class WaitingJobQueueChecker {
         jobLogPo.setLevel(Level.INFO);
         jobLogPo.setLogTime(new Date().getTime());
         appContext.getJobLogger().log(jobLogPo);
-    }
-
-    /**
-     * Checks if the job is end node job.
-     * @param jobPo indicate a job info
-     * @return true if the job is end node job
-     */
-    private boolean isEndNodeJob(JobPo jobPo) {
-        String isEndString = jobPo.getExtParams().get("isEnd");
-        if (StringUtils.isNotEmpty(isEndString) && isEndString.equals("true")) {
-            return true;
-        }
-        return false;
     }
 
     private boolean meetDependencies(JobPo jobPo) {

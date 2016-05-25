@@ -78,6 +78,7 @@ public class LTSClientTest {
                     "\"taskName\":\"test_task\"" + "," +
                     "\"depends\":[\"100\", \"200\"]" + "," +
                     "\"coordinator\":{" +
+                        "\"start\""     + ":" + "\"2016-01-07T17:15:44.000Z\"" + "," +
                         "\"controls\""  + ":" + "{" +
                                 "\"timeout\":\"-1\"," +
                                 "\"concurrency\":1," +

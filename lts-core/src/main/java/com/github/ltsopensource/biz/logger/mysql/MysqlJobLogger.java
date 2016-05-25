@@ -81,7 +81,19 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
                         "rely_on_prev_cycle",
                         "repeat_count",
                         "repeated_count",
-                        "repeat_interval"
+                        "repeat_interval",
+                        "last_generate_trigger_time",
+                        "submit_time",
+                        "workflow_id",
+                        "workflow_name",
+                        "workflow_depends",
+                        "start_time",
+                        "end_time",
+                        "job_name",
+                        "job_node_type",
+                        "retry_internal",
+                        "executing_start",
+                        "executing_end"
                 );
     }
 
@@ -110,7 +122,19 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
                 jobLogPo.getDepPreCycle(),
                 jobLogPo.getRepeatCount(),
                 jobLogPo.getRepeatedCount(),
-                jobLogPo.getRepeatInterval());
+                jobLogPo.getRepeatInterval(),
+                jobLogPo.getLastGenerateTriggerTime(),
+                jobLogPo.getSubmitTime(),
+                jobLogPo.getWorkflowId(),
+                jobLogPo.getWorkflowName(),
+                jobLogPo.getWorkflowDepends(),
+                jobLogPo.getStartTime(),
+                jobLogPo.getEndTime(),
+                jobLogPo.getJobName(),
+                jobLogPo.getJobNodeType().name(),
+                jobLogPo.getRetryInternal(),
+                jobLogPo.getExecutingStart(),
+                jobLogPo.getExecutingEnd());
     }
 
     @Override
