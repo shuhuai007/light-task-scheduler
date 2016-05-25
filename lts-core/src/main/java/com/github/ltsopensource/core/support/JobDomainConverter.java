@@ -173,6 +173,17 @@ public class JobDomainConverter {
         jobLogPo.setRepeatCount(jobPo.getRepeatCount());
         jobLogPo.setRepeatedCount(jobPo.getRepeatedCount());
         jobLogPo.setRepeatInterval(jobPo.getRepeatInterval());
+
+        jobLogPo.setLastGenerateTriggerTime(jobPo.getLastGenerateTriggerTime());
+        jobLogPo.setSubmitTime(jobPo.getSubmitTime());
+        jobLogPo.setWorkflowId(jobPo.getWorkflowId());
+        jobLogPo.setWorkflowName(jobPo.getWorkflowName());
+        jobLogPo.setWorkflowDepends(jobPo.getWorkflowDepends());
+        jobLogPo.setStartTime(jobPo.getStartTime());
+        jobLogPo.setEndTime(jobPo.getEndTime());
+        jobLogPo.setJobName(jobPo.getJobName());
+        jobLogPo.setJobNodeType(jobPo.getJobNodeType());
+        jobLogPo.setRetryInternal(jobPo.getRetryInternal());
         return jobLogPo;
     }
 

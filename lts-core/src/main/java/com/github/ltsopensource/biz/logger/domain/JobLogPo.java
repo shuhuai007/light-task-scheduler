@@ -1,5 +1,6 @@
 package com.github.ltsopensource.biz.logger.domain;
 
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.JobType;
 
@@ -71,6 +72,16 @@ public class JobLogPo {
     private Long repeatInterval;
 
     private Boolean depPreCycle;
+    private Long lastGenerateTriggerTime;
+    private Long submitTime;
+    private int retryInternal;
+    private String workflowId;
+    private String workflowName;
+    private String workflowDepends;
+    private Long startTime;
+    private Long endTime;
+    private String jobName;
+    private JobNodeType jobNodeType;
 
     public JobType getJobType() {
         return jobType;
@@ -270,5 +281,85 @@ public class JobLogPo {
 
     public void setDepPreCycle(Boolean depPreCycle) {
         this.depPreCycle = depPreCycle;
+    }
+
+    public Long getLastGenerateTriggerTime() {
+        return lastGenerateTriggerTime;
+    }
+
+    public void setLastGenerateTriggerTime(Long lastGenerateTriggerTime) {
+        this.lastGenerateTriggerTime = lastGenerateTriggerTime;
+    }
+
+    public Long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Long submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public int getRetryInternal() {
+        return retryInternal;
+    }
+
+    public void setRetryInternal(int retryInternal) {
+        this.retryInternal = retryInternal;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
+    }
+
+    public String getWorkflowDepends() {
+        return workflowDepends;
+    }
+
+    public void setWorkflowDepends(String workflowDepends) {
+        this.workflowDepends = workflowDepends;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public JobNodeType getJobNodeType() {
+        return jobNodeType;
+    }
+
+    public void setJobNodeType(JobNodeType jobNodeType) {
+        this.jobNodeType = jobNodeType;
     }
 }

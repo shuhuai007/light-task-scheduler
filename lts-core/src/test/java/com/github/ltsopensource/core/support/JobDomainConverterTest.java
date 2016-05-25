@@ -1,5 +1,6 @@
 package com.github.ltsopensource.core.support;
 
+import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.JobGeneratorUtils;
@@ -102,4 +103,42 @@ public class JobDomainConverterTest {
         Assert.assertTrue(StringUtils.isEmpty(jobPo.getSubmitNodeGroup()));
         Assert.assertEquals(expectedJob.getSubmitNodeGroup(), jobPo.getSubmitNodeGroup());
     }
+
+    @Test
+    public void convertJobLog4JobPoTest() {
+        JobPo jobPo = JobDomainConverter.convert(cronJob);
+        jobPo.setLastGenerateTriggerTime(SystemClock.now());
+        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        Assert.assertNotNull(jobLogPo.getGmtCreated());
+        Assert.assertEquals(jobPo.getJobType(), jobLogPo.getJobType());
+        Assert.assertEquals(jobPo.getTaskTrackerIdentity(), jobLogPo.getTaskTrackerIdentity());
+        Assert.assertEquals(jobPo.getJobId(), jobLogPo.getJobId());
+        Assert.assertEquals(jobPo.getTaskId(), jobLogPo.getTaskId());
+        Assert.assertEquals(jobPo.getRealTaskId(), jobLogPo.getRealTaskId());
+        Assert.assertEquals(jobPo.getPriority(), jobLogPo.getPriority());
+        Assert.assertEquals(jobPo.getSubmitNodeGroup(), jobLogPo.getSubmitNodeGroup());
+        Assert.assertEquals(jobPo.getTaskTrackerNodeGroup(), jobLogPo.getTaskTrackerNodeGroup());
+        Assert.assertEquals(jobPo.getExtParams(), jobLogPo.getExtParams());
+        Assert.assertEquals(jobPo.getInternalExtParams(), jobLogPo.getInternalExtParams());
+        Assert.assertEquals(jobPo.isNeedFeedback(), jobLogPo.isNeedFeedback());
+        Assert.assertEquals(jobPo.getCronExpression(), jobLogPo.getCronExpression());
+        Assert.assertEquals(jobPo.getTriggerTime(), jobLogPo.getTriggerTime());
+        Assert.assertEquals(jobPo.getRetryTimes(), jobLogPo.getRetryTimes());
+        Assert.assertEquals(jobPo.getMaxRetryTimes(), jobLogPo.getMaxRetryTimes());
+        Assert.assertEquals(jobPo.getRepeatCount(), jobLogPo.getRepeatCount());
+        Assert.assertEquals(jobPo.getRepeatedCount(), jobLogPo.getRepeatedCount());
+        Assert.assertEquals(jobPo.getRepeatInterval(), jobLogPo.getRepeatInterval());
+        Assert.assertEquals(jobPo.getRelyOnPrevCycle(), jobLogPo.getDepPreCycle());
+        Assert.assertEquals(jobPo.getLastGenerateTriggerTime(), jobLogPo.getLastGenerateTriggerTime());
+        Assert.assertEquals(jobPo.getSubmitTime(), jobLogPo.getSubmitTime());
+        Assert.assertEquals(jobPo.getWorkflowId(), jobLogPo.getWorkflowId());
+        Assert.assertEquals(jobPo.getWorkflowName(), jobLogPo.getWorkflowName());
+        Assert.assertEquals(jobPo.getWorkflowDepends(), jobLogPo.getWorkflowDepends());
+        Assert.assertEquals(jobPo.getStartTime(), jobLogPo.getStartTime());
+        Assert.assertEquals(jobPo.getEndTime(), jobLogPo.getEndTime());
+        Assert.assertEquals(jobPo.getJobName(), jobLogPo.getJobName());
+        Assert.assertEquals(jobPo.getJobNodeType(), jobLogPo.getJobNodeType());
+        Assert.assertEquals(jobPo.getRetryInternal(), jobLogPo.getRetryInternal());
+    }
+
 }
