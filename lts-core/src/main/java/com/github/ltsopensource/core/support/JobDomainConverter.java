@@ -29,7 +29,7 @@ public class JobDomainConverter {
      * @param job job info
      * @return JobPo object
      */
-    public static JobPo convert(Job job) {
+    public static JobPo convertJob2JobPo(Job job) {
         JobPo jobPo = new JobPo();
         jobPo.setSubmitTime(job.getSubmitTime());
         jobPo.setTaskTrackerNodeGroup(job.getTaskTrackerNodeGroup());
@@ -98,7 +98,7 @@ public class JobDomainConverter {
      * @param jobPo JobPo object
      * @return JobMeta object
      */
-    public static JobMeta convert(JobPo jobPo) {
+    public static JobMeta convert2JobMeta(JobPo jobPo) {
         Job job = new Job();
         job.setPriority(jobPo.getPriority());
         job.setExtParams(jobPo.getExtParams());

@@ -28,7 +28,7 @@ public class JobDomainConverterTest {
 
     @Test
     public void convertRealTimeJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convert(realTimeJob);
+        JobPo jobPo = JobDomainConverter.convertJob2JobPo(realTimeJob);
         testCommonFields4JobPo(jobPo, realTimeJob);
 
         // test cron expression for real time job.
@@ -46,7 +46,7 @@ public class JobDomainConverterTest {
 
     @Test
     public void convertTriggerTimeJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convert(triggerTimeJob);
+        JobPo jobPo = JobDomainConverter.convertJob2JobPo(triggerTimeJob);
         testCommonFields4JobPo(jobPo, triggerTimeJob);
 
         // test cron expression for trigger time job.
@@ -64,7 +64,7 @@ public class JobDomainConverterTest {
 
     @Test
     public void convertCronJob2JobPo() {
-        JobPo jobPo = JobDomainConverter.convert(cronJob);
+        JobPo jobPo = JobDomainConverter.convertJob2JobPo(cronJob);
         testCommonFields4JobPo(jobPo, cronJob);
 
         // test cron expression for cron job.
@@ -105,8 +105,8 @@ public class JobDomainConverterTest {
     }
 
     @Test
-    public void convertJobLog4JobPoTest() {
-        JobPo jobPo = JobDomainConverter.convert(cronJob);
+    public void convert2JobLogPoTest() {
+        JobPo jobPo = JobDomainConverter.convertJob2JobPo(cronJob);
         jobPo.setLastGenerateTriggerTime(SystemClock.now());
         JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         Assert.assertNotNull(jobLogPo.getGmtCreated());
@@ -139,6 +139,11 @@ public class JobDomainConverterTest {
         Assert.assertEquals(jobPo.getJobName(), jobLogPo.getJobName());
         Assert.assertEquals(jobPo.getJobNodeType(), jobLogPo.getJobNodeType());
         Assert.assertEquals(jobPo.getRetryInternal(), jobLogPo.getRetryInternal());
+    }
+
+    @Test
+    public void convert2JobMetaTest() {
+
     }
 
 }

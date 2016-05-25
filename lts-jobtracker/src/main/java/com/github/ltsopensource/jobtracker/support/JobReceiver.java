@@ -72,7 +72,7 @@ public class JobReceiver {
         boolean success = false;
         BizLogCode code = null;
         try {
-            jobPo = JobDomainConverter.convert(job);
+            jobPo = JobDomainConverter.convertJob2JobPo(job);
             if (jobPo == null) {
                 LOGGER.warn("Job can not be null。{}", job);
                 return null;

@@ -47,7 +47,7 @@ public class PushNewJobBiz implements JobCompletedBiz {
             public JobSender.SendResult invoke(JobPo jobPo) {
 
                 JobPushRequest jobPushRequest = appContext.getCommandBodyWrapper().wrapper(new JobPushRequest());
-                jobPushRequest.setJobMeta(JobDomainConverter.convert(jobPo));
+                jobPushRequest.setJobMeta(JobDomainConverter.convert2JobMeta(jobPo));
 
                 return new JobSender.SendResult(true, jobPushRequest);
             }
