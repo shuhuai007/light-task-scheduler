@@ -2,6 +2,7 @@ package com.github.ltsopensource.tasktracker.processor;
 
 import com.github.ltsopensource.core.commons.utils.Callable;
 import com.github.ltsopensource.core.constant.Constants;
+import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.JobMeta;
 import com.github.ltsopensource.core.domain.JobRunResult;
 import com.github.ltsopensource.core.exception.JobTrackerNotFoundException;
@@ -46,19 +47,19 @@ public class JobPushProcessor extends AbstractProcessor {
     protected JobPushProcessor(TaskTrackerAppContext appContext) {
         super(appContext);
         this.remotingClient = appContext.getRemotingClient();
-        retryScheduler = new RetryScheduler<JobRunResult>(JobPushProcessor.class.getSimpleName(), appContext,
-                FailStorePathBuilder.getJobFeedbackPath(appContext), 3) {
-            @Override
-            protected boolean isRemotingEnable() {
-                return remotingClient.isServerEnable();
-            }
-
-            @Override
-            protected boolean retry(List<JobRunResult> results) {
-                return retrySendJobResults(results);
-            }
-        };
-        retryScheduler.start();
+//        retryScheduler = new RetryScheduler<JobRunResult>(JobPushProcessor.class.getSimpleName(), appContext,
+//                FailStorePathBuilder.getJobFeedbackPath(appContext), 3) {
+//            @Override
+//            protected boolean isRemotingEnable() {
+//                return remotingClient.isServerEnable();
+//            }
+//
+//            @Override
+//            protected boolean retry(List<JobRunResult> results) {
+//                return retrySendJobResults(results);
+//            }
+//        };
+//        retryScheduler.start();
 
         // 线程安全的
         jobRunnerCallback = new JobRunnerCallback();
@@ -66,7 +67,7 @@ public class JobPushProcessor extends AbstractProcessor {
         NodeShutdownHook.registerHook(appContext, this.getClass().getName(), new Callable() {
             @Override
             public void call() throws Exception {
-                retryScheduler.stop();
+//                retryScheduler.stop();
             }
         });
     }
@@ -99,6 +100,9 @@ public class JobPushProcessor extends AbstractProcessor {
     private class JobRunnerCallback implements RunnerCallback {
         @Override
         public JobMeta runComplete(Response response) {
+            Job testjob = response.getJobMeta().getJob();
+            LOGGER.debug("--------------runComplete(), jobMeta's jobname:" +
+                    testjob.getJobName() + ", job node type:" + testjob.getJobNodeType());
             // 发送消息给 JobTracker
             final JobRunResult jobRunResult = new JobRunResult();
             jobRunResult.setTime(SystemClock.now());
@@ -173,6 +177,12 @@ public class JobPushProcessor extends AbstractProcessor {
      * 发送JobResults
      */
     private boolean retrySendJobResults(List<JobRunResult> results) {
+        for (JobRunResult runResult : results) {
+            Job job = runResult.getJobMeta().getJob();
+            LOGGER.debug("-----------retrySendJobResults, job name:" + job
+                    .getJobName() + ", job node type:" + job.getJobNodeType());
+        }
+
         // 发送消息给 JobTracker
         JobCompletedRequest requestBody = appContext.getCommandBodyWrapper().wrapper(new JobCompletedRequest());
         requestBody.setJobRunResults(results);

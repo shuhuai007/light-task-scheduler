@@ -62,6 +62,12 @@ public class JobStatBiz implements JobCompletedBiz {
             jobLogPo.setTaskTrackerIdentity(request.getIdentity());
             jobLogPo.setLevel(Level.INFO);
             jobLogPo.setLogTime(result.getTime());
+            LOGGER.info("..........................jobLogPo job node type:" + jobLogPo
+                    .getJobNodeType());
+            LOGGER.info("..........................jobLogPo job type:" + jobLogPo
+                    .getJobType());
+            LOGGER.info("..........................jobLogPo jobId:" + jobLogPo.getJobId() + "," +
+                    "name:" + jobLogPo.getJobName());
             appContext.getJobLogger().log(jobLogPo);
 
             // 监控数据统计
