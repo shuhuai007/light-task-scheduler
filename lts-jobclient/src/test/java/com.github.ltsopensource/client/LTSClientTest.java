@@ -23,6 +23,7 @@ public class LTSClientTest {
     private static final String JOB_TRACKER_URL = "127.0.0.1:8080";
     private LTSClient ltsClient;
 
+
     @Rule
     ExpectedException thrown = ExpectedException.none();
 
@@ -71,16 +72,12 @@ public class LTSClientTest {
 
     @Test
     public void submitWithSuccessTest() throws Exception {
-        String JDL = "{\"taskName\": sdf }";
-        JDL =
+        String realTimeJDL =
             "{" +
                     "\"engine\":\"lts\"" + "," +
                     "\"taskName\":\"test_task\"" + "," +
                     "\"depends\":[\"100\", \"200\"]" + "," +
                     "\"coordinator\":{" +
-                        "\"frequency\"" + ":" + "\"10 * * * * ?\"" + "," +
-                        "\"start\""     + ":" + "\"2016-01-07T17:15:44.000Z\"" + "," +
-                        "\"end\""       + ":" + "\"2016-01-08T17:15:44.000Z\"" + "," +
                         "\"controls\""  + ":" + "{" +
                                 "\"timeout\":\"-1\"," +
                                 "\"concurrency\":1," +
@@ -139,6 +136,6 @@ public class LTSClientTest {
         String taskId = "1";
         String taskTrackGroupName = "test";
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
-        ltsClient.submit(JDL, taskId, taskTrackGroupName);
+        ltsClient.submit(realTimeJDL, taskId, taskTrackGroupName);
     }
 }

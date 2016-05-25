@@ -133,10 +133,14 @@ public class JDLParser {
         job.setWorkflowName(jdlObject.getTaskName());
         job.setWorkflowDepends(jdlObject.getDepends());
         job.setCronExpression(jdlObject.getCoordinator().getFrequency());
-        job.setStartTime(UTCDateUtils.getCalendar(jdlObject.getCoordinator().getStart())
-                .getTimeInMillis());
-        job.setEndTime(UTCDateUtils.getCalendar(jdlObject.getCoordinator().getEnd())
-                .getTimeInMillis());
+        if (jdlObject.getCoordinator().getStart() != null) {
+            job.setStartTime(UTCDateUtils.getCalendar(jdlObject.getCoordinator().getStart())
+                    .getTimeInMillis());
+        }
+        if (jdlObject.getCoordinator().getEnd() != null) {
+            job.setEndTime(UTCDateUtils.getCalendar(jdlObject.getCoordinator().getEnd())
+                    .getTimeInMillis());
+        }
         job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_TIMEOUT_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getTimeout()));
         job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_CONCURRENCY_KEY,
