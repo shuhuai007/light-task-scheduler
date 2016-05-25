@@ -55,7 +55,7 @@ public class JobStatBiz implements JobCompletedBiz {
         for (JobRunResult result : results) {
 
             // 记录日志
-            JobLogPo jobLogPo = JobDomainConverter.convertJobLog(result.getJobMeta());
+            JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(result.getJobMeta());
             jobLogPo.setMsg(result.getMsg());
             jobLogPo.setLogType(logType);
             jobLogPo.setSuccess(Action.EXECUTE_SUCCESS.equals(result.getAction()));

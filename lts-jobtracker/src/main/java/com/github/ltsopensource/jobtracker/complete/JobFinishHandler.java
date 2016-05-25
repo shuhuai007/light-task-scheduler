@@ -129,7 +129,7 @@ public class JobFinishHandler {
     }
 
     private void repeatJobRemoveLog(JobPo jobPo) {
-        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setSuccess(true);
         jobLogPo.setLogType(LogType.DEL);
         jobLogPo.setLogTime(SystemClock.now());

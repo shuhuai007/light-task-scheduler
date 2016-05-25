@@ -13,7 +13,7 @@ import com.github.ltsopensource.queue.domain.JobPo;
 public class JobLogUtils {
 
     public static void log(LogType logType, JobPo jobPo, JobLogger jobLogger) {
-        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setSuccess(true);
         jobLogPo.setLogType(logType);
         jobLogPo.setLogTime(SystemClock.now());

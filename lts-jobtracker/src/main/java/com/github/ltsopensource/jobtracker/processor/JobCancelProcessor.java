@@ -56,7 +56,7 @@ public class JobCancelProcessor extends AbstractRemotingProcessor {
                 appContext.getRepeatJobQueue().remove(jobPo.getJobId());
             }
             // 记录日志
-            JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+            JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
             jobLogPo.setSuccess(true);
             jobLogPo.setLogType(LogType.DEL);
             jobLogPo.setLogTime(SystemClock.now());

@@ -51,7 +51,7 @@ public class JobSender {
 
         if (sendResult.isSuccess()) {
             // 记录日志
-            JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+            JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
             jobLogPo.setSuccess(true);
             jobLogPo.setLogType(LogType.SENT);
             jobLogPo.setLogTime(SystemClock.now());

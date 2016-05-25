@@ -16,13 +16,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Robert HG (254963746@qq.com) on 8/18/14.
+ * Job domain object converter.
  */
 public class JobDomainConverter {
 
     private JobDomainConverter() {
     }
 
+    /**
+     * Convert {@link Job} to {@link JobPo}.
+     *
+     * @param job job info
+     * @return JobPo object
+     */
     public static JobPo convert(Job job) {
         JobPo jobPo = new JobPo();
         jobPo.setSubmitTime(job.getSubmitTime());
@@ -87,7 +93,10 @@ public class JobDomainConverter {
     }
 
     /**
-     * JobPo 转 Job
+     * Convert {@link JobPo} to {@link JobMeta}.
+     *
+     * @param jobPo JobPo object
+     * @return JobMeta object
      */
     public static JobMeta convert(JobPo jobPo) {
         Job job = new Job();
@@ -114,7 +123,7 @@ public class JobDomainConverter {
         return jobMeta;
     }
 
-    public static JobLogPo convertJobLog(JobMeta jobMeta) {
+    public static JobLogPo convert2JobLog(JobMeta jobMeta) {
         JobLogPo jobLogPo = new JobLogPo();
         jobLogPo.setGmtCreated(SystemClock.now());
         Job job = jobMeta.getJob();
@@ -140,7 +149,7 @@ public class JobDomainConverter {
         return jobLogPo;
     }
 
-    public static JobLogPo convertJobLog(JobPo jobPo) {
+    public static JobLogPo convert2JobLog(JobPo jobPo) {
         JobLogPo jobLogPo = new JobLogPo();
         jobLogPo.setGmtCreated(SystemClock.now());
         jobLogPo.setPriority(jobPo.getPriority());
@@ -184,5 +193,4 @@ public class JobDomainConverter {
         jobFeedbackPo.setGmtCreated(SystemClock.now());
         return jobFeedbackPo;
     }
-
 }

@@ -121,7 +121,7 @@ public class WaitingJobQueueChecker {
     }
 
     private void writeLog(JobPo jobPo) {
-        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setMsg("Job Finished");
         jobLogPo.setLogType(LogType.FINISHED);
         jobLogPo.setSuccess(true);
@@ -150,7 +150,7 @@ public class WaitingJobQueueChecker {
         // 1. generate next end job for next trigger time
         new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
         // 2. record this end job info
-        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setMsg("End Job Finished");
         jobLogPo.setLogType(LogType.FINISHED);
         jobLogPo.setSuccess(true);

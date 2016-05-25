@@ -108,7 +108,7 @@ public class JobDomainConverterTest {
     public void convertJobLog4JobPoTest() {
         JobPo jobPo = JobDomainConverter.convert(cronJob);
         jobPo.setLastGenerateTriggerTime(SystemClock.now());
-        JobLogPo jobLogPo = JobDomainConverter.convertJobLog(jobPo);
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         Assert.assertNotNull(jobLogPo.getGmtCreated());
         Assert.assertEquals(jobPo.getJobType(), jobLogPo.getJobType());
         Assert.assertEquals(jobPo.getTaskTrackerIdentity(), jobLogPo.getTaskTrackerIdentity());
