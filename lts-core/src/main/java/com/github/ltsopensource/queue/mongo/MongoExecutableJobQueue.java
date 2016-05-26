@@ -139,4 +139,10 @@ public class MongoExecutableJobQueue extends AbstractMongoJobQueue implements Ex
                 field("taskTrackerNodeGroup").equal(taskTrackerNodeGroup);
         return query.get();
     }
+
+    @Override
+    public boolean remove(String taskTrackerNodeGroup, String jobId, Long triggerTime) {
+        // TODO(zj): to be implemented
+        return false;
+    }
 }

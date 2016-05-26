@@ -43,13 +43,26 @@ public class JDLParser {
      */
     public static LTSTask generateLTSTask(String jdl, String taskId, String taskTrackerGroupName) throws
             LTSClientException {
-        Long submitTime = new Date().getTime();
+        LTSTask ltsTask = compositeLTSTask(jdl, taskId, taskTrackerGroupName);
+
+        // Reverse ltsTask to add parent dependencies.
+        ltsTask.reverseDependencies();
+        // Set job type for all the jobs.
+        ltsTask.updateJobType();
+        // Repair trigger time for single period task, including realTime task and triggerTime task.
+        ltsTask.updateTriggerTime();
+        return ltsTask;
+    }
+
+    private static LTSTask compositeLTSTask(String jdl, String taskId, String taskTrackerGroupName)
+            throws LTSClientException {
         LTSTask ltsTask = new LTSTask();
         JDLObject jdlObject = parse(jdl);
+        Long submitTime = new Date().getTime();
         try {
-            // add start job
+            // Add start job.
             ltsTask.add(generateStartJob(jdlObject, taskId, taskTrackerGroupName, submitTime));
-            // add all the real jobs
+            // Add all the real jobs.
             List<JobObject> jobObjectList = jdlObject.getWorkflow().getJobs();
             for(JobObject jobObject : jobObjectList) {
                 Job job = generateJob(jdlObject, taskId, taskTrackerGroupName, submitTime);
@@ -72,19 +85,12 @@ public class JDLParser {
                 job.setParam(JobInfoConstants.JOB_PARAM_CHILDREN_KEY, jobObject.getOK());
                 ltsTask.add(job);
             }
-            // add end job
+            // Add end job.
             ltsTask.add(generateEndJob(jdlObject, taskId, taskTrackerGroupName, submitTime));
 
         } catch (Exception e) {
             throw new LTSClientException(e.getMessage());
         }
-
-        // Reverse ltsTask to add parent dependencies.
-        ltsTask.reverseDependencies();
-        // Set job type for all the jobs.
-        ltsTask.updateJobType();
-        // Repair trigger time for single period task, including realTime task and triggerTime task.
-        ltsTask.updateTriggerTime();
         return ltsTask;
     }
 
