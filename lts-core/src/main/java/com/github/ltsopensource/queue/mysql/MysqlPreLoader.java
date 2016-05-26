@@ -6,6 +6,7 @@ import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.core.support.JobQueueUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.queue.AbstractPreLoader;
+import com.github.ltsopensource.queue.PreLoader;
 import com.github.ltsopensource.queue.domain.JobPo;
 import com.github.ltsopensource.queue.mysql.support.RshHolder;
 import com.github.ltsopensource.store.jdbc.SqlTemplate;
@@ -17,7 +18,7 @@ import com.github.ltsopensource.store.jdbc.builder.UpdateSql;
 import java.util.List;
 
 /**
- * @author Robert HG (254963746@qq.com) on 8/14/15.
+ * Mysql implementation for {@link PreLoader}.
  */
 public class MysqlPreLoader extends AbstractPreLoader {
 
