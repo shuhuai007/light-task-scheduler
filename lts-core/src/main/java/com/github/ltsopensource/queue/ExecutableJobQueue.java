@@ -47,4 +47,6 @@ public interface ExecutableJobQueue extends JobQueue {
      * 得到JobPo
      */
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
+
+    boolean remove(String taskTrackerNodeGroup, String jobId, Long triggerTime);
 }

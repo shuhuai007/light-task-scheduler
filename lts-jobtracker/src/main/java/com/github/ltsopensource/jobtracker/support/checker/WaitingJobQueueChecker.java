@@ -1,26 +1,20 @@
 package com.github.ltsopensource.jobtracker.support.checker;
 
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
-import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.JobNodeType;
-import com.github.ltsopensource.core.constant.Level;
-import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
-import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.JobUtils;
-import com.github.ltsopensource.core.support.SystemClock;
-import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
+import com.github.ltsopensource.jobtracker.support.VirtualJobResolver;
 import com.github.ltsopensource.queue.WaitingJobQueue;
 import com.github.ltsopensource.queue.domain.JobPo;
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -93,13 +87,10 @@ public class WaitingJobQueueChecker {
                         appContext.getExecutableJobQueue().add(jobPo);
                         break;
                     case END_JOB:
-                        handleVirtualJob(jobPo);
-                        break;
                     case FORK_JOB:
-                        break;
                     case JOIN_JOB:
-                        break;
                     case DECISION_JOB:
+                        VirtualJobResolver.handleVirtualJobWhenFinish(jobPo, appContext);
                         break;
                     case SHELL_JOB:
                     case URL_JOB:
@@ -109,25 +100,6 @@ public class WaitingJobQueueChecker {
             }
         }
 
-    }
-    private void handleVirtualJob(JobPo jobPo) {
-        writeFinishLog(jobPo);
-        if (jobPo.getJobType().equals(JobType.CRON)) {
-            new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
-        }
-    }
-
-    private void writeFinishLog(JobPo jobPo) {
-        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
-        jobLogPo.setMsg("Job Finished");
-        jobLogPo.setLogType(LogType.FINISHED);
-        jobLogPo.setSuccess(true);
-        jobLogPo.setTaskTrackerIdentity(jobPo.getTaskTrackerIdentity());
-        jobLogPo.setLevel(Level.INFO);
-        jobLogPo.setLogTime(new Date().getTime());
-        jobLogPo.setExecutingStart(SystemClock.now());
-        jobLogPo.setExecutingEnd(SystemClock.now());
-        appContext.getJobLogger().log(jobLogPo);
     }
 
     private WaitingJobQueue getWaitingJobQueue() {

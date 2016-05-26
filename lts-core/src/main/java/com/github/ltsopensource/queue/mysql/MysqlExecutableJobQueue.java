@@ -121,4 +121,15 @@ public class MysqlExecutableJobQueue extends AbstractMysqlJobQueue implements Ex
                 .and("task_tracker_node_group = ?", taskTrackerNodeGroup)
                 .single(RshHolder.JOB_PO_RSH);
     }
+
+    @Override
+    public boolean remove(String taskTrackerNodeGroup, String jobId, Long triggerTime) {
+        return new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName(taskTrackerNodeGroup))
+                .where("job_id = ?", jobId)
+                .and("trigger_time = ?", triggerTime)
+                .doDelete() == 1;
+    }
 }

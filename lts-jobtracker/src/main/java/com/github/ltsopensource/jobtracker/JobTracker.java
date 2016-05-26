@@ -63,7 +63,8 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         appContext.setSuspendJobQueue(factory.getSuspendJobQueue(config));
         appContext.setJobFeedbackQueue(factory.getJobFeedbackQueue(config));
         appContext.setNodeGroupStore(factory.getNodeGroupStore(config));
-        appContext.setPreLoader(factory.getPreLoader(appContext));
+//        appContext.setPreLoader(factory.getPreLoader(appContext));
+        appContext.setPreLoader(new VirtualJobFilterMysqlPreLoader(appContext));
         appContext.setJobReceiver(new JobReceiver(appContext));
         appContext.setJobSender(new JobSender(appContext));
         appContext.setNonRelyOnPrevCycleJobScheduler(new NonRelyOnPrevCycleJobScheduler(appContext));
