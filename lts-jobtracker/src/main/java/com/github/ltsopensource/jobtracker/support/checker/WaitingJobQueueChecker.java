@@ -90,6 +90,8 @@ public class WaitingJobQueueChecker {
                 JobNodeType jobNodeType = jobPo.getJobNodeType();
                 switch (jobNodeType) {
                     case START_JOB:
+                        appContext.getExecutableJobQueue().add(jobPo);
+                        break;
                     case END_JOB:
                         handleVirtualJob(jobPo);
                         break;
@@ -108,19 +110,14 @@ public class WaitingJobQueueChecker {
         }
 
     }
-
     private void handleVirtualJob(JobPo jobPo) {
-        if(JobUtils.isSinglePeriodJob(jobPo)) {
-            // job finish, write log
-            writeLog(jobPo);
-        } else if (jobPo.getJobType().equals(JobType.CRON)) {
-            // TODO(zj): cron job
-        } else {
-            // repeat job
+        writeFinishLog(jobPo);
+        if (jobPo.getJobType().equals(JobType.CRON)) {
+            new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
         }
     }
 
-    private void writeLog(JobPo jobPo) {
+    private void writeFinishLog(JobPo jobPo) {
         JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setMsg("Job Finished");
         jobLogPo.setLogType(LogType.FINISHED);
@@ -135,24 +132,6 @@ public class WaitingJobQueueChecker {
 
     private WaitingJobQueue getWaitingJobQueue() {
         return appContext.getWaitingJobQueue();
-    }
-
-    /**
-     * Handles the end job.
-     * @param jobPo indicate a job info
-     */
-    private void handleEndJob(JobPo jobPo) {
-        // 1. generate next end job for next trigger time
-        new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
-        // 2. record this end job info
-        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
-        jobLogPo.setMsg("End Job Finished");
-        jobLogPo.setLogType(LogType.FINISHED);
-        jobLogPo.setSuccess(true);
-        jobLogPo.setTaskTrackerIdentity(jobPo.getTaskTrackerIdentity());
-        jobLogPo.setLevel(Level.INFO);
-        jobLogPo.setLogTime(new Date().getTime());
-        appContext.getJobLogger().log(jobLogPo);
     }
 
     private boolean meetDependencies(JobPo jobPo) {
@@ -263,7 +242,6 @@ public class WaitingJobQueueChecker {
      */
     private boolean checkParents(JobPo jobPo, List<String> parentList) {
         for (String parent : parentList) {
-            //
             JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(jobPo.getWorkflowId(),
                     jobPo.getSubmitTime(), parent, jobPo.getTriggerTime());
             if (parentLog == null) {

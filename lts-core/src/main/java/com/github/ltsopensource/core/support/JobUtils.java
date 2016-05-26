@@ -4,6 +4,7 @@ import com.github.ltsopensource.core.commons.utils.BeanUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.Constants;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.support.bean.BeanCopier;
@@ -92,5 +93,14 @@ public class JobUtils {
     public static boolean isSinglePeriodJob(JobPo jobPo) {
         return jobPo.getJobType().equals(JobType.REAL_TIME) ||
                 jobPo.getJobType().equals(JobType.TRIGGER_TIME);
+    }
+
+    public static boolean isVirtualNode(JobPo jobPo) {
+        JobNodeType jobNodeType = jobPo.getJobNodeType();
+        return jobNodeType == JobNodeType.START_JOB
+                || jobNodeType == JobNodeType.END_JOB
+                || jobNodeType == JobNodeType.DECISION_JOB
+                || jobNodeType == JobNodeType.FORK_JOB
+                || jobNodeType == JobNodeType.JOIN_JOB;
     }
 }

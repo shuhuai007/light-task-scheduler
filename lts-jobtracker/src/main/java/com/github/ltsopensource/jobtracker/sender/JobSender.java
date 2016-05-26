@@ -27,7 +27,7 @@ public class JobSender {
 
     public SendResult send(String taskTrackerNodeGroup, String taskTrackerIdentity, SendInvoker invoker) {
 
-        // 从mongo 中取一个可运行的job
+        // 从loader中取一个可运行的job
         final JobPo jobPo = appContext.getPreLoader().take(taskTrackerNodeGroup, taskTrackerIdentity);
         if (jobPo == null) {
             if (LOGGER.isDebugEnabled()) {
