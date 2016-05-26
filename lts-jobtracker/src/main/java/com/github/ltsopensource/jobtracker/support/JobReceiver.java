@@ -203,7 +203,7 @@ public class JobReceiver {
         LOGGER.info("nextTriggerTime:" + nextTriggerTime);
         if (nextTriggerTime != null) {
             if (isCronRunning(jobPo)) {
-                throw  new DupEntryException("cron job is running");
+                throw new DupEntryException("cron job is running");
             }
 
             // Add to cron job queue.
