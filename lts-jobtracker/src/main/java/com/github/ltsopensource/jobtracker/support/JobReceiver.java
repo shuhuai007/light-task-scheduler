@@ -197,26 +197,35 @@ public class JobReceiver {
      * @throws DupEntryException if this job is running
      */
     private void addCronJob(JobPo jobPo) throws DupEntryException {
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
         Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
                 new Date(jobPo.getStartTime()));
+        LOGGER.info("nextTriggerTime:" + nextTriggerTime);
         if (nextTriggerTime != null) {
+            if (isCronRunning(jobPo)) {
+                throw  new DupEntryException("cron job is running");
+            }
+
             // Add to cron job queue.
             getCronJobQueue().add(jobPo);
 
             if (JobUtils.isRelyOnPrevCycle(jobPo)) {
-                if (!isRunning(jobPo)) {
-                    // Add to waiting job queue.
-                    jobPo.setTriggerTime(nextTriggerTime.getTime());
-                    jobPo.setInternalExtParam(JobInfoConstants.CRON_JOB_LAST_TRIGGER_TIME_KEY, "");
-                    getWaitingJobQueue().add(jobPo);
-                    getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
-                            nextTriggerTime.getTime());
-                }
+                // Add to waiting job queue.
+                jobPo.setTriggerTime(nextTriggerTime.getTime());
+                jobPo.setInternalExtParam(JobInfoConstants.CRON_JOB_LAST_TRIGGER_TIME_KEY, "");
+                getWaitingJobQueue().add(jobPo);
+                getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
+                        nextTriggerTime.getTime());
             } else {
                 // 对于不需要依赖上一周期的,采取批量生成的方式
                 appContext.getNonRelyOnPrevCycleJobScheduler().addScheduleJobForOneHour(jobPo);
             }
         }
+    }
+
+    private boolean isCronRunning(JobPo jobPo) {
+        // TODO(zj): to be implemented when cron job is running in the cron job queue
+        return false;
     }
 
     /**
