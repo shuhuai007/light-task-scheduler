@@ -77,10 +77,6 @@ public class JobReceiver {
                 LOGGER.warn("Job can not be null。{}", job);
                 return null;
             }
-            // TODO(zj): Should not set submitNodeGroup, because the LTSClient does not exist
-//            if (StringUtils.isEmpty(jobPo.getSubmitNodeGroup())) {
-//                jobPo.setSubmitNodeGroup(request.getNodeGroup());
-//            }
             // set jobId.
             jobPo.setJobId(JobUtils.generateJobId());
 

@@ -2,6 +2,7 @@ package com.github.ltsopensource.client.utils;
 
 import com.github.ltsopensource.client.LTSClientException;
 import com.github.ltsopensource.client.jdl.ConfigurationObject;
+import com.github.ltsopensource.client.jdl.ControlsObject;
 import com.github.ltsopensource.client.jdl.JDLObject;
 import com.github.ltsopensource.client.jdl.JobObject;
 import com.github.ltsopensource.core.commons.utils.UTCDateUtils;
@@ -149,7 +150,17 @@ public class JDLParser {
                 String.valueOf(jdlObject.getCoordinator().getControls().getExecution()));
         job.setParam(JobInfoConstants.JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY,
                 String.valueOf(jdlObject.getCoordinator().getControls().getThrottle()));
+
+        setRelyOnPrevCycle(job, jdlObject.getCoordinator().getControls());
         return job;
+    }
+
+    private static void setRelyOnPrevCycle(Job job, ControlsObject controls) {
+        if (controls.getConcurrency() == 1 && controls.getExecution().equals("FIFO")) {
+            job.setRelyOnPrevCycle(true);
+        } else {
+            job.setRelyOnPrevCycle(false);
+        }
     }
 
     public static JDLObject parse(String jdl) {

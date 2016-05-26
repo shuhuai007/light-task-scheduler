@@ -246,6 +246,7 @@ public class JDLParserTest {
         Assert.assertEquals("node1" ,ltsTask.retrieveStartJob().getParam(JobInfoConstants
                 .JOB_PARAM_CHILDREN_KEY));
         Assert.assertEquals(JobNodeType.START_JOB, ltsTask.retrieveStartJob().getJobNodeType());
+        Assert.assertEquals(true, ltsTask.retrieveStartJob().isRelyOnPrevCycle());
     }
 
     private String getFilesStr() {
