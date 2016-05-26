@@ -64,7 +64,7 @@ public class JobUtils {
     }
 
     public static boolean isRelyOnPrevCycle(JobPo jobPo) {
-        return jobPo.getRelyOnPrevCycle() == null || jobPo.getRelyOnPrevCycle();
+        return jobPo.getRelyOnPrevCycle() == null || jobPo.getRelyOnPrevCycle().booleanValue();
     }
 
     public static String generateJobId() {
