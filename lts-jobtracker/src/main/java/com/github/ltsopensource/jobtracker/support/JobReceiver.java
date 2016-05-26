@@ -194,17 +194,17 @@ public class JobReceiver {
      * 添加Cron 任务
      */
     private void addCronJob(JobPo jobPo) throws DupEntryException {
-        Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression());
+        Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
+                new Date(jobPo.getStartTime()));
         if (nextTriggerTime != null) {
-            // 1.add to cron job queue
+            // Add to cron job queue.
             getCronJobQueue().add(jobPo);
 
             if (JobUtils.isRelyOnPrevCycle(jobPo)) {
-                // 没有正在执行, 则添加
                 if (!isRunning(jobPo)) {
-                    // 2. add to executable queue
+                    // Add to waiting job queue.
                     jobPo.setTriggerTime(nextTriggerTime.getTime());
-                    jobPo.setInternalExtParam("lastTriggerTime", "");
+                    jobPo.setInternalExtParam(JobInfoConstants.CRON_JOB_LAST_TRIGGER_TIME_KEY, "");
                     getWaitingJobQueue().add(jobPo);
                     getCronJobQueue().updateLastGenerateTriggerTime(jobPo.getJobId(),
                             nextTriggerTime.getTime());

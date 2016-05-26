@@ -4,6 +4,7 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.constant.Constants;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.JobMeta;
 import com.github.ltsopensource.core.domain.JobRunResult;
@@ -79,8 +80,8 @@ public class JobFinishHandler {
             jobPo.setIsRunning(false);
             jobPo.setTriggerTime(nextTriggerTime.getTime());
             jobPo.setGmtModified(SystemClock.now());
-            jobPo.setInternalExtParam("lastTriggerTime"
-                    , String.valueOf(jobPo.getLastGenerateTriggerTime()));
+            jobPo.setInternalExtParam(JobInfoConstants.CRON_JOB_LAST_TRIGGER_TIME_KEY,
+                    String.valueOf(jobPo.getLastGenerateTriggerTime()));
             appContext.getWaitingJobQueue().add(jobPo);
             appContext.getCronJobQueue().updateLastGenerateTriggerTime(jobId, nextTriggerTime.getTime());
         } catch (DupEntryException e) {

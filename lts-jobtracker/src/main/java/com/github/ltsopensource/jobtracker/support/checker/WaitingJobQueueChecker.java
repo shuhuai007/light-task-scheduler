@@ -249,7 +249,7 @@ public class WaitingJobQueueChecker {
 
     private Long getPreviousTriggerTime(JobPo jobPo) {
 
-        String triggerTime = jobPo.getInternalExtParam("lastTriggerTime");
+        String triggerTime = jobPo.getInternalExtParam(JobInfoConstants.CRON_JOB_LAST_TRIGGER_TIME_KEY);
         if (StringUtils.isEmpty(triggerTime)){
             return null;
         } else {

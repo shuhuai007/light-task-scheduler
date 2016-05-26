@@ -42,4 +42,6 @@ public class JobInfoConstants {
     public static final String JOB_PO_INTERNAL_PARAM_KEY_PREFIX = "__LTS_";
     public static final String LTS_IGNORE_ADD_ON_EXECUTING = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
             "ignoreAddOnExecuting";
+    public static final String CRON_JOB_LAST_TRIGGER_TIME_KEY = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
+            "lastTriggerTime";
 }
