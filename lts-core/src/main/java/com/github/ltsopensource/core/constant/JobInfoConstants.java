@@ -11,9 +11,7 @@ public class JobInfoConstants {
     public static final String JOB_CONFIGURATION_ITEM_SEPARATOR = ";";
     public static final String JOB_FILES_SEPARATOR = ",";
     public static final String JOB_ARGUMENTS_SEPARATOR = ",";
-
     public static final String JOB_PO_WORKFLOW_DEPENDS_SEPARATOR = ",";
-
 
     public static final String JOB_PARAM_PARENTS_KEY = "job.parents";
     public static final String JOB_PARAM_CHILDREN_KEY = "job.children";
@@ -33,6 +31,7 @@ public class JobInfoConstants {
     public static final String JOB_PARAM_WORKFLOW_JOBS_CONFIGURATION_KEY = "job.configuration";
 
     public static final String WORKFLOW_JOBS_TYPE_SHELL = "shell";
+    public static final String WORKFLOW_JOBS_TYPE_URL = "url";
     public static final String START_JOB_NAME = "start";
     public static final String END_JOB_NAME = "end";
 

@@ -191,7 +191,10 @@ public class JobReceiver {
     }
 
     /**
-     * 添加Cron 任务
+     * Add Cron Job.
+     *
+     * @param jobPo JobPo object
+     * @throws DupEntryException if this job is running
      */
     private void addCronJob(JobPo jobPo) throws DupEntryException {
         Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),

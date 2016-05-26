@@ -78,13 +78,13 @@ public class WaitingJobQueueChecker {
     }
 
     private void checkAndMove() {
-        // get all the jobs in the waiting job queue
+        // Get all the jobs in the waiting job queue
         List<JobPo> allJobPoList = getWaitingJobQueue().getAllJobs();
         LOGGER.info("waiting job queue size: " + allJobPoList.size());
         // check if the job can be moved into executable job queue, if so, do it, or do nothing.
-        for (JobPo jobPo:allJobPoList) {
+        for (JobPo jobPo : allJobPoList) {
             if(meetDependencies(jobPo)) {
-                // TODO (zj: maybe should consider concurrency issue about two queues.)
+                // TODO(zj): maybe should consider concurrency issue about two queues.)
                 getWaitingJobQueue().remove(jobPo.getWorkflowId(), jobPo.getSubmitTime(),
                         jobPo.getJobName(), jobPo.getTriggerTime());
                 JobNodeType jobNodeType = jobPo.getJobNodeType();
@@ -110,7 +110,7 @@ public class WaitingJobQueueChecker {
     }
 
     private void handleVirtualJob(JobPo jobPo) {
-        if(isSinglePeriodJob(jobPo)) {
+        if(JobUtils.isSinglePeriodJob(jobPo)) {
             // job finish, write log
             writeLog(jobPo);
         } else if (jobPo.getJobType().equals(JobType.CRON)) {
@@ -131,11 +131,6 @@ public class WaitingJobQueueChecker {
         jobLogPo.setExecutingStart(SystemClock.now());
         jobLogPo.setExecutingEnd(SystemClock.now());
         appContext.getJobLogger().log(jobLogPo);
-    }
-
-    private boolean isSinglePeriodJob(JobPo jobPo) {
-        return jobPo.getJobType().equals(JobType.REAL_TIME) ||
-                jobPo.getJobType().equals(JobType.TRIGGER_TIME);
     }
 
     private WaitingJobQueue getWaitingJobQueue() {
@@ -161,7 +156,6 @@ public class WaitingJobQueueChecker {
     }
 
     private boolean meetDependencies(JobPo jobPo) {
-        // TODO (zj: keep the cron job in the waiting queue for testing)
         boolean result = false;
         switch (jobPo.getJobType()) {
             case TRIGGER_TIME:
@@ -169,10 +163,10 @@ public class WaitingJobQueueChecker {
                 result = checkDependencies4SinglePeriodJob(jobPo);
                 break;
             case CRON:
-                List<String> parentList = JobUtils.getParentList(jobPo);
-                if (parentList == null) {
+                if (jobPo.getJobNodeType().equals(JobNodeType.START_JOB)) {
                     result = checkPreviousWorkflow(jobPo);
                 } else {
+                    List<String> parentList = JobUtils.getParentList(jobPo);
                     result = checkParents(jobPo, parentList);
                 }
                 break;
@@ -231,18 +225,21 @@ public class WaitingJobQueueChecker {
         return true;
     }
 
+    /**
+     * Check if the previous period of workflow has already finished.
+     *
+     * @param jobPo indicates job info
+     * @return true if the previous period has finished or this period itself is first one
+     */
     private boolean checkPreviousWorkflow(JobPo jobPo) {
-        // TODO (zj: should check if the endJob of last workflow finishes)
         final Long previousTriggerTime = getPreviousTriggerTime(jobPo);
         if (previousTriggerTime == null) {
-            // this is first workflow instance, no previous workflow
+            // This is the first period of workflow, no previous workflow.
             return true;
         } else {
-            // check if the previous workflow's end job has already finished
-            JobLogPo parentLog = appContext.getJobLogger().
-                    search(jobPo.getExtParams().get("workflowStaticId"),
-                            jobPo.getExtParams().get("submitInstanceId"),
-                            previousTriggerTime, "job_cron_end");
+            // Check if the end job of previous workflow has already finished.
+            JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(jobPo.getWorkflowId(),
+                    jobPo.getSubmitTime(), JobInfoConstants.END_JOB_NAME, previousTriggerTime);
             return parentLog != null;
         }
     }
@@ -259,17 +256,16 @@ public class WaitingJobQueueChecker {
 
     /**
      * Checks if all the parents have already finished.
+     *
      * @param jobPo indicate a job info
-     * @param parentList parent id list
+     * @param parentList parent job name list
      * @return true if all the parents have already finished
      */
     private boolean checkParents(JobPo jobPo, List<String> parentList) {
-        for (String parentId : parentList) {
-            // parentId(task_id), workflowStaticId, submitInstanceId, trigger_time
-            JobLogPo parentLog = appContext.getJobLogger().
-                    search(jobPo.getExtParams().get("workflowStaticId"),
-                            jobPo.getExtParams().get("submitInstanceId"),
-                            jobPo.getTriggerTime(), parentId);
+        for (String parent : parentList) {
+            //
+            JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(jobPo.getWorkflowId(),
+                    jobPo.getSubmitTime(), parent, jobPo.getTriggerTime());
             if (parentLog == null) {
                 return false;
             }

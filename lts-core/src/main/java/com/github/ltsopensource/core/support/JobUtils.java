@@ -3,7 +3,9 @@ package com.github.ltsopensource.core.support;
 import com.github.ltsopensource.core.commons.utils.BeanUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.Constants;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.domain.Job;
+import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.support.bean.BeanCopier;
 import com.github.ltsopensource.core.support.bean.BeanCopierFactory;
 import com.github.ltsopensource.core.support.bean.PropConverter;
@@ -81,11 +83,14 @@ public class JobUtils {
     }
 
     public static List<String> getParentList(JobPo jobPo) {
-        String parents = jobPo.getExtParams().get("parents");
-        if (StringUtils.isEmpty(parents)) {
-            return null;
-        }
-        String[] parentIds = StringUtils.splitWithTrim(parents, "\001");
-        return Arrays.asList(parentIds);
+        String parents = jobPo.getExtParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY);
+        String[] parentArr = StringUtils.splitWithTrim(parents, JobInfoConstants
+                .JOB_PARENTS_CHILDREN_SEPARATOR);
+        return Arrays.asList(parentArr);
+    }
+
+    public static boolean isSinglePeriodJob(JobPo jobPo) {
+        return jobPo.getJobType().equals(JobType.REAL_TIME) ||
+                jobPo.getJobType().equals(JobType.TRIGGER_TIME);
     }
 }
