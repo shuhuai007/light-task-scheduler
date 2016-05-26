@@ -1,4 +1,4 @@
-package com.github.ltsopensource.jobtracker.support;
+package com.github.ltsopensource.jobtracker.support.scheduler;
 
 import com.github.ltsopensource.core.commons.utils.Callable;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
