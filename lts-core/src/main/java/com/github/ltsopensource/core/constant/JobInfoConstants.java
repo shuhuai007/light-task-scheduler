@@ -43,4 +43,6 @@ public class JobInfoConstants {
             "ignoreAddOnExecuting";
     public static final String CRON_JOB_LAST_TRIGGER_TIME_KEY = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
             "lastTriggerTime";
+    public static final String JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY =
+            JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "executingStartTime";
 }

@@ -2,6 +2,7 @@ package com.github.ltsopensource.jobtracker.sender;
 
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.logger.Logger;
@@ -39,6 +40,9 @@ public class JobSender {
         // IMPORTANT: 这里要先切换队列
         try {
             jobPo.setGmtModified(jobPo.getGmtCreated());
+            jobPo.setInternalExtParam(
+                    JobInfoConstants.JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY,
+                    String.valueOf(SystemClock.now()));
             appContext.getExecutingJobQueue().add(jobPo);
         } catch (DupEntryException e) {
             LOGGER.warn("ExecutingJobQueue already exist:" + JSON.toJSONString(jobPo));

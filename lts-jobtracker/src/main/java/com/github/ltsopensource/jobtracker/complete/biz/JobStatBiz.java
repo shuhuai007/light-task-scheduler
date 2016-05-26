@@ -3,6 +3,7 @@ package com.github.ltsopensource.jobtracker.complete.biz;
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
+import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.Action;
 import com.github.ltsopensource.core.domain.JobRunResult;
@@ -62,12 +63,8 @@ public class JobStatBiz implements JobCompletedBiz {
             jobLogPo.setTaskTrackerIdentity(request.getIdentity());
             jobLogPo.setLevel(Level.INFO);
             jobLogPo.setLogTime(result.getTime());
-            LOGGER.info("..........................jobLogPo job node type:" + jobLogPo
-                    .getJobNodeType());
-            LOGGER.info("..........................jobLogPo job type:" + jobLogPo
-                    .getJobType());
-            LOGGER.info("..........................jobLogPo jobId:" + jobLogPo.getJobId() + "," +
-                    "name:" + jobLogPo.getJobName());
+            jobLogPo.setExecutingStart(getExecutingStartTime(result));
+            jobLogPo.setExecutingEnd(result.getTime());
             appContext.getJobLogger().log(jobLogPo);
 
             // 监控数据统计
@@ -89,6 +86,11 @@ public class JobStatBiz implements JobCompletedBiz {
             }
         }
         return null;
+    }
+
+    private Long getExecutingStartTime(JobRunResult result) {
+        return Long.valueOf(result.getJobMeta().getInternalExtParam(JobInfoConstants
+                .JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY));
     }
 
 }
