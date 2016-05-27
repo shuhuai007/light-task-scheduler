@@ -1,7 +1,9 @@
 package com.github.ltsopensource.client;
 
+import com.github.ltsopensource.client.operation.KillOperation;
 import com.github.ltsopensource.client.operation.SubmitOperation;
 import com.github.ltsopensource.client.utils.JDLParser;
+import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.domain.LTSTask;
 
 /**
@@ -67,12 +69,15 @@ public class LTSClient {
         if (!validateTaskId(taskId)) {
             throw new LTSClientException();
         } else {
-            // TODO(zj): to be implemented
+            new KillOperation(taskId, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
         }
     }
 
     private boolean validateTaskId(String taskId) {
         // TODO(zj): to be implemented
+        if (StringUtils.isEmpty(taskId)) {
+            return false;
+        }
         return true;
     }
 
