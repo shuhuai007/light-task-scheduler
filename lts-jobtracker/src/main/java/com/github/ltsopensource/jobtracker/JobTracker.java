@@ -5,6 +5,7 @@ import com.github.ltsopensource.core.cluster.AbstractServerNode;
 import com.github.ltsopensource.core.spi.ServiceLoader;
 import com.github.ltsopensource.jobtracker.channel.ChannelManager;
 import com.github.ltsopensource.jobtracker.cmd.AddJobHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.KillLTSTaskHttpCmd;
 import com.github.ltsopensource.jobtracker.cmd.LoadJobHttpCmd;
 import com.github.ltsopensource.jobtracker.cmd.SubmitLTSTaskHttpCmd;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
@@ -78,7 +79,8 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         appContext.getHttpCmdServer().registerCommands(
                 new LoadJobHttpCmd(appContext),
                 new AddJobHttpCmd(appContext),
-                new SubmitLTSTaskHttpCmd(appContext));
+                new SubmitLTSTaskHttpCmd(appContext),
+                new KillLTSTaskHttpCmd(appContext));
 
         if(appContext.getOldDataHandler() == null){
             appContext.setOldDataHandler(new OldDataDeletePolicy());
