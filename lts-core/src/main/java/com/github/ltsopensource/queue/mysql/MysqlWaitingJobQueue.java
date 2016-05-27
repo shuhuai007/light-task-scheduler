@@ -128,4 +128,15 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
                 .and("trigger_time = ?", triggerTime.longValue())
                 .doDelete() == 1;
     }
+
+    @Override
+    public List<JobPo> getJobs(String jobId) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("job_id = ?", jobId)
+                .list(RshHolder.JOB_PO_LIST_RSH);
+    }
 }

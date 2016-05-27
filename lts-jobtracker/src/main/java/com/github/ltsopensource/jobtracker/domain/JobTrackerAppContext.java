@@ -6,6 +6,7 @@ import com.github.ltsopensource.core.remoting.RemotingServerDelegate;
 import com.github.ltsopensource.jobtracker.channel.ChannelManager;
 import com.github.ltsopensource.jobtracker.sender.JobSender;
 import com.github.ltsopensource.jobtracker.support.JobReceiver;
+import com.github.ltsopensource.jobtracker.support.scheduler.CronJobScheduler;
 import com.github.ltsopensource.jobtracker.support.scheduler.NonRelyOnPrevCycleJobScheduler;
 import com.github.ltsopensource.jobtracker.support.OldDataHandler;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutableDeadJobChecker;
@@ -61,6 +62,7 @@ public class JobTrackerAppContext extends AppContext {
 
     private NonRelyOnPrevCycleJobScheduler nonRelyOnPrevCycleJobScheduler;
     private WaitingJobQueueChecker waitingJobQueueChecker;
+    private CronJobScheduler cronJobScheduler;
 
     public JobSender getJobSender() {
         return jobSender;
@@ -236,5 +238,13 @@ public class JobTrackerAppContext extends AppContext {
 
     public WaitingJobQueueChecker getWaitingJobQueueChecker() {
         return waitingJobQueueChecker;
+    }
+
+    public void setCronJobScheduler(CronJobScheduler cronJobScheduler) {
+        this.cronJobScheduler = cronJobScheduler;
+    }
+
+    public CronJobScheduler getCronJobScheduler() {
+        return cronJobScheduler;
     }
 }

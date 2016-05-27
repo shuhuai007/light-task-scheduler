@@ -64,7 +64,7 @@ public class JobUtils {
     }
 
     public static boolean isRelyOnPrevCycle(JobPo jobPo) {
-        return jobPo.getRelyOnPrevCycle() == null || jobPo.getRelyOnPrevCycle().booleanValue();
+        return (jobPo.getRelyOnPrevCycle() == null || jobPo.getRelyOnPrevCycle().booleanValue());
     }
 
     public static String generateJobId() {
@@ -85,6 +85,9 @@ public class JobUtils {
 
     public static List<String> getParentList(JobPo jobPo) {
         String parents = jobPo.getExtParam(JobInfoConstants.JOB_PARAM_PARENTS_KEY);
+        if (StringUtils.isEmpty(parents)) {
+            return null;
+        }
         String[] parentArr = StringUtils.splitWithTrim(parents, JobInfoConstants
                 .JOB_PARENTS_CHILDREN_SEPARATOR);
         return Arrays.asList(parentArr);

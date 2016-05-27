@@ -10,16 +10,6 @@ import java.util.List;
  */
 public interface WaitingJobQueue extends JobQueue {
 
-//    /**
-//     * 创建一个队列
-//     */
-//    boolean createQueue(String taskTrackerNodeGroup);
-//
-//    /**
-//     * 删除
-//     */
-//    boolean removeQueue(String taskTrackerNodeGroup);
-
     /**
      * 入队列
      */
@@ -62,4 +52,12 @@ public interface WaitingJobQueue extends JobQueue {
      * @return true if removed successfully
      */
     boolean remove(String workflowId, Long submitTime, String jobName, Long triggerTime);
+
+    /**
+     * Gets jobs based on jobId.
+     *
+     * @param jobId generated when submitting
+     * @return list of JobPo object
+     */
+    List<JobPo> getJobs(String jobId);
 }

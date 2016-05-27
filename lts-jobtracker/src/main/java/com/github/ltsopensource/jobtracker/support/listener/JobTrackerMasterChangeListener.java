@@ -25,7 +25,8 @@ public class JobTrackerMasterChangeListener implements MasterChangeListener {
             appContext.getFeedbackJobSendChecker().start();
             appContext.getExecutableDeadJobChecker().start();
             appContext.getExecutingDeadJobChecker().start();
-            appContext.getNonRelyOnPrevCycleJobScheduler().start();
+//            appContext.getNonRelyOnPrevCycleJobScheduler().start();
+            appContext.getCronJobScheduler().start();
             appContext.getWaitingJobQueueChecker().start();
         } else {
             // 如果 master 节点不是自己
@@ -34,7 +35,8 @@ public class JobTrackerMasterChangeListener implements MasterChangeListener {
             appContext.getFeedbackJobSendChecker().stop();
             appContext.getExecutableDeadJobChecker().stop();
             appContext.getExecutingDeadJobChecker().stop();
-            appContext.getNonRelyOnPrevCycleJobScheduler().stop();
+//            appContext.getNonRelyOnPrevCycleJobScheduler().stop();
+            appContext.getCronJobScheduler().stop();
             appContext.getWaitingJobQueueChecker().stop();
         }
     }

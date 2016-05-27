@@ -89,11 +89,11 @@ public class LTSClientTest {
             "\"depends\":[\"100\", \"200\"]" + "," +
             "\"coordinator\":{" +
                 "\"frequency\"" + ":" + "\"10 * * * * ?\"" + "," +
-                "\"start\""     + ":" + "\"2016-01-07T17:15:44.000Z\"" + "," +
-                "\"end\""       + ":" + "\"2016-01-08T17:15:44.000Z\"" + "," +
+                "\"start\""     + ":" + "\"2016-05-024T17:15:44.000Z\"" + "," +
+                "\"end\""       + ":" + "\"2017-01-08T17:15:44.000Z\"" + "," +
                 "\"controls\""  + ":" + "{" +
                         "\"timeout\":\"-1\"," +
-                        "\"concurrency\":1," +
+                        "\"concurrency\":2," +
                         "\"execution\":\"FIFO\"," +
                         "\"throttle\":3 " +
                 "}" +
@@ -199,6 +199,6 @@ public class LTSClientTest {
         String taskId = "1";
         String taskTrackGroupName = "test_trade_taskTracker";
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
-        ltsClient.submit(REAL_TIME_JDL, taskId, taskTrackGroupName);
+        ltsClient.submit(CRON_JDL, taskId, taskTrackGroupName);
     }
 }

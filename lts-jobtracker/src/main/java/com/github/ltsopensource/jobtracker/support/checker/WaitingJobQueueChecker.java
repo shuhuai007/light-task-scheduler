@@ -1,6 +1,7 @@
 package com.github.ltsopensource.jobtracker.support.checker;
 
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
+import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
@@ -107,18 +108,24 @@ public class WaitingJobQueueChecker {
     }
 
     private boolean meetDependencies(JobPo jobPo) {
+        if (true) {
+            return false;
+        }
         boolean result = false;
         switch (jobPo.getJobType()) {
             case TRIGGER_TIME:
             case REAL_TIME:
-                result = checkDependencies4SinglePeriodJob(jobPo);
+                result = checkParents(jobPo, JobUtils.getParentList(jobPo));
                 break;
             case CRON:
                 if (jobPo.getJobNodeType().equals(JobNodeType.START_JOB)) {
-                    result = checkPreviousWorkflow(jobPo);
+                    if (JobUtils.isRelyOnPrevCycle(jobPo)) {
+                        result = checkPreviousWorkflow(jobPo);
+                    } else {
+                        result = true;
+                    }
                 } else {
-                    List<String> parentList = JobUtils.getParentList(jobPo);
-                    result = checkParents(jobPo, parentList);
+                    result = checkParents(jobPo, JobUtils.getParentList(jobPo));
                 }
                 break;
             case REPEAT:
@@ -210,9 +217,12 @@ public class WaitingJobQueueChecker {
      *
      * @param jobPo indicate a job info
      * @param parentList parent job name list
-     * @return true if all the parents have already finished
+     * @return true if all the parents have already finished or no parents
      */
     private boolean checkParents(JobPo jobPo, List<String> parentList) {
+        if (CollectionUtils.isEmpty(parentList)) {
+            return true;
+        }
         for (String parent : parentList) {
             JobLogPo parentLog = appContext.getJobLogger().getJobLogPo(jobPo.getWorkflowId(),
                     jobPo.getSubmitTime(), parent, jobPo.getTriggerTime());

@@ -5,6 +5,7 @@ import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.JobType;
 import com.github.ltsopensource.core.support.JobDomainConverter;
+import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.complete.JobFinishHandler;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
@@ -27,7 +28,7 @@ public class VirtualJobResolver {
         // Write log.
         writeFinishLog(jobPo, appContext);
         // Generate next period.
-        if (jobPo.getRelyOnPrevCycle().booleanValue() && jobPo.getJobType().equals(JobType.CRON)) {
+        if (JobUtils.isRelyOnPrevCycle(jobPo) && jobPo.getJobType().equals(JobType.CRON)) {
             new JobFinishHandler(appContext).finishCronJob(jobPo.getJobId());
         }
     }

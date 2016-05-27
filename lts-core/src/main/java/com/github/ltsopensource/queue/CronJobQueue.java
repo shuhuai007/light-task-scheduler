@@ -3,6 +3,8 @@ package com.github.ltsopensource.queue;
 import com.github.ltsopensource.queue.domain.JobPo;
 import com.github.ltsopensource.store.jdbc.exception.DupEntryException;
 
+import java.util.List;
+
 /**
  * 定时任务队列
  *
@@ -32,4 +34,5 @@ public interface CronJobQueue extends SchedulerJobQueue {
      */
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
 
+    List<JobPo> getNeedGenerateJobPos(int topSize);
 }

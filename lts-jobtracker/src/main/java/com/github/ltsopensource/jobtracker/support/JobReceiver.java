@@ -44,7 +44,7 @@ public class JobReceiver {
      * jobTracker 接受任务
      */
     public void receive(JobSubmitRequest request) throws JobReceiveException {
-
+        LOGGER.info("enter receive(JobSubmitRequest)");
         List<Job> jobs = request.getJobs();
         if (CollectionUtils.isEmpty(jobs)) {
             return;
@@ -201,6 +201,8 @@ public class JobReceiver {
         Date nextTriggerTime = CronExpressionUtils.getNextTriggerTime(jobPo.getCronExpression(),
                 new Date(jobPo.getStartTime()));
         LOGGER.info("nextTriggerTime:" + nextTriggerTime);
+        LOGGER.info("jobPo deRelyOnPrevCycle:" + jobPo.getRelyOnPrevCycle());
+
         if (nextTriggerTime != null) {
             if (isCronRunning(jobPo)) {
                 throw new DupEntryException("cron job is running");
@@ -218,7 +220,8 @@ public class JobReceiver {
                         nextTriggerTime.getTime());
             } else {
                 // 对于不需要依赖上一周期的,采取批量生成的方式
-                appContext.getNonRelyOnPrevCycleJobScheduler().addScheduleJobForOneHour(jobPo);
+//                appContext.getNonRelyOnPrevCycleJobScheduler().addScheduleJobForOneHour(jobPo);
+                appContext.getCronJobScheduler().addScheduleJob(jobPo);
             }
         }
     }

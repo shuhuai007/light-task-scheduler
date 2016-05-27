@@ -75,4 +75,10 @@ public class MongoCronJobQueue extends MongoSchedulerJobQueue implements CronJob
         return query.get();
     }
 
+    @Override
+    public List<JobPo> getNeedGenerateJobPos(int topSize) {
+        // TODO(zj): to be implemented
+        return null;
+    }
+
 }

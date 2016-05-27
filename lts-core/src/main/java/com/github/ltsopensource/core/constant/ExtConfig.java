@@ -121,6 +121,11 @@ public interface ExtConfig {
      */
     String JOB_TRACKER_NON_RELYON_PREV_CYCLE_JOB_SCHEDULER_INTERVAL_MINUTE = "jobtracker.nonRelyOnPrevCycleJob.schedule.interval.minute";
     /**
+     * JobTracker: scheduler interval for cron job, default 10 min
+     */
+    String JOB_TRACKER_CRON_JOB_SCHEDULER_INTERVAL_MINUTE =
+            "jobtracker.cronJob.schedule.interval.minute";
+    /**
      * JobClient,JobTracker,TaskTracker端: 向monitor汇报数据间隔
      */
     String LTS_MONITOR_REPORT_INTERVAL = "lts.monitor.report.interval";

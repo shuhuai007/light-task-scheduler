@@ -9,6 +9,8 @@ import com.github.ltsopensource.queue.mysql.support.RshHolder;
 import com.github.ltsopensource.store.jdbc.builder.DeleteSql;
 import com.github.ltsopensource.store.jdbc.builder.SelectSql;
 
+import java.util.List;
+
 /**
  * @author Robert HG (254963746@qq.com) on 5/31/15.
  */
@@ -61,6 +63,18 @@ public class MysqlCronJobQueue extends MysqlSchedulerJobQueue implements CronJob
                 .where("task_id = ?", taskId)
                 .and("task_tracker_node_group = ?", taskTrackerNodeGroup)
                 .single(RshHolder.JOB_PO_RSH);
+    }
+
+    @Override
+    public List<JobPo> getNeedGenerateJobPos(int topSize) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("rely_on_prev_cycle = ?", false)
+                .limit(0, topSize)
+                .list(RshHolder.JOB_PO_LIST_RSH);
     }
 
     protected String getTableName() {

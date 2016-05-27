@@ -13,6 +13,7 @@ import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
 import com.github.ltsopensource.jobtracker.processor.RemotingDispatcher;
 import com.github.ltsopensource.jobtracker.sender.JobSender;
 import com.github.ltsopensource.jobtracker.support.JobReceiver;
+import com.github.ltsopensource.jobtracker.support.scheduler.CronJobScheduler;
 import com.github.ltsopensource.jobtracker.support.scheduler.NonRelyOnPrevCycleJobScheduler;
 import com.github.ltsopensource.jobtracker.support.OldDataHandler;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutableDeadJobChecker;
@@ -67,12 +68,12 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         appContext.setPreLoader(new VirtualJobFilterMysqlPreLoader(appContext));
         appContext.setJobReceiver(new JobReceiver(appContext));
         appContext.setJobSender(new JobSender(appContext));
-        appContext.setNonRelyOnPrevCycleJobScheduler(new NonRelyOnPrevCycleJobScheduler(appContext));
+//        appContext.setNonRelyOnPrevCycleJobScheduler(new NonRelyOnPrevCycleJobScheduler(appContext));
+        appContext.setCronJobScheduler(new CronJobScheduler(appContext));
         appContext.setExecutableDeadJobChecker(new ExecutableDeadJobChecker(appContext));
         appContext.setExecutingDeadJobChecker(new ExecutingDeadJobChecker(appContext));
         appContext.setFeedbackJobSendChecker(new FeedbackJobSendChecker(appContext));
         appContext.setWaitingJobQueueChecker(new WaitingJobQueueChecker(appContext));
-
 
         appContext.getHttpCmdServer().registerCommands(
                 new LoadJobHttpCmd(appContext),
