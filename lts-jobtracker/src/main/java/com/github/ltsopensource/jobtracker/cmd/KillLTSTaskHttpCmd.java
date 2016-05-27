@@ -75,24 +75,29 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
 
     private void kill(String taskId, String taskTrackerGroupName, JobTrackerAppContext appContext) {
         // Kill jobs of waiting queue.
-        removeWaitingQueueAndLog(appContext.getWaitingJobQueue(), taskId);
+        removeWaitingQueue(appContext.getWaitingJobQueue(), taskId);
         // Kill jobs of executable queue.
-        removeExecutableQueueAndLog(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
+        removeExecutableQueue(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
         // Kill jobs of executing queue, and kill related job process in the taskTracker.
-        removeExecutingQueueAndLog(appContext.getExecutingJobQueue(), taskId);
-        // Update the workflow status of jobs that is already finished.
+        removeExecutingQueue(appContext.getExecutingJobQueue(), taskId);
     }
 
-    private void removeExecutingQueueAndLog(ExecutingJobQueue executingJobQueue, String workflowId) {
+    private void removeExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId) {
         List<JobPo> jobPoList = executingJobQueue.getJobsByWorkflowId(workflowId);
         executingJobQueue.removeBatchByWorkflowId(workflowId);
 
+        // Kill the job process in the taskTracker remotely.
+        killJobsRemotely(jobPoList);
         JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+    }
+
+    private void killJobsRemotely(List<JobPo> jobPoList) {
+        // TODO(zj): to be implemented
 
     }
 
-    private void removeExecutableQueueAndLog(ExecutableJobQueue executableJobQueue, String workflowId,
-                                             String taskTrackerGroupName) {
+    private void removeExecutableQueue(ExecutableJobQueue executableJobQueue, String workflowId,
+                                       String taskTrackerGroupName) {
         List<JobPo> jobPoList = null;
         try {
             jobPoList = executableJobQueue.getJobsByWorkflowId(workflowId, taskTrackerGroupName);
@@ -106,7 +111,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         }
     }
 
-    private void removeWaitingQueueAndLog(WaitingJobQueue waitingJobQueue, String workflowId) {
+    private void removeWaitingQueue(WaitingJobQueue waitingJobQueue, String workflowId) {
         List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(workflowId);
         waitingJobQueue.removeBatchByWorkflowId(workflowId);
 
