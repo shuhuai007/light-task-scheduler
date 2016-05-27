@@ -14,6 +14,7 @@ import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.queue.ExecutableJobQueue;
+import com.github.ltsopensource.queue.ExecutingJobQueue;
 import com.github.ltsopensource.queue.WaitingJobQueue;
 import com.github.ltsopensource.queue.domain.JobPo;
 
@@ -77,9 +78,17 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         removeWaitingQueueAndLog(appContext.getWaitingJobQueue(), taskId);
         // Kill jobs of executable queue.
         removeExecutableQueueAndLog(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
-        // kill jobs of executing queue, and kill related job process in the taskTracker.
+        // Kill jobs of executing queue, and kill related job process in the taskTracker.
+        removeExecutingQueueAndLog(appContext.getExecutingJobQueue(), taskId);
+        // Update the workflow status of jobs that is already finished.
+    }
 
-        // Update the workflow status of jobs that has been already finished.
+    private void removeExecutingQueueAndLog(ExecutingJobQueue executingJobQueue, String workflowId) {
+        List<JobPo> jobPoList = executingJobQueue.getJobsByWorkflowId(workflowId);
+        executingJobQueue.removeBatchByWorkflowId(workflowId);
+
+        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+
     }
 
     private void removeExecutableQueueAndLog(ExecutableJobQueue executableJobQueue, String workflowId,
@@ -97,9 +106,9 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         }
     }
 
-    private void removeWaitingQueueAndLog(WaitingJobQueue waitingJobQueue, String taskId) {
-        List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(taskId);
-        waitingJobQueue.remove(taskId);
+    private void removeWaitingQueueAndLog(WaitingJobQueue waitingJobQueue, String workflowId) {
+        List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(workflowId);
+        waitingJobQueue.remove(workflowId);
 
         JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
     }

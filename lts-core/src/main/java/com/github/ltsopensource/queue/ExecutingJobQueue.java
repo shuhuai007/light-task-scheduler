@@ -39,4 +39,20 @@ public interface ExecutingJobQueue extends JobQueue {
     JobPo getJob(String jobId);
 
     JobPo getJob(String workflowId, Long submitTime, String jobName, Long triggerTime);
+
+    /**
+     * Remove batch based on workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @return true if remove successfully
+     */
+    boolean removeBatchByWorkflowId(String workflowId);
+
+    /**
+     * Gets list of {@link JobPo} based on workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @return
+     */
+    List<JobPo> getJobsByWorkflowId(String workflowId);
 }

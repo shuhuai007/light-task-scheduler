@@ -12,7 +12,7 @@ import com.github.ltsopensource.store.jdbc.builder.SelectSql;
 import java.util.List;
 
 /**
- * @author Robert HG (254963746@qq.com) on 5/31/15.
+ * Mysql implementation for {@link ExecutingJobQueue}.
  */
 public class MysqlExecutingJobQueue extends AbstractMysqlJobQueue implements ExecutingJobQueue {
 
@@ -99,6 +99,28 @@ public class MysqlExecutingJobQueue extends AbstractMysqlJobQueue implements Exe
                 .and("job_name = ?", jobName)
                 .and("trigger_time = ?", triggerTime.longValue())
                 .single(RshHolder.JOB_PO_RSH);
+    }
+
+    @Override
+    public boolean removeBatchByWorkflowId(String workflowId) {
+        new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .doDelete();
+        return true;
+    }
+
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .list(RshHolder.JOB_PO_LIST_RSH);
     }
 
     private String getTableName() {

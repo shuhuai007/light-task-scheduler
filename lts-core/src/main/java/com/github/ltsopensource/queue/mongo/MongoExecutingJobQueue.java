@@ -96,4 +96,16 @@ public class MongoExecutingJobQueue extends AbstractMongoJobQueue implements Exe
         return null;
     }
 
+    @Override
+    public boolean removeBatchByWorkflowId(String workflowId) {
+        // TODO(zj): to be implemented
+        return false;
+    }
+
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId) {
+        // TODO(zj): to be implemented
+        return null;
+    }
+
 }
