@@ -1,11 +1,12 @@
 package com.github.ltsopensource.jobtracker.support.scheduler;
 
-import com.github.ltsopensource.core.commons.utils.*;
+import com.github.ltsopensource.core.commons.utils.Assert;
+import com.github.ltsopensource.core.commons.utils.Callable;
+import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.constant.Constants;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.domain.JobType;
-import com.github.ltsopensource.core.exception.LtsRuntimeException;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
@@ -15,7 +16,6 @@ import com.github.ltsopensource.core.support.NodeShutdownHook;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.queue.domain.JobPo;
-import com.github.ltsopensource.queue.support.NonRelyJobUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -52,6 +52,9 @@ public class CronJobScheduler {
         });
     }
 
+    /**
+     * Start the scheduler.
+     */
     public void start() {
         LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
 
@@ -82,6 +85,9 @@ public class CronJobScheduler {
         }
     }
 
+    /**
+     * Stop the scheduler.
+     */
     public void stop() {
         if (!start.compareAndSet(true, false)) {
             return;
@@ -106,11 +112,9 @@ public class CronJobScheduler {
             LOGGER.debug("========= Scheduler start =========");
         }
 
-        Date now = new Date();
-        Date checkTime = DateUtils.addMinute(now, 10);
-        //  cron任务
         while (true) {
-            List<JobPo> cronJobPoList = appContext.getCronJobQueue().getNeedGenerateJobPos(10);
+            List<JobPo> cronJobPoList = appContext.getCronJobQueue()
+                    .getNeedGenerateJobPos(JobInfoConstants.CRON_JOB_QUEUE_NEED_GENERATE_PAGE_SIZE);
             if (CollectionUtils.sizeOf(cronJobPoList) == 0) {
                 break;
             }

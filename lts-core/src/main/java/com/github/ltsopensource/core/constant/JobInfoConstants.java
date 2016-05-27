@@ -45,4 +45,9 @@ public class JobInfoConstants {
             "lastTriggerTime";
     public static final String JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY =
             JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "executingStartTime";
+
+    /**
+     * Page size of jobPo needed to generate from cron job queue.
+     */
+    public static final int CRON_JOB_QUEUE_NEED_GENERATE_PAGE_SIZE = 10;
 }
