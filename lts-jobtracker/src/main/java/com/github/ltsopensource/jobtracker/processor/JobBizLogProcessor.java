@@ -4,8 +4,11 @@ import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.domain.BizLog;
+import com.github.ltsopensource.core.logger.Logger;
+import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.core.protocol.JobProtos;
 import com.github.ltsopensource.core.protocol.command.BizLogSendRequest;
+import com.github.ltsopensource.core.support.JobUtils;
 import com.github.ltsopensource.core.support.SystemClock;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.remoting.Channel;
@@ -18,6 +21,7 @@ import java.util.List;
  * @author Robert HG (254963746@qq.com) on 3/30/15.
  */
 public class JobBizLogProcessor extends AbstractRemotingProcessor {
+    private final Logger LOGGER = LoggerFactory.getLogger(JobBizLogProcessor.class);
 
     public JobBizLogProcessor(JobTrackerAppContext appContext) {
         super(appContext);
@@ -26,25 +30,17 @@ public class JobBizLogProcessor extends AbstractRemotingProcessor {
     @Override
     public RemotingCommand processRequest(Channel channel, RemotingCommand request) throws RemotingCommandException {
 
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
+
         BizLogSendRequest requestBody = request.getBody();
 
         List<BizLog> bizLogs = requestBody.getBizLogs();
         if (CollectionUtils.isNotEmpty(bizLogs)) {
             for (BizLog bizLog : bizLogs) {
-                JobLogPo jobLogPo = new JobLogPo();
-                jobLogPo.setGmtCreated(SystemClock.now());
-                jobLogPo.setLogTime(bizLog.getLogTime());
-                jobLogPo.setTaskTrackerNodeGroup(bizLog.getTaskTrackerNodeGroup());
-                jobLogPo.setTaskTrackerIdentity(bizLog.getTaskTrackerIdentity());
-                jobLogPo.setJobId(bizLog.getJobId());
-                jobLogPo.setTaskId(bizLog.getTaskId());
-                jobLogPo.setRealTaskId(bizLog.getRealTaskId());
-                jobLogPo.setJobType(bizLog.getJobType());
-                jobLogPo.setMsg(bizLog.getMsg());
-                jobLogPo.setSuccess(true);
-                jobLogPo.setLevel(bizLog.getLevel());
-                jobLogPo.setLogType(LogType.BIZ);
-                appContext.getJobLogger().log(jobLogPo);
+                bizLog.setGmtCreated(SystemClock.now());
+                bizLog.setSuccess(true);
+                bizLog.setLogType(LogType.BIZ);
+                appContext.getJobLogger().log(JobUtils.copyBizLog2JobLogPo(bizLog));
             }
         }
 

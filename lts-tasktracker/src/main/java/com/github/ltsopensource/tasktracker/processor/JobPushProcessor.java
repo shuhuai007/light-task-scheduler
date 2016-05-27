@@ -101,7 +101,7 @@ public class JobPushProcessor extends AbstractProcessor {
         @Override
         public JobMeta runComplete(Response response) {
             Job testjob = response.getJobMeta().getJob();
-            LOGGER.debug("--------------runComplete(), jobMeta's jobname:" +
+            LOGGER.info("--------------runComplete(), jobMeta's jobname:" +
                     testjob.getJobName() + ", job node type:" + testjob.getJobNodeType());
             // 发送消息给 JobTracker
             final JobRunResult jobRunResult = new JobRunResult();
@@ -133,6 +133,8 @@ public class JobPushProcessor extends AbstractProcessor {
                                     if (LOGGER.isDebugEnabled()) {
                                         LOGGER.debug("Get new job :{}", jobPushRequest.getJobMeta());
                                     }
+                                    LOGGER.info("Get new job :{}", jobPushRequest.getJobMeta());
+
                                     returnResponse.setJobMeta(jobPushRequest.getJobMeta());
                                 }
                             } else {

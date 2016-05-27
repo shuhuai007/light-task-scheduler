@@ -1,5 +1,6 @@
 package com.github.ltsopensource.tasktracker.logger;
 
+import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.core.commons.utils.Callable;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
@@ -8,10 +9,13 @@ import com.github.ltsopensource.core.domain.BizLog;
 import com.github.ltsopensource.core.domain.JobMeta;
 import com.github.ltsopensource.core.exception.JobTrackerNotFoundException;
 import com.github.ltsopensource.core.failstore.FailStorePathBuilder;
+import com.github.ltsopensource.core.logger.Logger;
+import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.core.protocol.JobProtos;
 import com.github.ltsopensource.core.protocol.command.BizLogSendRequest;
 import com.github.ltsopensource.core.protocol.command.CommandBodyWrapper;
 import com.github.ltsopensource.core.remoting.RemotingClientDelegate;
+import com.github.ltsopensource.core.support.JobDomainConverter;
 import com.github.ltsopensource.core.support.NodeShutdownHook;
 import com.github.ltsopensource.core.support.RetryScheduler;
 import com.github.ltsopensource.core.support.SystemClock;
@@ -31,6 +35,7 @@ import java.util.List;
  * @author Robert HG (254963746@qq.com) on 3/27/15.
  */
 public class BizLoggerImpl extends BizLoggerAdapter implements BizLogger {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BizLoggerImpl.class);
 
     private Level level;
     private RemotingClientDelegate remotingClient;
@@ -87,18 +92,16 @@ public class BizLoggerImpl extends BizLoggerAdapter implements BizLogger {
     }
 
     private void sendMsg(String msg) {
-
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
+        LOGGER.info("..................msg:" + msg);
         BizLogSendRequest requestBody = CommandBodyWrapper.wrapper(appContext, new BizLogSendRequest());
 
-        final BizLog bizLog = new BizLog();
+        JobMeta jobMeta = getJobMeta();
+        JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobMeta);
+        final BizLog bizLog = JobDomainConverter.convert2BizLog(jobLogPo);
         bizLog.setTaskTrackerIdentity(requestBody.getIdentity());
         bizLog.setTaskTrackerNodeGroup(requestBody.getNodeGroup());
         bizLog.setLogTime(SystemClock.now());
-        JobMeta jobMeta = getJobMeta();
-        bizLog.setJobId(jobMeta.getJobId());
-        bizLog.setTaskId(jobMeta.getJob().getTaskId());
-        bizLog.setRealTaskId(jobMeta.getRealTaskId());
-        bizLog.setJobType(jobMeta.getJobType());
         bizLog.setMsg(msg);
         bizLog.setLevel(level);
 

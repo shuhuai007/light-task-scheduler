@@ -1,31 +1,92 @@
 package com.github.ltsopensource.core.domain;
 
+import com.github.ltsopensource.biz.logger.domain.JobLogPo;
+import com.github.ltsopensource.biz.logger.domain.LogType;
+import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.constant.Level;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Robert HG (254963746@qq.com) on 6/12/15.
  */
 public class BizLog implements Serializable {
+    private static final long serialVersionUID = -7770486329649514754L;
 
-	private static final long serialVersionUID = -7770486329649514754L;
-
-	private String taskId;
-    private JobType jobType;
-    private String jobId;
-
-    private String realTaskId;
-
-    private String msg;
-
-    private Level level;
-
+    // 日志记录时间
     private Long logTime;
-
+    // 日志记录时间
+    private Long gmtCreated;
+    private JobType jobType;
+    // 日志类型
+    private LogType logType;
+    private boolean success;
+    private String msg;
     private String taskTrackerIdentity;
 
+    // 日志记录级别
+    private Level level;
+
+    private String jobId;
+    private String taskId;
+    private String realTaskId;
+    /**
+     * 优先级 (数值越大 优先级越低)
+     */
+    private Integer priority = 100;
+    // 提交的节点
+    private String submitNodeGroup;
+    // 执行的节点
     private String taskTrackerNodeGroup;
+
+    private Map<String, String> extParams;
+    /**
+     * 内部使用的扩展参数
+     */
+    private Map<String, String> internalExtParams;
+    // 是否要反馈给客户端
+    private boolean needFeedback = true;
+    /**
+     * 执行表达式 和 quartz 的一样
+     * 如果这个为空，表示立即执行的
+     */
+    private String cronExpression;
+    /**
+     * 任务的最早出发时间
+     */
+    private Long triggerTime;
+
+    private Integer retryTimes = 0;
+    private Integer maxRetryTimes = 0;
+
+    /**
+     * 重复次数
+     */
+    private Integer repeatCount = 0;
+    /**
+     * 已经重复的次数
+     */
+    private Integer repeatedCount = 0;
+    /**
+     * 重复interval
+     */
+    private Long repeatInterval;
+
+    private Boolean depPreCycle;
+    private Long lastGenerateTriggerTime;
+    private Long submitTime;
+    private int retryInternal;
+    private String workflowId;
+    private String workflowName;
+    private String workflowDepends;
+    private Long startTime;
+    private Long endTime;
+    private String jobName;
+    private JobNodeType jobNodeType;
+    private Long executingStart;
+    private Long executingEnd;
 
     public JobType getJobType() {
         return jobType;
@@ -35,20 +96,59 @@ public class BizLog implements Serializable {
         this.jobType = jobType;
     }
 
-    public String getTaskId() {
-        return taskId;
+    public Map<String, String> getInternalExtParams() {
+        return internalExtParams;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public String getInternalExtParam(String key) {
+        if (internalExtParams != null) {
+            return internalExtParams.get(key);
+        }
+        return null;
     }
 
-    public String getJobId() {
-        return jobId;
+    public void setInternalExtParam(String key, String value) {
+        if (internalExtParams == null) {
+            internalExtParams = new HashMap<String, String>();
+        }
+
+        internalExtParams.put(key, value);
     }
 
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
+    public void setInternalExtParams(Map<String, String> internalExtParams) {
+        this.internalExtParams = internalExtParams;
+    }
+
+    public Integer getRetryTimes() {
+        return retryTimes;
+    }
+
+    public void setRetryTimes(Integer retryTimes) {
+        this.retryTimes = retryTimes;
+    }
+
+    public Long getGmtCreated() {
+        return gmtCreated;
+    }
+
+    public void setGmtCreated(Long gmtCreated) {
+        this.gmtCreated = gmtCreated;
+    }
+
+    public LogType getLogType() {
+        return logType;
+    }
+
+    public void setLogType(LogType logType) {
+        this.logType = logType;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public String getMsg() {
@@ -59,6 +159,14 @@ public class BizLog implements Serializable {
         this.msg = msg;
     }
 
+    public String getTaskTrackerIdentity() {
+        return taskTrackerIdentity;
+    }
+
+    public void setTaskTrackerIdentity(String taskTrackerIdentity) {
+        this.taskTrackerIdentity = taskTrackerIdentity;
+    }
+
     public Level getLevel() {
         return level;
     }
@@ -67,20 +175,36 @@ public class BizLog implements Serializable {
         this.level = level;
     }
 
-    public Long getLogTime() {
-        return logTime;
+    public String getJobId() {
+        return jobId;
     }
 
-    public void setLogTime(Long logTime) {
-        this.logTime = logTime;
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
-    public String getTaskTrackerIdentity() {
-        return taskTrackerIdentity;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setTaskTrackerIdentity(String taskTrackerIdentity) {
-        this.taskTrackerIdentity = taskTrackerIdentity;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public String getSubmitNodeGroup() {
+        return submitNodeGroup;
+    }
+
+    public void setSubmitNodeGroup(String submitNodeGroup) {
+        this.submitNodeGroup = submitNodeGroup;
     }
 
     public String getTaskTrackerNodeGroup() {
@@ -91,11 +215,187 @@ public class BizLog implements Serializable {
         this.taskTrackerNodeGroup = taskTrackerNodeGroup;
     }
 
+    public Map<String, String> getExtParams() {
+        return extParams;
+    }
+
+    public void setExtParams(Map<String, String> extParams) {
+        this.extParams = extParams;
+    }
+
+    public boolean isNeedFeedback() {
+        return needFeedback;
+    }
+
+    public void setNeedFeedback(boolean needFeedback) {
+        this.needFeedback = needFeedback;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
+    }
+
+    public Long getTriggerTime() {
+        return triggerTime;
+    }
+
+    public void setTriggerTime(Long triggerTime) {
+        this.triggerTime = triggerTime;
+    }
+
+    public Long getLogTime() {
+        return logTime;
+    }
+
+    public void setLogTime(Long logTime) {
+        this.logTime = logTime;
+    }
+
+    public Integer getMaxRetryTimes() {
+        return maxRetryTimes;
+    }
+
+    public void setMaxRetryTimes(Integer maxRetryTimes) {
+        this.maxRetryTimes = maxRetryTimes;
+    }
+
+    public Integer getRepeatCount() {
+        return repeatCount;
+    }
+
+    public void setRepeatCount(Integer repeatCount) {
+        this.repeatCount = repeatCount;
+    }
+
+    public Integer getRepeatedCount() {
+        return repeatedCount;
+    }
+
+    public void setRepeatedCount(Integer repeatedCount) {
+        this.repeatedCount = repeatedCount;
+    }
+
+    public Long getRepeatInterval() {
+        return repeatInterval;
+    }
+
+    public void setRepeatInterval(Long repeatInterval) {
+        this.repeatInterval = repeatInterval;
+    }
+
     public String getRealTaskId() {
         return realTaskId;
     }
 
     public void setRealTaskId(String realTaskId) {
         this.realTaskId = realTaskId;
+    }
+
+    public Boolean getDepPreCycle() {
+        return depPreCycle;
+    }
+
+    public void setDepPreCycle(Boolean depPreCycle) {
+        this.depPreCycle = depPreCycle;
+    }
+
+    public Long getLastGenerateTriggerTime() {
+        return lastGenerateTriggerTime;
+    }
+
+    public void setLastGenerateTriggerTime(Long lastGenerateTriggerTime) {
+        this.lastGenerateTriggerTime = lastGenerateTriggerTime;
+    }
+
+    public Long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Long submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public int getRetryInternal() {
+        return retryInternal;
+    }
+
+    public void setRetryInternal(int retryInternal) {
+        this.retryInternal = retryInternal;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
+    }
+
+    public String getWorkflowDepends() {
+        return workflowDepends;
+    }
+
+    public void setWorkflowDepends(String workflowDepends) {
+        this.workflowDepends = workflowDepends;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public JobNodeType getJobNodeType() {
+        return jobNodeType;
+    }
+
+    public void setJobNodeType(JobNodeType jobNodeType) {
+        this.jobNodeType = jobNodeType;
+    }
+
+    public Long getExecutingStart() {
+        return executingStart;
+    }
+
+    public void setExecutingStart(Long executingStart) {
+        this.executingStart = executingStart;
+    }
+
+    public Long getExecutingEnd() {
+        return executingEnd;
+    }
+
+    public void setExecutingEnd(Long executingEnd) {
+        this.executingEnd = executingEnd;
     }
 }

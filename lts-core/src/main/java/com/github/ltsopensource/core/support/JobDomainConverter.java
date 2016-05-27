@@ -5,10 +5,7 @@ import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.constant.Constants;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
-import com.github.ltsopensource.core.domain.Job;
-import com.github.ltsopensource.core.domain.JobMeta;
-import com.github.ltsopensource.core.domain.JobRunResult;
-import com.github.ltsopensource.core.domain.JobType;
+import com.github.ltsopensource.core.domain.*;
 import com.github.ltsopensource.queue.domain.JobFeedbackPo;
 import com.github.ltsopensource.queue.domain.JobPo;
 
@@ -223,5 +220,10 @@ public class JobDomainConverter {
         jobFeedbackPo.setId(StringUtils.generateUUID());
         jobFeedbackPo.setGmtCreated(SystemClock.now());
         return jobFeedbackPo;
+    }
+
+    public static BizLog convert2BizLog(JobLogPo jobLogPo) {
+        BizLog bizLog = JobUtils.copyJobLogPo2BizLog(jobLogPo);
+        return bizLog;
     }
 }
