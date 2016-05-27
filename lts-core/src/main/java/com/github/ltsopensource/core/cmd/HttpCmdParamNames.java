@@ -10,5 +10,6 @@ public interface HttpCmdParamNames {
     String M_DATA = "mData";
 
     String PARAM_KEY_FOR_SUBMIT_OPERATION = "ltsTask";
-    String PARAM_KEY_FOR_KILL_OPERATION = "taskId";
+    String PARAM_KEY_FOR_KILL_OPERATION_TASK_ID = "taskId";
+    String PARAM_KEY_FOR_KILL_OPERATION_TASK_TRACKER_GROUP_NAME = "taskTrackerGroupName";
 }

@@ -46,6 +46,9 @@ public class JobInfoConstants {
     public static final String JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY =
             JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "executingStartTime";
 
+    public static final String JOB_LOG_PO_INTERNAL_PARAM_WORKFLOW_LOG_TYPE_KEY =
+            JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "workflowLogType";
+
     /**
      * Page size of jobPo needed to generate from cron job queue.
      */

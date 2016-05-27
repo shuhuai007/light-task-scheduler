@@ -27,7 +27,7 @@ public class KillOperationTest {
         job.setNeedFeedback(false);
         job.setReplaceOnExist(true);
         job.setParam("cronStartTime", String.valueOf(new Date().getTime()));
-        killOperation = new KillOperation(taskId, "", "", "");
+        killOperation = new KillOperation(taskId, "", "", "", "");
     }
 
     @Test
@@ -35,7 +35,9 @@ public class KillOperationTest {
         HttpCmd command = killOperation.generateHttpCommand();
         Assert.assertEquals(HttpCmdNames.HTTP_CMD_KILL_LTS_TASK, command.getCommand());
         Assert.assertTrue(command.getParams()
-                .containsKey(HttpCmdParamNames.PARAM_KEY_FOR_KILL_OPERATION));
+                .containsKey(HttpCmdParamNames.PARAM_KEY_FOR_KILL_OPERATION_TASK_ID));
+        Assert.assertTrue(command.getParams()
+                .containsKey(HttpCmdParamNames.PARAM_KEY_FOR_KILL_OPERATION_TASK_TRACKER_GROUP_NAME));
     }
 
 }
