@@ -14,8 +14,8 @@ public class SubmitOperation extends Operation{
     private LTSTask ltsTask;
 
     public SubmitOperation(LTSTask ltsTask, String zookeeperIP,
-                           String zookeeperPort, String jobTrackerGroupName) {
-        super(zookeeperIP, zookeeperPort, jobTrackerGroupName);
+                           String zookeeperPort, String clusterName) {
+        super(zookeeperIP, zookeeperPort, clusterName);
         this.ltsTask = ltsTask;
     }
 

@@ -15,12 +15,12 @@ import java.util.List;
 public abstract class Operation {
     private String zookeeperIP;
     private String zookeeperPort;
-    private String jobTrackerGroupName;
+    private String clusterName;
 
-    public Operation(String zookeeperIP, String zookeeperPort, String jobTrackerGroupName) {
+    public Operation(String zookeeperIP, String zookeeperPort, String clusterName) {
         this.zookeeperIP = zookeeperIP;
         this.zookeeperPort = zookeeperPort;
-        this.jobTrackerGroupName = jobTrackerGroupName;
+        this.clusterName = clusterName;
     }
 
     public Void call() throws LTSClientException {
@@ -45,7 +45,7 @@ public abstract class Operation {
 
     protected List<Node> getJobTrackerNodeList() {
         return JobTrackerInfoUtils.getJobTrackerList(zookeeperIP, zookeeperPort,
-                jobTrackerGroupName);
+                clusterName);
     }
 
     public abstract HttpCmd generateHttpCommand();

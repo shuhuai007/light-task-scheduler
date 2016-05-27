@@ -153,7 +153,7 @@ public class LTSClientTest {
 
     @Before
     public void before() {
-        ltsClient = new LTSClient(JOB_TRACKER_URL);
+        ltsClient = new LTSClient();
     }
 
     @Test
@@ -161,7 +161,7 @@ public class LTSClientTest {
         String JDL = "{\"taskName\": sdf }";
         String taskId = "1";
         String taskTrackGroupName = "test";
-        ltsClient = PowerMockito.spy(new LTSClient(JOB_TRACKER_URL));
+        ltsClient = PowerMockito.spy(new LTSClient());
         PowerMockito.mockStatic(JDLParser.class);
         PowerMockito.when(JDLParser.verifyJDL(JDL)).thenReturn(false);
 

@@ -11,11 +11,9 @@ import com.github.ltsopensource.core.domain.LTSTask;
  */
 public class LTSClient {
 
-    private String taskTrackGroupName;
-    private String jobTrackerUrl;
     private String zookeeperIP;
     private String zookeeperPort;
-    private String jobTrackerGroupName;
+    private String clusterName;
 
     public LTSClient() {
     }
@@ -23,23 +21,14 @@ public class LTSClient {
     /**
      * Create a lts client instance.
      *
-     * @param jobTrackerUrl URL of the jobTracker instance it will interact with.
-     */
-    public LTSClient(String jobTrackerUrl) {
-        this.jobTrackerUrl = jobTrackerUrl;
-    }
-
-    /**
-     * Create a lts client instance.
-     *
      * @param zookeeperIP ip points to zookeeper
      * @param zookeeperPort port of zookeeper server
-     * @param jobTrackerGroupName group name of jobTracker
+     * @param clusterName cluster name
      */
-    public LTSClient(String zookeeperIP, String zookeeperPort, String jobTrackerGroupName) {
+    public LTSClient(String zookeeperIP, String zookeeperPort, String clusterName) {
         this.zookeeperIP = zookeeperIP;
         this.zookeeperPort = zookeeperPort;
-        this.jobTrackerGroupName = jobTrackerGroupName;
+        this.clusterName = clusterName;
     }
 
     /**
@@ -53,7 +42,7 @@ public class LTSClient {
     public void submit(String jdl, String taskId, String taskTrackerGroupName) throws LTSClientException {
         if(JDLParser.verifyJDL(jdl)){
             LTSTask ltsTask = JDLParser.generateLTSTask(jdl, taskId, taskTrackerGroupName);
-            new SubmitOperation(ltsTask, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
+            new SubmitOperation(ltsTask, zookeeperIP, zookeeperPort, clusterName).call();
         } else {
             throw new LTSClientException("jdl can pass validation, please check your jdl");
         }
@@ -70,7 +59,7 @@ public class LTSClient {
         if (!validateTaskId(taskId)) {
             throw new LTSClientException();
         } else {
-            new KillOperation(taskId, taskTrackerGroupName, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
+            new KillOperation(taskId, taskTrackerGroupName, zookeeperIP, zookeeperPort, clusterName).call();
         }
     }
 

@@ -19,17 +19,17 @@ public class JobTrackerInfoUtils {
      * Get jobTracker node list from zookeeper
      * @param zookeeperIP ip points to zookeeper
      * @param zookeeperPort port of zookeeper server
-     * @param jobTrackerGroupName group name of jobTracker
+     * @param clusterName cluster name
      * @return a list of jobTracker
      */
     public static List<Node> getJobTrackerList(String zookeeperIP, String zookeeperPort, String
-            jobTrackerGroupName) {
+            clusterName) {
         List<Node> jobTrackerList = new ArrayList<Node>();
         Config config = new Config();
         config.setRegistryAddress("zookeeper://" + zookeeperIP + ":" + zookeeperPort);
         ZkClient zkClient = new ZkClientZkClient(config);
 
-        String jobTrackerGroupPath = NodeRegistryUtils.getNodeTypePath(jobTrackerGroupName, NodeType.JOB_TRACKER);
+        String jobTrackerGroupPath = NodeRegistryUtils.getNodeTypePath(clusterName, NodeType.JOB_TRACKER);
 
         List<String> childList = zkClient.getChildren(jobTrackerGroupPath);
         for(String child : childList) {
