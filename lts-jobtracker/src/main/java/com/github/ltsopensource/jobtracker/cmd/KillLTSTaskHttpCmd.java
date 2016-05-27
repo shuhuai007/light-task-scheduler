@@ -90,7 +90,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
 
         // Kill the job process in the taskTracker remotely.
         killJobsRemotely(jobPoList, taskTrackerNodeGroupName);
-        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+//        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
     }
 
     private void killJobsRemotely(List<JobPo> jobPoList, String taskTrackerNodeGroupName) {
