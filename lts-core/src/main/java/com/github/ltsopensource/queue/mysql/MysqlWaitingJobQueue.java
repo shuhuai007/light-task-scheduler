@@ -141,7 +141,7 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
     }
 
     @Override
-    public boolean remove(String workflowId) {
+    public boolean removeBatchByWorkflowId(String workflowId) {
         new DeleteSql(getSqlTemplate())
                 .delete()
                 .from()

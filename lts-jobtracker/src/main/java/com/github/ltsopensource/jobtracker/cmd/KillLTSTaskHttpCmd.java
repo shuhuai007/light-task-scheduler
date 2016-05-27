@@ -108,7 +108,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
 
     private void removeWaitingQueueAndLog(WaitingJobQueue waitingJobQueue, String workflowId) {
         List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(workflowId);
-        waitingJobQueue.remove(workflowId);
+        waitingJobQueue.removeBatchByWorkflowId(workflowId);
 
         JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
     }

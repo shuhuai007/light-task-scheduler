@@ -67,7 +67,7 @@ public interface WaitingJobQueue extends JobQueue {
      * @param workflowId workflow id of the lts task
      * @return true if removed successfully
      */
-    boolean remove(String workflowId);
+    boolean removeBatchByWorkflowId(String workflowId);
 
     /**
      * Gets list of {@link JobPo} based on workflowId.
