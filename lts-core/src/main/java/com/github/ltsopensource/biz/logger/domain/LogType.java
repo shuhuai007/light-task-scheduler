@@ -15,5 +15,6 @@ public enum LogType {
     DEL,             // 删除
     SUSPEND,        // 暂停
     RESUME,         // 恢复
+    KILL,           // Kill
     ;
 }

@@ -145,4 +145,16 @@ public class MongoExecutableJobQueue extends AbstractMongoJobQueue implements Ex
         // TODO(zj): to be implemented
         return false;
     }
+
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId, String taskTrackerGroupName) {
+        // TODO(zj): to be implemented
+        return null;
+    }
+
+    @Override
+    public boolean removeBatchByWorkflowId(String workflowId, String taskTrackerGroupName) {
+        // TODO(zj): to be implemented
+        return false;
+    }
 }

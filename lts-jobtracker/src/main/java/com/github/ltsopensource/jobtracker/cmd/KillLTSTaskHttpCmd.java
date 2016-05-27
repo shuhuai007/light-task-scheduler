@@ -1,17 +1,23 @@
 package com.github.ltsopensource.jobtracker.cmd;
 
+import com.github.ltsopensource.biz.logger.JobLogUtils;
+import com.github.ltsopensource.biz.logger.domain.LogType;
+import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
 import com.github.ltsopensource.cmd.HttpCmdProc;
 import com.github.ltsopensource.cmd.HttpCmdRequest;
 import com.github.ltsopensource.cmd.HttpCmdResponse;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
+import com.github.ltsopensource.core.commons.utils.CollectionUtils;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
-import com.github.ltsopensource.core.domain.LTSTask;
-import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
-import com.github.ltsopensource.core.protocol.command.JobSubmitRequest;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
+import com.github.ltsopensource.queue.ExecutableJobQueue;
+import com.github.ltsopensource.queue.WaitingJobQueue;
+import com.github.ltsopensource.queue.domain.JobPo;
+
+import java.util.List;
 
 /**
  * HTTP command to kill a lts task.
@@ -42,32 +48,60 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         HttpCmdResponse response = new HttpCmdResponse();
         response.setSuccess(false);
 
-        String ltsTaskJSON = request.getParam(HttpCmdParamNames.PARAM_KEY_FOR_SUBMIT_OPERATION);
-        if (StringUtils.isEmpty(ltsTaskJSON)) {
-            response.setMsg("ltsTask can not be null");
+        String taskId = request.getParam(HttpCmdParamNames.PARAM_KEY_FOR_KILL_OPERATION_TASK_ID);
+        String taskTrackerGroupName = request.getParam(
+                HttpCmdParamNames.PARAM_KEY_FOR_KILL_OPERATION_TASK_TRACKER_GROUP_NAME);
+        if (StringUtils.isEmpty(taskId)) {
+            response.setMsg("taskId can not be null");
+            return response;
+        }
+        if (StringUtils.isEmpty(taskTrackerGroupName)) {
+            response.setMsg("taskTrackerGroupName can not be null");
             return response;
         }
         try {
-            LTSTask ltsTask = JSON.parse(ltsTaskJSON, LTSTask.class);
-            if (ltsTask == null) {
-                response.setMsg("ltsTask can not be null, ltsTaskJson can't be parsed");
-                return response;
-            }
 
-            JobSubmitRequest jobSubmitRequest = new JobSubmitRequest();
-            jobSubmitRequest.setJobs(ltsTask.getDag());
-            appContext.getJobReceiver().receive(jobSubmitRequest);
-
-            LOGGER.info("submit lts task succeed, {}", ltsTask);
-
+            LOGGER.info("kill lts task succeed, taskId:{}, taskTrackerGroupName:{}", taskId, taskTrackerGroupName);
+            kill(taskId, taskTrackerGroupName, appContext);
             response.setSuccess(true);
 
         } catch (Exception e) {
-            LOGGER.error("submit  lts task error, message:", e);
-            response.setMsg("submit  lts task error, message:" + e.getMessage());
+            LOGGER.error("kill lts task error, message:", e);
+            response.setMsg("kill lts task error, message:" + e.getMessage());
         }
-        LOGGER.debug("exit SubmitLTSTaskHttpCmd");
         return response;
+    }
+
+    private void kill(String taskId, String taskTrackerGroupName, JobTrackerAppContext appContext) {
+        // Kill jobs of waiting queue.
+        removeWaitingQueueAndLog(appContext.getWaitingJobQueue(), taskId);
+        // Kill jobs of executable queue.
+        removeExecutableQueueAndLog(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
+        // kill jobs of executing queue, and kill related job process in the taskTracker.
+
+        // Update the workflow status of jobs that has been already finished.
+    }
+
+    private void removeExecutableQueueAndLog(ExecutableJobQueue executableJobQueue, String workflowId,
+                                             String taskTrackerGroupName) {
+        List<JobPo> jobPoList = null;
+        try {
+            jobPoList = executableJobQueue.getJobsByWorkflowId(workflowId, taskTrackerGroupName);
+        } catch(Exception e) {
+            LOGGER.warn("getJobsByWorkflowId(workflowId={}, taskTrackerGroupName={}) from executable queue error:{}",
+                    workflowId, taskTrackerGroupName, e.getCause());
+        }
+        if (CollectionUtils.isNotEmpty(jobPoList)) {
+            executableJobQueue.removeBatchByWorkflowId(workflowId, taskTrackerGroupName);
+            JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+        }
+    }
+
+    private void removeWaitingQueueAndLog(WaitingJobQueue waitingJobQueue, String taskId) {
+        List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(taskId);
+        waitingJobQueue.remove(taskId);
+
+        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
     }
 
 }

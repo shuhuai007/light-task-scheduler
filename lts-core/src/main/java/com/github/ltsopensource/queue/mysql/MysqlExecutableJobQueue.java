@@ -132,4 +132,26 @@ public class MysqlExecutableJobQueue extends AbstractMysqlJobQueue implements Ex
                 .and("trigger_time = ?", triggerTime)
                 .doDelete() == 1;
     }
+
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId, String taskTrackerGroupName) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName(taskTrackerGroupName))
+                .where("workflow_id = ?", workflowId)
+                .list(RshHolder.JOB_PO_LIST_RSH);
+    }
+
+    @Override
+    public boolean removeBatchByWorkflowId(String workflowId, String taskTrackerGroupName) {
+        new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName(taskTrackerGroupName))
+                .where("workflow_id = ?", workflowId)
+                .doDelete();
+        return true;
+    }
 }

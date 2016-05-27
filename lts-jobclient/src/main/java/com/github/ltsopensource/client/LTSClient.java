@@ -63,13 +63,14 @@ public class LTSClient {
      * Kill a task.
      *
      * @param taskId generated from task database table
+     * @param taskTrackerGroupName node group name
      * @throws LTSClientException the LTS client exception
      */
-    public void kill(String taskId) throws LTSClientException {
+    public void kill(String taskId, String taskTrackerGroupName) throws LTSClientException {
         if (!validateTaskId(taskId)) {
             throw new LTSClientException();
         } else {
-            new KillOperation(taskId, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
+            new KillOperation(taskId, taskTrackerGroupName, zookeeperIP, zookeeperPort, jobTrackerGroupName).call();
         }
     }
 

@@ -49,4 +49,22 @@ public interface ExecutableJobQueue extends JobQueue {
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
 
     boolean remove(String taskTrackerNodeGroup, String jobId, Long triggerTime);
+
+    /**
+     * Gets list of {@link JobPo} based on workflow id.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param taskTrackerGroupName task tracker group name
+     * @return list of {@link JobPo}
+     */
+    List<JobPo> getJobsByWorkflowId(String workflowId, String taskTrackerGroupName);
+
+    /**
+     * Remove batch based on workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param taskTrackerGroupName task tracker group name
+     * @return
+     */
+    boolean removeBatchByWorkflowId(String workflowId, String taskTrackerGroupName);
 }

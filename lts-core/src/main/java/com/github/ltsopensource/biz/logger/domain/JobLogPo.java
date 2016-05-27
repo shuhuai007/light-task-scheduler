@@ -4,6 +4,7 @@ import com.github.ltsopensource.core.constant.JobNodeType;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.domain.JobType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -95,6 +96,21 @@ public class JobLogPo {
 
     public Map<String, String> getInternalExtParams() {
         return internalExtParams;
+    }
+
+    public String getInternalExtParam(String key) {
+        if (internalExtParams != null) {
+            return internalExtParams.get(key);
+        }
+        return null;
+    }
+
+    public void setInternalExtParam(String key, String value) {
+        if (internalExtParams == null) {
+            internalExtParams = new HashMap<String, String>();
+        }
+
+        internalExtParams.put(key, value);
     }
 
     public void setInternalExtParams(Map<String, String> internalExtParams) {
