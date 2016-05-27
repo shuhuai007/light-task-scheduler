@@ -20,11 +20,30 @@ public class TaskTrackerNode {
 
     public Long timestamp = null;
 
+    private String ip;
+    private Integer httpPort;
+
     public TaskTrackerNode(String nodeGroup, int availableThread, String identity, ChannelWrapper channel) {
         this.nodeGroup = nodeGroup;
         this.availableThread = new AtomicInteger(availableThread);
         this.identity = identity;
         this.channel = channel;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public Integer getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpPort(Integer httpPort) {
+        this.httpPort = httpPort;
     }
 
     public TaskTrackerNode(String identity) {

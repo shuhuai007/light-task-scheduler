@@ -14,7 +14,8 @@ public class TestJobRunner implements JobRunner {
     @Override
     public Result run(JobContext jobContext) throws Throwable {
         System.out.println(JSON.toJSONString(jobContext));
-
+        System.out.println("sleep 2 min");
+        Thread.sleep(1000 * 60 * 2);
         return new Result(Action.EXECUTE_SUCCESS);
     }
 }

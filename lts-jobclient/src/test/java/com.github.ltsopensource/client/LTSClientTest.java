@@ -173,7 +173,7 @@ public class LTSClientTest {
     public void killTest() throws Exception {
         String taskId = "22222";
         String taskTrackerGroupName = "test_task_tracker_group";
-        ltsClient.kill(taskId, taskTrackerGroupName);
+//        ltsClient.kill(taskId, taskTrackerGroupName);
     }
 
     @Test

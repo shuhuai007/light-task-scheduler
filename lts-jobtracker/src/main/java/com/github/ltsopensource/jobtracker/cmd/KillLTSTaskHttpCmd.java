@@ -3,9 +3,8 @@ package com.github.ltsopensource.jobtracker.cmd;
 import com.github.ltsopensource.biz.logger.JobLogUtils;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
-import com.github.ltsopensource.cmd.HttpCmdProc;
-import com.github.ltsopensource.cmd.HttpCmdRequest;
-import com.github.ltsopensource.cmd.HttpCmdResponse;
+import com.github.ltsopensource.cmd.*;
+import com.github.ltsopensource.core.cluster.Node;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
@@ -13,6 +12,7 @@ import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
+import com.github.ltsopensource.jobtracker.domain.TaskTrackerNode;
 import com.github.ltsopensource.queue.ExecutableJobQueue;
 import com.github.ltsopensource.queue.ExecutingJobQueue;
 import com.github.ltsopensource.queue.WaitingJobQueue;
@@ -79,20 +79,48 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         // Kill jobs of executable queue.
         removeExecutableQueue(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
         // Kill jobs of executing queue, and kill related job process in the taskTracker.
-        removeExecutingQueue(appContext.getExecutingJobQueue(), taskId);
+        removeExecutingQueue(appContext.getExecutingJobQueue(), taskId, taskTrackerGroupName);
     }
 
-    private void removeExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId) {
+    private void removeExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId,
+                                      String taskTrackerNodeGroupName) {
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
         List<JobPo> jobPoList = executingJobQueue.getJobsByWorkflowId(workflowId);
         executingJobQueue.removeBatchByWorkflowId(workflowId);
 
         // Kill the job process in the taskTracker remotely.
-        killJobsRemotely(jobPoList);
+        killJobsRemotely(jobPoList, taskTrackerNodeGroupName);
         JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
     }
 
-    private void killJobsRemotely(List<JobPo> jobPoList) {
-        // TODO(zj): to be implemented
+    private void killJobsRemotely(List<JobPo> jobPoList, String taskTrackerNodeGroupName) {
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
+        LOGGER.info("killJobsRemotely jobPoList size:{}", jobPoList.size());
+        for (JobPo jobPo : jobPoList) {
+            String taskTrackerIdentity = jobPo.getTaskTrackerIdentity();
+            LOGGER.info("taskTrackerIdentity: {}", taskTrackerIdentity);
+            TaskTrackerNode taskTrackerNode = appContext.getTaskTrackerManager()
+                    .getTaskTrackerNode(taskTrackerNodeGroupName, jobPo.getTaskTrackerIdentity());
+            appContext.getNodeGroupStore();
+            if (taskTrackerNode == null) {
+//                return Builder.build(false, "执行该任务的TaskTracker已经离线");
+                LOGGER.warn("taskTrackerNode is null");
+                return;
+            }
+
+            LOGGER.info("taskTrackerNode ip:{}, port:{}", taskTrackerNode.getIp(), taskTrackerNode.getHttpPort());
+            HttpCmd cmd = new DefaultHttpCmd();
+            cmd.setCommand(HttpCmdNames.HTTP_CMD_JOB_TERMINATE);
+            cmd.setNodeIdentity(taskTrackerIdentity);
+            cmd.addParam("jobId", jobPo.getJobId());
+            HttpCmdResponse response = HttpCmdClient.doPost(taskTrackerNode.getIp(),
+                    taskTrackerNode.getHttpPort(), cmd);
+            if (response.isSuccess()) {
+                LOGGER.info("kill job:{} successfully", jobPo.getJobName());
+            } else {
+                LOGGER.info("kill job:{} fail:{}", jobPo.getJobName(), response.getMsg());
+            }
+        }
 
     }
 

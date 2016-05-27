@@ -54,6 +54,8 @@ public class TaskTrackerManager {
 
         TaskTrackerNode taskTrackerNode = new TaskTrackerNode(node.getGroup(),
                 node.getThreads(), node.getIdentity(), channel);
+        taskTrackerNode.setIp(node.getIp());
+        taskTrackerNode.setHttpPort(node.getHttpCmdPort());
         LOGGER.info("Add TaskTracker node:{}", taskTrackerNode);
         taskTrackerNodes.add(taskTrackerNode);
 
