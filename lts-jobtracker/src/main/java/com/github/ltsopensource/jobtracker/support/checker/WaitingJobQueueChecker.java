@@ -108,9 +108,9 @@ public class WaitingJobQueueChecker {
     }
 
     private boolean meetDependencies(JobPo jobPo) {
-        if (true) {
-            return false;
-        }
+//        if (true) {
+//            return false;
+//        }
         boolean result = false;
         switch (jobPo.getJobType()) {
             case TRIGGER_TIME:
