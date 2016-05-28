@@ -2,6 +2,7 @@ package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.KillOperation;
 import com.github.ltsopensource.client.operation.SubmitOperation;
+import com.github.ltsopensource.client.operation.SuspendOperation;
 import com.github.ltsopensource.client.utils.JDLParser;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
 import com.github.ltsopensource.core.domain.LTSTask;
@@ -57,7 +58,7 @@ public class LTSClient {
      */
     public void kill(String taskId, String taskTrackerGroupName) throws LTSClientException {
         if (!validateTaskId(taskId)) {
-            throw new LTSClientException();
+            throw new LTSClientException("taskId can't pass validation");
         } else {
             new KillOperation(taskId, taskTrackerGroupName, zookeeperIP, zookeeperPort, clusterName).call();
         }
@@ -75,13 +76,14 @@ public class LTSClient {
      * Suspend a task.
      *
      * @param taskId generated from task database table
+     * @param taskTrackerGroupName node group name
      * @throws LTSClientException the LTS client exception
      */
-    public void suspend(String taskId) throws LTSClientException {
+    public void suspend(String taskId, String taskTrackerGroupName) throws LTSClientException {
         if (!validateTaskId(taskId)) {
-            throw new LTSClientException();
+            throw new LTSClientException("taskId can't pass validation");
         } else {
-            // TODO(zj): to be implemented
+            new SuspendOperation(taskId, taskTrackerGroupName, zookeeperIP, zookeeperPort, clusterName).call();
         }
     }
 
@@ -93,7 +95,7 @@ public class LTSClient {
      */
     public void resume(String taskId) throws LTSClientException {
         if (!validateTaskId(taskId)) {
-            throw new LTSClientException();
+            throw new LTSClientException("taskId can't pass validation! ");
         } else {
             // TODO(zj): to be implemented
         }

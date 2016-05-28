@@ -179,7 +179,8 @@ public class LTSClientTest {
     @Test
     public void suspendTest() throws Exception {
         String taskId = "1";
-        ltsClient.suspend(taskId);
+        String taskTrackGroupName = "test_trade_taskTracker";
+        ltsClient.suspend(taskId, taskTrackGroupName);
     }
 
     @Test
@@ -201,6 +202,6 @@ public class LTSClientTest {
         String taskTrackGroupName = "test_trade_taskTracker";
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
 //        ltsClient.submit(CRON_JDL, taskId, taskTrackGroupName);
-        ltsClient.kill(taskId, taskTrackGroupName);
+//        ltsClient.kill(taskId, taskTrackGroupName);
     }
 }
