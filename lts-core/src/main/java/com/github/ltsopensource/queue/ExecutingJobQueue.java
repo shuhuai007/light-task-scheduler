@@ -52,7 +52,7 @@ public interface ExecutingJobQueue extends JobQueue {
      * Gets list of {@link JobPo} based on workflowId.
      *
      * @param workflowId workflow id of the lts task
-     * @return
+     * @return list of {@link JobPo} object
      */
     List<JobPo> getJobsByWorkflowId(String workflowId);
 }

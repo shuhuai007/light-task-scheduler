@@ -76,4 +76,14 @@ public interface WaitingJobQueue extends JobQueue {
      * @return list of {@link JobPo}
      */
     List<JobPo> getJobsByWorkflowId(String workflowId);
+
+    /**
+     * Gets list of {@link JobPo} based on workflowId, submitTime, jobName.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param submitTime submit time of the lts task
+     * @param jobName job name f the lts task
+     * @return list of {@link JobPo}
+     */
+    List<JobPo> getJobs(String workflowId, Long submitTime, String jobName);
 }

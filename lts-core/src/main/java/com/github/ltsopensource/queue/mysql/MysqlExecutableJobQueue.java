@@ -154,4 +154,16 @@ public class MysqlExecutableJobQueue extends AbstractMysqlJobQueue implements Ex
                 .doDelete();
         return true;
     }
+
+    @Override
+    public List<JobPo> getJobs(String workflowId, Long submitTime, String jobName, String taskTrackerGroupName) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName(taskTrackerGroupName))
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime)
+                .and("job_name = ?", jobName)
+                .list(RshHolder.JOB_PO_LIST_RSH);    }
 }

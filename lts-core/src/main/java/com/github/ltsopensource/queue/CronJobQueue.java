@@ -35,4 +35,20 @@ public interface CronJobQueue extends SchedulerJobQueue {
     JobPo getJob(String taskTrackerNodeGroup, String taskId);
 
     List<JobPo> getNeedGenerateJobPos(int topSize);
+
+    /**
+     * Gets list of {@link JobPo} based on workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @return list of {@link JobPo} object
+     */
+    List<JobPo> getJobsByWorkflowId(String workflowId);
+
+    /**
+     * Removes jobs that belong to this workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @return true if removed successfully
+     */
+    boolean removeBatchByWorkflowId(String workflowId);
 }

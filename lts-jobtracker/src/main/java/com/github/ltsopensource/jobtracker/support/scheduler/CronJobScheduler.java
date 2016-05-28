@@ -142,7 +142,10 @@ public class CronJobScheduler {
                 .JOB_PARAM_COORDINATOR_CONTROLS_THROTTLE_KEY);
         LOGGER.info("cronJobPo, job name:" + cronJobPo.getJobName() + ", throttle:" + throttleStr);
         final int throttle = Integer.valueOf(throttleStr);
-        final int stillWaiting = appContext.getWaitingJobQueue().getJobs(cronJobPo.getJobId()).size();
+        final int stillWaiting = appContext.getWaitingJobQueue().getJobs(cronJobPo.getWorkflowId(), cronJobPo
+                .getSubmitTime(), cronJobPo.getJobName()).size() +
+                appContext.getExecutableJobQueue().getJobs(cronJobPo.getWorkflowId(), cronJobPo
+                        .getSubmitTime(), cronJobPo.getJobName(), cronJobPo.getTaskTrackerNodeGroup()).size();
         int needGenerateNum = throttle - stillWaiting;
         LOGGER.info("cronJobPo, job name:" + cronJobPo.getJobName() +
                 ",needGenerateNum:" + needGenerateNum);

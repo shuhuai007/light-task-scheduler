@@ -161,4 +161,17 @@ public class MysqlWaitingJobQueue extends AbstractMysqlJobQueue implements Waiti
                 .where("workflow_id = ?", workflowId)
                 .list(RshHolder.JOB_PO_LIST_RSH);
     }
+
+    @Override
+    public List<JobPo> getJobs(String workflowId, Long submitTime, String jobName) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime)
+                .and("job_name = ?", jobName)
+                .list(RshHolder.JOB_PO_LIST_RSH);
+    }
 }

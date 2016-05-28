@@ -77,6 +77,28 @@ public class MysqlCronJobQueue extends MysqlSchedulerJobQueue implements CronJob
                 .list(RshHolder.JOB_PO_LIST_RSH);
     }
 
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .list(RshHolder.JOB_PO_LIST_RSH);
+    }
+
+    @Override
+    public boolean removeBatchByWorkflowId(String workflowId) {
+        new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .doDelete();
+        return true;
+    }
+
     protected String getTableName() {
         return JobQueueUtils.CRON_JOB_QUEUE;
     }

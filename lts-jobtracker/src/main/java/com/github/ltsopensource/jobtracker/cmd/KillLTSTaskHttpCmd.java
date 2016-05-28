@@ -13,6 +13,7 @@ import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.domain.TaskTrackerNode;
+import com.github.ltsopensource.queue.CronJobQueue;
 import com.github.ltsopensource.queue.ExecutableJobQueue;
 import com.github.ltsopensource.queue.ExecutingJobQueue;
 import com.github.ltsopensource.queue.WaitingJobQueue;
@@ -74,12 +75,23 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
     }
 
     private void kill(String taskId, String taskTrackerGroupName, JobTrackerAppContext appContext) {
+        // Kill jobs of cron queue
+        removeCronQueue(appContext.getCronJobQueue(), taskId);
         // Kill jobs of waiting queue.
         removeWaitingQueue(appContext.getWaitingJobQueue(), taskId);
         // Kill jobs of executable queue.
         removeExecutableQueue(appContext.getExecutableJobQueue(), taskId, taskTrackerGroupName);
         // Kill jobs of executing queue, and kill related job process in the taskTracker.
         removeExecutingQueue(appContext.getExecutingJobQueue(), taskId, taskTrackerGroupName);
+    }
+
+    private void removeCronQueue(CronJobQueue cronJobQueue, String workflowId) {
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getMethodName());
+        List<JobPo> jobPoList = cronJobQueue.getJobsByWorkflowId(workflowId);
+        if (CollectionUtils.isNotEmpty(jobPoList)) {
+            cronJobQueue.removeBatchByWorkflowId(workflowId);
+            LOGGER.info("Remove cron queue based on workflowId:{}", workflowId);
+        }
     }
 
     private void removeExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId,

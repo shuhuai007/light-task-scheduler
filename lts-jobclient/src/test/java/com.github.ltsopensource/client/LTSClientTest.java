@@ -200,7 +200,7 @@ public class LTSClientTest {
         String taskId = "1";
         String taskTrackGroupName = "test_trade_taskTracker";
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
-//        ltsClient.submit(REAL_TIME_JDL, taskId, taskTrackGroupName);
+//        ltsClient.submit(CRON_JDL, taskId, taskTrackGroupName);
         ltsClient.kill(taskId, taskTrackGroupName);
     }
 }
