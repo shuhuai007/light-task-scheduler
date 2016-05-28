@@ -14,7 +14,8 @@ public class KillOperation extends Operation {
     private String taskTrackerGroupName;
     private String taskId;
 
-    public KillOperation(String taskId, String taskTrackerGroupName, String zookeeperIP, String zookeeperPort, String clusterName) {
+    public KillOperation(String taskId, String taskTrackerGroupName, String zookeeperIP, String zookeeperPort,
+                         String clusterName) {
         super(zookeeperIP, zookeeperPort, clusterName);
         this.taskId = taskId;
         this.taskTrackerGroupName = taskTrackerGroupName;

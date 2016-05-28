@@ -39,7 +39,7 @@ public abstract class Operation {
         if (response != null) {
             throw new LTSClientException(response.getMsg());
         } else {
-            throw new LTSClientException("No http response");
+            throw new LTSClientException("No http response, can't find available jobTracker!");
         }
     }
 
