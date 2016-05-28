@@ -116,9 +116,9 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
             HttpCmdResponse response = HttpCmdClient.doPost(taskTrackerNode.getIp(),
                     taskTrackerNode.getHttpPort(), cmd);
             if (response.isSuccess()) {
-                LOGGER.info("kill job:{} successfully", jobPo.getJobName());
+                LOGGER.info("Kill job:{} successfully", jobPo.getJobName());
             } else {
-                LOGGER.info("kill job:{} fail:{}", jobPo.getJobName(), response.getMsg());
+                LOGGER.info("Kill job:{} fail:{}", jobPo.getJobName(), response.getMsg());
             }
         }
 
