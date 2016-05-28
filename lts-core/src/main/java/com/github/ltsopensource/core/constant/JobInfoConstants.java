@@ -39,15 +39,16 @@ public class JobInfoConstants {
      * Prefix of internal param key.
      */
     public static final String JOB_PO_INTERNAL_PARAM_KEY_PREFIX = "__LTS_";
-    public static final String LTS_IGNORE_ADD_ON_EXECUTING = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
-            "ignoreAddOnExecuting";
-    public static final String CRON_JOB_LAST_TRIGGER_TIME_KEY = JOB_PO_INTERNAL_PARAM_KEY_PREFIX +
-            "lastTriggerTime";
+    public static final String LTS_IGNORE_ADD_ON_EXECUTING =
+            JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "ignoreAddOnExecuting";
+    public static final String CRON_JOB_LAST_TRIGGER_TIME_KEY =
+            JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "lastTriggerTime";
     public static final String JOB_PO_INTERNAL_PARAM_EXECUTING_START_TIME_KEY =
             JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "executingStartTime";
-
     public static final String JOB_LOG_PO_INTERNAL_PARAM_WORKFLOW_LOG_TYPE_KEY =
             JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "workflowLogType";
+    public static final String JOB_PO_INTERNAL_PARAM_SUSPEND_ORIGIN_KEY =
+            JOB_PO_INTERNAL_PARAM_KEY_PREFIX + "suspendOriginQueue";
 
     /**
      * Page size of jobPo needed to generate from cron job queue.

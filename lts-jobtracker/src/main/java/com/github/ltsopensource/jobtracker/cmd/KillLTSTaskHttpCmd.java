@@ -63,8 +63,8 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         }
         try {
 
-            LOGGER.info("kill lts task succeed, taskId:{}, taskTrackerGroupName:{}", taskId, taskTrackerGroupName);
             kill(taskId, taskTrackerGroupName, appContext);
+            LOGGER.info("kill lts task succeed, taskId:{}, taskTrackerGroupName:{}", taskId, taskTrackerGroupName);
             response.setSuccess(true);
 
         } catch (Exception e) {
