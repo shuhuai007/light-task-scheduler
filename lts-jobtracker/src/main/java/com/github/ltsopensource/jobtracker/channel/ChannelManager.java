@@ -26,13 +26,13 @@ public class ChannelManager {
     private final Logger LOGGER = LoggerFactory.getLogger(ChannelManager.class);
 
     /**
-     * 客户端列表 (要保证同一个group的node要是无状态的) clientGroup
+     * 客户端列表 (要保证同一个group的node要是无状态的) clientGroup.
      */
     private final ConcurrentHashMap<String, List<ChannelWrapper>> clientChannelMap =
             new ConcurrentHashMap<String, List<ChannelWrapper>>();
 
     /**
-     * 任务节点列表taskTrackerNodeGroup
+     * 任务节点列表taskTrackerNodeGroup.
      */
     private final ConcurrentHashMap<String, List<ChannelWrapper>> taskTrackerChannelMap =
             new ConcurrentHashMap<String, List<ChannelWrapper>>();
@@ -41,7 +41,8 @@ public class ChannelManager {
             new NamedThreadFactory("LTS-Channel-Checker", true));
     private ScheduledFuture<?> scheduledFuture;
     // 存储离线一定时间内的节点信息
-    private final ConcurrentHashMap<String/*identity*/, Long> offlineTaskTrackerMap = new ConcurrentHashMap<String, Long>();
+    private final ConcurrentHashMap<String/*identity*/, Long> offlineTaskTrackerMap =
+            new ConcurrentHashMap<String, Long>();
     // 用来清理离线时间很长的信息
     private final ScheduledExecutorService offlineTaskTrackerCheckExecutorService =
             Executors.newScheduledThreadPool(1, new NamedThreadFactory("LTS-offline-TaskTracker-Checker", true));
@@ -50,6 +51,9 @@ public class ChannelManager {
 
     private AtomicBoolean start = new AtomicBoolean(false);
 
+    /**
+     * Start the {@link ChannelManager}.
+     */
     public void start() {
         try {
             if (start.compareAndSet(false, true)) {
@@ -105,6 +109,9 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Stops the {@link ChannelManager}.
+     */
     public void stop() {
         try {
             if (start.compareAndSet(true, false)) {
@@ -120,7 +127,7 @@ public class ChannelManager {
     }
 
     /**
-     * 检查 关闭的channel
+     * 检查 关闭的channel.
      */
     private void checkCloseChannel(NodeType nodeType, ConcurrentHashMap<String, List<ChannelWrapper>> channelMap) {
         for (Map.Entry<String, List<ChannelWrapper>> entry : channelMap.entrySet()) {
@@ -142,6 +149,13 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Gets channels based on nodeGroup and nodeType.
+     *
+     * @param nodeGroup node group
+     * @param nodeType node type
+     * @return list of channel wrapper
+     */
     public List<ChannelWrapper> getChannels(String nodeGroup, NodeType nodeType) {
         if (nodeType == NodeType.JOB_CLIENT) {
             return clientChannelMap.get(nodeGroup);
@@ -152,7 +166,12 @@ public class ChannelManager {
     }
 
     /**
-     * 根据 节点唯一编号得到 channel
+     * Gets a channel.
+     *
+     * @param nodeGroup node group name
+     * @param nodeType node type
+     * @param identity node identity
+     * @return a channel
      */
     public ChannelWrapper getChannel(String nodeGroup, NodeType nodeType, String identity) {
         List<ChannelWrapper> channelWrappers = getChannels(nodeGroup, nodeType);
@@ -167,7 +186,9 @@ public class ChannelManager {
     }
 
     /**
-     * 添加channel
+     * Add a channel.
+     *
+     * @param channel channel info to be added
      */
     public void offerChannel(ChannelWrapper channel) {
         String nodeGroup = channel.getNodeGroup();
@@ -194,10 +215,21 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Gets offline timestamp of taskTracker based on identity.
+     *
+     * @param identity identity of taskTracker
+     * @return offline timestamp of taskTracker
+     */
     public Long getOfflineTimestamp(String identity) {
         return offlineTaskTrackerMap.get(identity);
     }
 
+    /**
+     * Remove channel.
+     *
+     * @param channel channel info to be removed
+     */
     public void removeChannel(ChannelWrapper channel) {
         String nodeGroup = channel.getNodeGroup();
         NodeType nodeType = channel.getNodeType();
