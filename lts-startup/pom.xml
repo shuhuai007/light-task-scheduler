@@ -249,16 +249,16 @@
                 </dependency>
             </dependencies>
         </profile>
-        <profile>
-            <id>lts-admin</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>jetty</artifactId>
-                    <version>6.1.26</version>
-                </dependency>
-            </dependencies>
-        </profile>
+        <!--<profile>-->
+            <!--<id>lts-admin</id>-->
+            <!--<dependencies>-->
+                <!--<dependency>-->
+                    <!--<groupId>org.mortbay.jetty</groupId>-->
+                    <!--<artifactId>jetty</artifactId>-->
+                    <!--<version>6.1.26</version>-->
+                <!--</dependency>-->
+            <!--</dependencies>-->
+        <!--</profile>-->
     </profiles>
 
     <build>
