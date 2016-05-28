@@ -15,9 +15,7 @@ import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import java.util.Collections;
 
 /**
- * 添加任务
- *
- * @author Robert HG (254963746@qq.com) on 10/27/15.
+ * Add job command.
  */
 public class AddJobHttpCmd implements HttpCmdProc {
 
@@ -25,6 +23,11 @@ public class AddJobHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs a {@link AddJobHttpCmd}.
+     *
+     * @param appContext jobTracker app context
+     */
     public AddJobHttpCmd(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
@@ -78,5 +81,4 @@ public class AddJobHttpCmd implements HttpCmdProc {
         }
         return response;
     }
-
 }
