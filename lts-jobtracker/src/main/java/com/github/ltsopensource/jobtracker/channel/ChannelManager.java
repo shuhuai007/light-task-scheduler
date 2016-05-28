@@ -24,17 +24,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChannelManager {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ChannelManager.class);
-    // 客户端列表 (要保证同一个group的node要是无状态的)
-    private final ConcurrentHashMap<String/*clientGroup*/, List<ChannelWrapper>> clientChannelMap = new ConcurrentHashMap<String, List<ChannelWrapper>>();
-    // 任务节点列表
-    private final ConcurrentHashMap<String/*taskTrackerNodeGroup*/, List<ChannelWrapper>> taskTrackerChannelMap = new ConcurrentHashMap<String, List<ChannelWrapper>>();
+
+    /**
+     * 客户端列表 (要保证同一个group的node要是无状态的) clientGroup
+     */
+    private final ConcurrentHashMap<String, List<ChannelWrapper>> clientChannelMap =
+            new ConcurrentHashMap<String, List<ChannelWrapper>>();
+
+    /**
+     * 任务节点列表taskTrackerNodeGroup
+     */
+    private final ConcurrentHashMap<String, List<ChannelWrapper>> taskTrackerChannelMap =
+            new ConcurrentHashMap<String, List<ChannelWrapper>>();
     // 用来定时检查已经关闭的channel
-    private final ScheduledExecutorService channelCheckExecutorService = Executors.newScheduledThreadPool(1, new NamedThreadFactory("LTS-Channel-Checker", true));
+    private final ScheduledExecutorService channelCheckExecutorService = Executors.newScheduledThreadPool(1,
+            new NamedThreadFactory("LTS-Channel-Checker", true));
     private ScheduledFuture<?> scheduledFuture;
     // 存储离线一定时间内的节点信息
     private final ConcurrentHashMap<String/*identity*/, Long> offlineTaskTrackerMap = new ConcurrentHashMap<String, Long>();
     // 用来清理离线时间很长的信息
-    private final ScheduledExecutorService offlineTaskTrackerCheckExecutorService = Executors.newScheduledThreadPool(1, new NamedThreadFactory("LTS-offline-TaskTracker-Checker", true));
+    private final ScheduledExecutorService offlineTaskTrackerCheckExecutorService =
+            Executors.newScheduledThreadPool(1, new NamedThreadFactory("LTS-offline-TaskTracker-Checker", true));
+
     private ScheduledFuture<?> offlineTaskTrackerScheduledFuture;
 
     private AtomicBoolean start = new AtomicBoolean(false);
@@ -60,16 +71,25 @@ public class ChannelManager {
                     }
                 }, 10, 10, TimeUnit.SECONDS);
 
-                offlineTaskTrackerScheduledFuture = offlineTaskTrackerCheckExecutorService.scheduleWithFixedDelay(new Runnable() {
+                createOfflineTaskTrackerScheduler();
+
+            }
+            LOGGER.info("Start channel manager success!");
+        } catch (Throwable t) {
+            LOGGER.error("Start channel manager failed!", t);
+        }
+    }
+
+    private void createOfflineTaskTrackerScheduler() {
+        offlineTaskTrackerScheduledFuture = offlineTaskTrackerCheckExecutorService.scheduleWithFixedDelay(
+                new Runnable() {
                     @Override
                     public void run() {
                         try {
                             if (offlineTaskTrackerMap.size() > 0) {
                                 for (Map.Entry<String, Long> entry : offlineTaskTrackerMap.entrySet()) {
                                     // 清除离线超过一定时间的信息
-                                    if (SystemClock.now() - entry.getValue() > 2 * Constants.DEFAULT_TASK_TRACKER_OFFLINE_LIMIT_MILLIS) {
-                                        offlineTaskTrackerMap.remove(entry.getKey());
-                                    }
+                                    clearOfflineLimit(entry);
                                 }
                             }
                         } catch (Throwable t) {
@@ -77,11 +97,11 @@ public class ChannelManager {
                         }
                     }
                 }, 1, 1, TimeUnit.MINUTES);     // 1分钟检查一次
+    }
 
-            }
-            LOGGER.info("Start channel manager success!");
-        } catch (Throwable t) {
-            LOGGER.error("Start channel manager failed!", t);
+    private void clearOfflineLimit(Map.Entry<String, Long> entry) {
+        if (SystemClock.now() - entry.getValue() > 2 * Constants.DEFAULT_TASK_TRACKER_OFFLINE_LIMIT_MILLIS) {
+            offlineTaskTrackerMap.remove(entry.getKey());
         }
     }
 
