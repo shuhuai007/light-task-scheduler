@@ -4,18 +4,13 @@ import com.github.ltsopensource.biz.logger.SmartJobLogger;
 import com.github.ltsopensource.core.cluster.AbstractServerNode;
 import com.github.ltsopensource.core.spi.ServiceLoader;
 import com.github.ltsopensource.jobtracker.channel.ChannelManager;
-import com.github.ltsopensource.jobtracker.cmd.AddJobHttpCmd;
-import com.github.ltsopensource.jobtracker.cmd.KillLTSTaskHttpCmd;
-import com.github.ltsopensource.jobtracker.cmd.LoadJobHttpCmd;
-import com.github.ltsopensource.jobtracker.cmd.SubmitLTSTaskHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.*;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerNode;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
 import com.github.ltsopensource.jobtracker.processor.RemotingDispatcher;
 import com.github.ltsopensource.jobtracker.sender.JobSender;
 import com.github.ltsopensource.jobtracker.support.JobReceiver;
-import com.github.ltsopensource.jobtracker.support.scheduler.CronJobScheduler;
-import com.github.ltsopensource.jobtracker.support.scheduler.NonRelyOnPrevCycleJobScheduler;
 import com.github.ltsopensource.jobtracker.support.OldDataHandler;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutableDeadJobChecker;
 import com.github.ltsopensource.jobtracker.support.checker.ExecutingDeadJobChecker;
@@ -26,6 +21,7 @@ import com.github.ltsopensource.jobtracker.support.cluster.TaskTrackerManager;
 import com.github.ltsopensource.jobtracker.support.listener.JobNodeChangeListener;
 import com.github.ltsopensource.jobtracker.support.listener.JobTrackerMasterChangeListener;
 import com.github.ltsopensource.jobtracker.support.policy.OldDataDeletePolicy;
+import com.github.ltsopensource.jobtracker.support.scheduler.CronJobScheduler;
 import com.github.ltsopensource.queue.JobQueueFactory;
 import com.github.ltsopensource.remoting.RemotingProcessor;
 
@@ -80,7 +76,8 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
                 new LoadJobHttpCmd(appContext),
                 new AddJobHttpCmd(appContext),
                 new SubmitLTSTaskHttpCmd(appContext),
-                new KillLTSTaskHttpCmd(appContext));
+                new KillLTSTaskHttpCmd(appContext),
+                new SuspendLTSTaskHttpCmd(appContext));
 
         if(appContext.getOldDataHandler() == null){
             appContext.setOldDataHandler(new OldDataDeletePolicy());
