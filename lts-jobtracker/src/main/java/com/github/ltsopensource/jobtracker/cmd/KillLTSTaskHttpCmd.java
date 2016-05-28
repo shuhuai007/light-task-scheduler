@@ -3,8 +3,12 @@ package com.github.ltsopensource.jobtracker.cmd;
 import com.github.ltsopensource.biz.logger.JobLogUtils;
 import com.github.ltsopensource.biz.logger.domain.LogType;
 import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
-import com.github.ltsopensource.cmd.*;
-import com.github.ltsopensource.core.cluster.Node;
+import com.github.ltsopensource.cmd.DefaultHttpCmd;
+import com.github.ltsopensource.cmd.HttpCmd;
+import com.github.ltsopensource.cmd.HttpCmdClient;
+import com.github.ltsopensource.cmd.HttpCmdProc;
+import com.github.ltsopensource.cmd.HttpCmdRequest;
+import com.github.ltsopensource.cmd.HttpCmdResponse;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
@@ -30,6 +34,11 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link KillLTSTaskHttpCmd}.
+     *
+     * @param appContext jobTracker app context
+     */
     public KillLTSTaskHttpCmd(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
@@ -141,7 +150,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         List<JobPo> jobPoList = null;
         try {
             jobPoList = executableJobQueue.getJobsByWorkflowId(workflowId, taskTrackerGroupName);
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.warn("getJobsByWorkflowId(workflowId={}, taskTrackerGroupName={}) from executable queue error:{}",
                     workflowId, taskTrackerGroupName, e.getCause());
         }
