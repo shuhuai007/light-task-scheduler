@@ -9,7 +9,7 @@ import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 
 /**
- * 给JobTracker发送信号，加载任务
+ * 给JobTracker发送信号，加载任务.
  *
  * @author Robert HG (254963746@qq.com) on 10/26/15.
  */
@@ -19,6 +19,11 @@ public class LoadJobHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link LoadJobHttpCmd}.
+     *
+     * @param appContext jobTracker app context
+     */
     public LoadJobHttpCmd(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }

@@ -31,6 +31,11 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link SuspendLTSTaskHttpCmd}.
+     *
+     * @param jobTrackerAppContext jobTracker app context
+     */
     public SuspendLTSTaskHttpCmd(JobTrackerAppContext jobTrackerAppContext) {
         appContext = jobTrackerAppContext;
     }
@@ -47,8 +52,8 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
 
     @Override
     public HttpCmdResponse execute(HttpCmdRequest request) throws Exception {
-        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getClassName() + ", method" +
-                Thread.currentThread().getStackTrace()[1].getMethodName());
+        LOGGER.info("enter " + Thread.currentThread().getStackTrace()[1].getClassName() + ", method"
+                + Thread.currentThread().getStackTrace()[1].getMethodName());
         HttpCmdResponse response = new HttpCmdResponse();
         response.setSuccess(false);
 
@@ -114,7 +119,7 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
         List<JobPo> jobPoList = null;
         try {
             jobPoList = executableJobQueue.getJobsByWorkflowId(workflowId, taskTrackerGroupName);
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.warn("getJobsByWorkflowId(workflowId={}, taskTrackerGroupName={}) from executable queue error:{}",
                     workflowId, taskTrackerGroupName, e.getCause());
         }
@@ -127,7 +132,8 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
 
     }
 
-    private void suspendExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId, String taskTrackerGroupName) {
+    private void suspendExecutingQueue(ExecutingJobQueue executingJobQueue, String workflowId,
+                                       String taskTrackerGroupName) {
         recordMethod();
         List<JobPo> jobPoList = executingJobQueue.getJobsByWorkflowId(workflowId);
         executingJobQueue.removeBatchByWorkflowId(workflowId);
@@ -139,10 +145,8 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
     }
 
     private void setSuspendOrigin(JobPo jobPo, JobQueueType jobQueueType) {
-        jobPo.setInternalExtParam(JobInfoConstants.JOB_PO_INTERNAL_PARAM_SUSPEND_ORIGIN_KEY,
-                jobQueueType.name());
+        jobPo.setInternalExtParam(JobInfoConstants.JOB_PO_INTERNAL_PARAM_SUSPEND_ORIGIN_KEY, jobQueueType.name());
     }
-
 
     private void addSuspendQueue(List<JobPo> jobPoList, JobQueueType executableJobQueue) {
         for (JobPo jobPo : jobPoList) {

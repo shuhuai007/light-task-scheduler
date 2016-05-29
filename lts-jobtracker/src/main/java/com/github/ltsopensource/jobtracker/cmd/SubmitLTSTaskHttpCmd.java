@@ -6,15 +6,12 @@ import com.github.ltsopensource.cmd.HttpCmdResponse;
 import com.github.ltsopensource.core.cmd.HttpCmdNames;
 import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
-import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.core.domain.LTSTask;
 import com.github.ltsopensource.core.json.JSON;
 import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.core.protocol.command.JobSubmitRequest;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
-
-import java.util.Collections;
 
 /**
  * HTTP command to submit a lts task.
@@ -25,6 +22,11 @@ public class SubmitLTSTaskHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link SubmitLTSTaskHttpCmd}.
+     *
+     * @param appContext jobTracker app context
+     */
     public SubmitLTSTaskHttpCmd(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
