@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 任务完成
- *
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * JobProcBiz implementation of {@link JobCompletedBiz}.
  */
 public class JobProcBiz implements JobCompletedBiz {
 
@@ -33,6 +31,11 @@ public class JobProcBiz implements JobCompletedBiz {
     // 任务的最大重试次数
     private final Integer globalMaxRetryTimes;
 
+    /**
+     * Constructs new {@link JobProcBiz}.
+     *
+     * @param appContext jobTracker app context
+     */
     public JobProcBiz(final JobTrackerAppContext appContext) {
         this.retryHandler = new JobRetryHandler(appContext);
         this.jobFinishHandler = new JobFinishHandler(appContext);
@@ -94,7 +97,7 @@ public class JobProcBiz implements JobCompletedBiz {
     }
 
     /**
-     * 判断任务是否需要加入重试队列
+     * 判断任务是否需要加入重试队列.
      */
     private boolean needRetry(JobRunResult result) {
         // 判断类型
@@ -111,7 +114,7 @@ public class JobProcBiz implements JobCompletedBiz {
     }
 
     /**
-     * 这里情况一般是发送失败，重新发送的
+     * 这里情况一般是发送失败，重新发送的.
      */
     private void multiResultsProcess(List<JobRunResult> results) {
 

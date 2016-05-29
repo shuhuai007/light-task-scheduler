@@ -4,13 +4,15 @@ import com.github.ltsopensource.core.protocol.command.JobCompletedRequest;
 import com.github.ltsopensource.remoting.protocol.RemotingCommand;
 
 /**
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * Job completed biz.
  */
 public interface JobCompletedBiz {
 
     /**
-     * 如果返回空表示继续执行
+     * Do biz when job is completed.
+     *
+     * @param request job completed request
+     * @return remoting command
      */
     RemotingCommand doBiz(JobCompletedRequest request);
-
 }

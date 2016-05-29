@@ -19,17 +19,19 @@ import com.github.ltsopensource.remoting.protocol.RemotingProtos;
 import java.util.List;
 
 /**
- * 任务数据统计 Chain
- *
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * 任务数据统计 Chain.
  */
 public class JobStatBiz implements JobCompletedBiz {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(JobStatBiz.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobStatBiz.class);
 
     private JobTrackerAppContext appContext;
     private JobTrackerMStatReporter stat;
 
+    /**
+     * Constructs new {@link JobStatBiz}.
+     *
+     * @param appContext jobTracker app context
+     */
     public JobStatBiz(JobTrackerAppContext appContext) {
         this.appContext = appContext;
         this.stat = (JobTrackerMStatReporter) appContext.getMStatReporter();
@@ -81,6 +83,8 @@ public class JobStatBiz implements JobCompletedBiz {
                         break;
                     case EXECUTE_EXCEPTION:
                         stat.incExeExceptionNum();
+                        break;
+                    default:
                         break;
                 }
             }
