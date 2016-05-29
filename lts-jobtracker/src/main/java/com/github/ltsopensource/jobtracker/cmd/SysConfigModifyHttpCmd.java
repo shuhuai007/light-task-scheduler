@@ -5,8 +5,7 @@ import com.github.ltsopensource.cmd.HttpCmdRequest;
 import com.github.ltsopensource.cmd.HttpCmdResponse;
 
 /**
- * 一些系统配置更改CMD
- * @author Robert HG (254963746@qq.com) on 3/16/16.
+ * 一些系统配置更改CMD.
  */
 public class SysConfigModifyHttpCmd implements HttpCmdProc {
 
