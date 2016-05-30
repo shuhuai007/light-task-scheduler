@@ -34,6 +34,11 @@ public class ResumeLTSTaskHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Creates new {@link ResumeLTSTaskHttpCmd}.
+     *
+     * @param appContext jobTracker app context
+     */
     public ResumeLTSTaskHttpCmd(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
