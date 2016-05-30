@@ -180,20 +180,20 @@ public class LTSClientTest {
     public void suspendTest() throws Exception {
         String taskId = "1";
         String taskTrackGroupName = "test_trade_taskTracker";
-        ltsClient.suspend(taskId, taskTrackGroupName);
+//        ltsClient.suspend(taskId, taskTrackGroupName);
     }
 
     @Test
     public void resumeTest() throws Exception {
         String taskId = "1";
-        ltsClient.resume(taskId);
+//        ltsClient.resume(taskId);
     }
 
     @Test
     public void reRunTest() throws Exception {
         String taskId = "1";
         String planTime = "2016-11-01T23:00Z";
-        ltsClient.reRun(taskId, planTime);
+//        ltsClient.reRun(taskId, planTime);
     }
 
     @Test
@@ -203,6 +203,7 @@ public class LTSClientTest {
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
 //        ltsClient.submit(REAL_TIME_JDL, taskId, taskTrackGroupName);
 //        ltsClient.kill(taskId, taskTrackGroupName);
-        ltsClient.suspend(taskId, taskTrackGroupName);
+//        ltsClient.suspend(taskId, taskTrackGroupName);
+        ltsClient.resume(taskId, taskTrackGroupName);
     }
 }

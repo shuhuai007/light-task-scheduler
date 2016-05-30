@@ -1,6 +1,7 @@
 package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.KillOperation;
+import com.github.ltsopensource.client.operation.ResumeOperation;
 import com.github.ltsopensource.client.operation.SubmitOperation;
 import com.github.ltsopensource.client.operation.SuspendOperation;
 import com.github.ltsopensource.client.utils.JDLParser;
@@ -91,13 +92,14 @@ public class LTSClient {
      * Resume a workflow job.
      *
      * @param taskId generated from task database table
+     * @param taskTrackGroupName
      * @throws LTSClientException the LTS client exception
      */
-    public void resume(String taskId) throws LTSClientException {
+    public void resume(String taskId, String taskTrackGroupName) throws LTSClientException {
         if (!validateTaskId(taskId)) {
             throw new LTSClientException("taskId can't pass validation! ");
         } else {
-            // TODO(zj): to be implemented
+            new ResumeOperation(taskId, taskTrackGroupName, zookeeperIP, zookeeperPort, clusterName).call();
         }
     }
 

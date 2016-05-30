@@ -73,8 +73,6 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         appContext.setWaitingJobQueueChecker(new WaitingJobQueueChecker(appContext));
 
         appContext.getHttpCmdServer().registerCommands(
-                new LoadJobHttpCmd(appContext),
-                new AddJobHttpCmd(appContext),
                 new SubmitLTSTaskHttpCmd(appContext),
                 new KillLTSTaskHttpCmd(appContext),
                 new SuspendLTSTaskHttpCmd(appContext),

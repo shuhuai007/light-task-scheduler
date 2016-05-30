@@ -7,7 +7,7 @@ import com.github.ltsopensource.core.cmd.HttpCmdParamNames;
 import com.github.ltsopensource.core.domain.LTSTask;
 
 /**
- * Operation used to kill a {@link LTSTask}.
+ * Operation used to suspend a {@link LTSTask}.
  */
 public class SuspendOperation extends Operation {
     private String taskTrackerGroupName;
