@@ -24,4 +24,6 @@ public interface HttpCmdNames {
     String HTTP_CMD_SUSPEND_LTS_TASK = "lts_task_suspend_cmd";
 
     String HTTP_CMD_RESUME_LTS_TASK = "lts_task_resume_cmd";
+
+    String HTTP_CMD_RERUN_LTS_TASK = "lts_task_rerun_cmd";
 }

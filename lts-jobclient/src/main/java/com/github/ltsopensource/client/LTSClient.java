@@ -1,15 +1,17 @@
 package com.github.ltsopensource.client;
 
 import com.github.ltsopensource.client.operation.KillOperation;
+import com.github.ltsopensource.client.operation.ReRunOperation;
 import com.github.ltsopensource.client.operation.ResumeOperation;
 import com.github.ltsopensource.client.operation.SubmitOperation;
 import com.github.ltsopensource.client.operation.SuspendOperation;
 import com.github.ltsopensource.client.utils.JDLParser;
 import com.github.ltsopensource.core.commons.utils.StringUtils;
+import com.github.ltsopensource.core.commons.utils.UTCDateUtils;
 import com.github.ltsopensource.core.domain.LTSTask;
 
 /**
- * Client API to submit and manage lts task.
+ * Client API to submit and manage a lts task.
  */
 public class LTSClient {
 
@@ -115,6 +117,31 @@ public class LTSClient {
      */
     public void reRun(String taskId, String planTime) throws LTSClientException {
         if (!validateTaskId(taskId)) {
+            throw new LTSClientException("Illegal taskId, please check!");
+        }
+        if (!validatePlanTime(planTime)) {
+            throw new LTSClientException("Illegal planTime, please check!");
+        }
+        Long timestamp;
+        try {
+            String utcPlanTime = restore2StandardUTC(planTime);
+            timestamp = UTCDateUtils.getCalendar(utcPlanTime).getTimeInMillis();
+        } catch (Exception e) {
+            throw new LTSClientException("Illegal planTime, can't be transformed into long value!");
+        }
+        new ReRunOperation(taskId, timestamp, zookeeperIP, zookeeperPort, clusterName);
+    }
+
+    /**
+     * Rerun a task instance based on plan time.
+     *
+     * @param taskId generated from task database table
+     * @param planTime plan time of this task instance
+     * @param reRunSuccessfulJobList job name list string which are successful jobs but need to rerun
+     * @throws LTSClientException
+     */
+    public void reRun(String taskId, String planTime, String reRunSuccessfulJobList) throws LTSClientException {
+        if (!validateTaskId(taskId)) {
             throw new LTSClientException();
         }
         if (!validatePlanTime(planTime)) {
@@ -125,5 +152,10 @@ public class LTSClient {
 
     private boolean validatePlanTime(String planTime) {
         return true;
+    }
+
+    private String restore2StandardUTC(String planTime) {
+        // TODO(zj): to be implemented
+        return planTime;
     }
 }
