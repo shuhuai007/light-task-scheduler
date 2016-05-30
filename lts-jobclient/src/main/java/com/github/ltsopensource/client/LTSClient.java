@@ -17,11 +17,14 @@ public class LTSClient {
     private String zookeeperPort;
     private String clusterName;
 
+    /**
+     * Default constructor.
+     */
     public LTSClient() {
     }
 
     /**
-     * Create a lts client instance.
+     * Creates a lts client instance.
      *
      * @param zookeeperIP ip points to zookeeper
      * @param zookeeperPort port of zookeeper server
@@ -97,7 +100,7 @@ public class LTSClient {
      */
     public void resume(String taskId, String taskTrackGroupName) throws LTSClientException {
         if (!validateTaskId(taskId)) {
-            throw new LTSClientException("taskId can't pass validation! ");
+            throw new LTSClientException("taskId can't pass validation!");
         } else {
             new ResumeOperation(taskId, taskTrackGroupName, zookeeperIP, zookeeperPort, clusterName).call();
         }
