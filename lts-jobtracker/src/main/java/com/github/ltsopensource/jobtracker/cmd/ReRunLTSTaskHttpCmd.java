@@ -25,6 +25,11 @@ public class ReRunLTSTaskHttpCmd implements HttpCmdProc {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link ReRunLTSTaskHttpCmd}.
+     *
+     * @param jobTrackerAppContext jobTracker app context
+     */
     public ReRunLTSTaskHttpCmd(JobTrackerAppContext jobTrackerAppContext) {
         appContext = jobTrackerAppContext;
     }
