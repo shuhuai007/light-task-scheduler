@@ -11,6 +11,7 @@
 
     <artifactId>lts-jobtracker</artifactId>
 
+
     <dependencies>
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
@@ -18,5 +19,37 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <configLocation>../build/checkstyle/lts_checks.xml</configLocation>
+                    <suppressionsLocation>../build/checkstyle/suppressions.xml</suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file
+                    </suppressionsFileExpression>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <!--<excludes>**/org/apache/jsp/**,**/alluxio/thrift/**,**/alluxio/proto/**</excludes>-->
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <linkXRef>false</linkXRef>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
