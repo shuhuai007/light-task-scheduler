@@ -1,15 +1,29 @@
 package com.github.ltsopensource.cmd;
 
 /**
- * Cmd 处理器
- * @author Robert HG (254963746@qq.com) on 10/26/15.
+ * Http command processor.
  */
 public interface HttpCmdProc {
-
+    /**
+     * Gets node identity.
+     *
+     * @return string of node identity
+     */
     String nodeIdentity();
 
+    /**
+     * Gets http command.
+     *
+     * @return http command
+     */
     String getCommand();
 
+    /**
+     * Sends {@link HttpCmdRequest} remotely.
+     *
+     * @param request http command request
+     * @return http command response
+     * @throws Exception if executing this request
+     */
     HttpCmdResponse execute(HttpCmdRequest request) throws Exception;
-
 }
