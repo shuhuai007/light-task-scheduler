@@ -4,7 +4,10 @@ import com.github.ltsopensource.biz.logger.SmartJobLogger;
 import com.github.ltsopensource.core.cluster.AbstractServerNode;
 import com.github.ltsopensource.core.spi.ServiceLoader;
 import com.github.ltsopensource.jobtracker.channel.ChannelManager;
-import com.github.ltsopensource.jobtracker.cmd.*;
+import com.github.ltsopensource.jobtracker.cmd.KillLTSTaskHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.ResumeLTSTaskHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.SubmitLTSTaskHttpCmd;
+import com.github.ltsopensource.jobtracker.cmd.SuspendLTSTaskHttpCmd;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerAppContext;
 import com.github.ltsopensource.jobtracker.domain.JobTrackerNode;
 import com.github.ltsopensource.jobtracker.monitor.JobTrackerMStatReporter;
@@ -26,10 +29,13 @@ import com.github.ltsopensource.queue.JobQueueFactory;
 import com.github.ltsopensource.remoting.RemotingProcessor;
 
 /**
- * @author Robert HG (254963746@qq.com) on 7/23/14.
+ * JobTracker.
  */
 public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerAppContext> {
 
+    /**
+     * Constructs new {@link JobTracker}.
+     */
     public JobTracker() {
         // 添加节点变化监听器
         addNodeChangeListener(new JobNodeChangeListener(appContext));
@@ -78,7 +84,7 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
                 new SuspendLTSTaskHttpCmd(appContext),
                 new ResumeLTSTaskHttpCmd(appContext));
 
-        if(appContext.getOldDataHandler() == null){
+        if (appContext.getOldDataHandler() == null) {
             appContext.setOldDataHandler(new OldDataDeletePolicy());
         }
     }
@@ -105,6 +111,11 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
         return new RemotingDispatcher(appContext);
     }
 
+    /**
+     * Set {@link OldDataHandler}.
+     *
+     * @param oldDataHandler old data handler
+     */
     public void setOldDataHandler(OldDataHandler oldDataHandler) {
         appContext.setOldDataHandler(oldDataHandler);
     }
