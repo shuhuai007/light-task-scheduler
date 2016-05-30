@@ -138,6 +138,12 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
         List<JobPo> jobPoList = executingJobQueue.getJobsByWorkflowId(workflowId);
         executingJobQueue.removeBatchByWorkflowId(workflowId);
         addSuspendQueue(jobPoList, JobQueueType.EXECUTING_JOB_QUEUE);
+        // TODO(zj): to be considered
+        killRunningJob(taskTrackerGroupName);
+    }
+
+    private void killRunningJob(String taskTrackerGroupName) {
+        // do nothing temporarily
     }
 
     private void recordMethod() {
