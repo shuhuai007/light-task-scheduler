@@ -10,14 +10,17 @@ import com.github.ltsopensource.remoting.protocol.RemotingCommand;
 import com.github.ltsopensource.remoting.protocol.RemotingProtos;
 
 /**
- * 接受新任务Chain
- *
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * 接受新任务Chain.
  */
 public class PushNewJobBiz implements JobCompletedBiz {
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link PushNewJobBiz}.
+     *
+     * @param appContext jobTracker app context
+     */
     public PushNewJobBiz(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
@@ -30,28 +33,36 @@ public class PushNewJobBiz implements JobCompletedBiz {
                 // 查看有没有其他可以执行的任务
                 JobPushRequest jobPushRequest = getNewJob(request.getNodeGroup(), request.getIdentity());
                 // 返回 新的任务
-                return RemotingCommand.createResponseCommand(RemotingProtos.ResponseCode.SUCCESS.code(), jobPushRequest);
+                return RemotingCommand.createResponseCommand(RemotingProtos.ResponseCode.SUCCESS.code(),
+                        jobPushRequest);
             } catch (Exception ignored) {
+                // do nothing
             }
         }
         return null;
     }
 
     /**
-     * 获取新任务去执行
+     * Gets new task to execute.
+     *
+     * @param taskTrackerNodeGroup taskTracker node group name
+     * @param taskTrackerIdentity taskTracker identity
+     * @return {@link JobPushRequest}
      */
     private JobPushRequest getNewJob(String taskTrackerNodeGroup, String taskTrackerIdentity) {
 
-        JobSender.SendResult sendResult = appContext.getJobSender().send(taskTrackerNodeGroup, taskTrackerIdentity, new JobSender.SendInvoker() {
-            @Override
-            public JobSender.SendResult invoke(JobPo jobPo) {
+        JobSender.SendResult sendResult = appContext.getJobSender().send(taskTrackerNodeGroup, taskTrackerIdentity,
+                new JobSender.SendInvoker() {
+                    @Override
+                    public JobSender.SendResult invoke(JobPo jobPo) {
 
-                JobPushRequest jobPushRequest = appContext.getCommandBodyWrapper().wrapper(new JobPushRequest());
-                jobPushRequest.setJobMeta(JobDomainConverter.convert2JobMeta(jobPo));
+                        JobPushRequest jobPushRequest = appContext.getCommandBodyWrapper().wrapper(
+                                new JobPushRequest());
+                        jobPushRequest.setJobMeta(JobDomainConverter.convert2JobMeta(jobPo));
 
-                return new JobSender.SendResult(true, jobPushRequest);
-            }
-        });
+                        return new JobSender.SendResult(true, jobPushRequest);
+                    }
+                });
 
         if (sendResult.isSuccess()) {
             return (JobPushRequest) sendResult.getReturnValue();
