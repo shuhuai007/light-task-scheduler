@@ -203,5 +203,6 @@ public class LTSClientTest {
         ltsClient = new LTSClient("127.0.0.1","2181", "test_cluster");
 //        ltsClient.submit(CRON_JDL, taskId, taskTrackGroupName);
 //        ltsClient.kill(taskId, taskTrackGroupName);
+//        ltsClient.suspend(taskId, taskTrackGroupName);
     }
 }
