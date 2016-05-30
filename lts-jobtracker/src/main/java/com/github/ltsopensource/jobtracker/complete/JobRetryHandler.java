@@ -19,20 +19,31 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * Job retry handler.
  */
 public class JobRetryHandler {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JobRetryHandler.class);
 
     private JobTrackerAppContext appContext;
-    private long retryInterval = 30 * 1000;     // 默认30s
+    // default is 30s
+    private long retryInterval = 30 * 1000;
 
+    /**
+     * Constructs new {@link JobRetryHandler}.
+     *
+     * @param appContext jobTracker app context
+     */
     public JobRetryHandler(JobTrackerAppContext appContext) {
         this.appContext = appContext;
-        this.retryInterval = appContext.getConfig().getParameter(ExtConfig.JOB_TRACKER_JOB_RETRY_INTERVAL_MILLIS, 30 * 1000);
+        this.retryInterval = appContext.getConfig().getParameter(ExtConfig.JOB_TRACKER_JOB_RETRY_INTERVAL_MILLIS,
+                30 * 1000);
     }
 
+    /**
+     * This method will be called when retry job.
+     *
+     * @param results list of {@link JobRunResult}
+     */
     public void onComplete(List<JobRunResult> results) {
 
         if (CollectionUtils.isEmpty(results)) {
@@ -69,7 +80,8 @@ public class JobRetryHandler {
                 JobPo repeatJobPo = appContext.getRepeatJobQueue().getJob(jobMeta.getJobId());
                 if (repeatJobPo != null) {
                     // 比较下一次重复时间和重试时间
-                    if (repeatJobPo.getRepeatCount() == -1 || (repeatJobPo.getRepeatedCount() < repeatJobPo.getRepeatCount())) {
+                    if (repeatJobPo.getRepeatCount() == -1
+                            || (repeatJobPo.getRepeatedCount() < repeatJobPo.getRepeatCount())) {
                         long nexTriggerTime = JobUtils.getRepeatNextTriggerTime(jobPo);
                         if (nexTriggerTime < nextRetryTriggerTime) {
                             // 表示下次还要执行, 并且下次执行时间比下次重试时间要早, 那么不重试，直接使用下次的执行时间
