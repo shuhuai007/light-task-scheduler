@@ -6,7 +6,6 @@ import com.github.ltsopensource.biz.logger.domain.JobLoggerRequest;
 import com.github.ltsopensource.core.AppContext;
 import com.github.ltsopensource.core.cluster.Config;
 import com.github.ltsopensource.core.commons.utils.CollectionUtils;
-import com.github.ltsopensource.core.constant.Constants;
 import com.github.ltsopensource.core.constant.ExtConfig;
 import com.github.ltsopensource.core.factory.NamedThreadFactory;
 import com.github.ltsopensource.core.logger.Logger;
@@ -182,5 +181,20 @@ public class LazyJobLogger implements JobLogger {
     @Override
     public JobLogPo getJobLogPo(String workflowId, Long submitTime, String jobName, Long triggerTime) {
         return delegate.getJobLogPo(workflowId, submitTime, jobName, triggerTime);
+    }
+
+    @Override
+    public List<JobLogPo> getJobLogPoListWithEndStatus(String workflowId, Long submitTime, Long triggerTime) {
+        return delegate.getJobLogPoListWithEndStatus(workflowId, submitTime, triggerTime);
+    }
+
+    @Override
+    public Long getMaxSubmitTime(String workflowId, Long triggerTime) {
+        return delegate.getMaxSubmitTime(workflowId, triggerTime);
+    }
+
+    @Override
+    public boolean remove(JobLogPo jobLogPo) {
+        return delegate.remove(jobLogPo);
     }
 }

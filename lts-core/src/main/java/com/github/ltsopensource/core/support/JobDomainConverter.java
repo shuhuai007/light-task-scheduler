@@ -226,4 +226,41 @@ public class JobDomainConverter {
         BizLog bizLog = JobUtils.copyJobLogPo2BizLog(jobLogPo);
         return bizLog;
     }
+
+    public static JobPo convert2JobPo(JobLogPo jobLogPo) {
+        JobPo jobPo = new JobPo();
+        jobPo.setGmtCreated(SystemClock.now());
+        jobPo.setPriority(jobLogPo.getPriority());
+        jobPo.setJobType(jobLogPo.getJobType());
+        jobPo.setExtParams(jobLogPo.getExtParams());
+        jobPo.setInternalExtParams(jobLogPo.getInternalExtParams());
+        jobPo.setSubmitNodeGroup(jobLogPo.getSubmitNodeGroup());
+        jobPo.setTaskId(jobLogPo.getTaskId());
+        jobPo.setRealTaskId(jobLogPo.getRealTaskId());
+        jobPo.setTaskTrackerNodeGroup(jobLogPo.getTaskTrackerNodeGroup());
+        jobPo.setNeedFeedback(jobPo.isNeedFeedback());
+        jobPo.setJobId(jobLogPo.getJobId());
+        jobPo.setCronExpression(jobLogPo.getCronExpression());
+        jobPo.setTriggerTime(jobLogPo.getTriggerTime());
+        jobPo.setTaskTrackerIdentity(jobLogPo.getTaskTrackerIdentity());
+        jobPo.setRetryTimes(jobLogPo.getRetryTimes());
+        jobPo.setMaxRetryTimes(jobLogPo.getMaxRetryTimes());
+        jobPo.setRelyOnPrevCycle(jobLogPo.getDepPreCycle());
+
+        jobPo.setRepeatCount(jobLogPo.getRepeatCount());
+        jobPo.setRepeatedCount(jobLogPo.getRepeatedCount());
+        jobPo.setRepeatInterval(jobLogPo.getRepeatInterval());
+
+        jobPo.setLastGenerateTriggerTime(jobLogPo.getLastGenerateTriggerTime());
+        jobPo.setSubmitTime(jobLogPo.getSubmitTime());
+        jobPo.setWorkflowId(jobLogPo.getWorkflowId());
+        jobPo.setWorkflowName(jobLogPo.getWorkflowName());
+        jobPo.setWorkflowDepends(jobLogPo.getWorkflowDepends());
+        jobPo.setStartTime(jobLogPo.getStartTime());
+        jobPo.setEndTime(jobLogPo.getEndTime());
+        jobPo.setJobName(jobLogPo.getJobName());
+        jobPo.setJobNodeType(jobLogPo.getJobNodeType());
+        jobPo.setRetryInternal(jobLogPo.getRetryInternal());
+        return jobPo;
+    }
 }

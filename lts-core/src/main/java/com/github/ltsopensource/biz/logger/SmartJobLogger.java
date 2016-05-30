@@ -64,4 +64,22 @@ public class SmartJobLogger implements JobLogger {
         // TODO(zj): need to implement)
         return delegate.getJobLogPo(workflowId, submitTime, jobName, triggerTime);
     }
+
+    @Override
+    public List<JobLogPo> getJobLogPoListWithEndStatus(String workflowId, Long submitTime, Long triggerTime) {
+        // TODO(zj): need to implement)
+        return delegate.getJobLogPoListWithEndStatus(workflowId, submitTime, triggerTime);
+    }
+
+    @Override
+    public Long getMaxSubmitTime(String workflowId, Long triggerTime) {
+        // TODO(zj): need to implement)
+        return delegate.getMaxSubmitTime(workflowId, triggerTime);
+    }
+
+    @Override
+    public boolean remove(JobLogPo jobLogPo) {
+        // TODO(zj): need to implement)
+        return false;
+    }
 }

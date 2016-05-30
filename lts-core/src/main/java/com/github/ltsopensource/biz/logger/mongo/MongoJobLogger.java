@@ -94,6 +94,24 @@ public class MongoJobLogger extends MongoRepository implements JobLogger {
         return null;
     }
 
+    @Override
+    public List<JobLogPo> getJobLogPoListWithEndStatus(String workflowId, Long submitTime, Long triggerTime) {
+        // TODO(zj): need to implement)
+        return null;
+    }
+
+    @Override
+    public Long getMaxSubmitTime(String workflowId, Long triggerTime) {
+        // TODO(zj): need to implement)
+        return null;
+    }
+
+    @Override
+    public boolean remove(JobLogPo jobLogPo) {
+        // TODO(zj): need to implement)
+        return false;
+    }
+
     private Long getTimestamp(Date timestamp) {
         if (timestamp == null) {
             return null;

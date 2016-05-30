@@ -25,7 +25,7 @@ public interface JobLogger {
                           String taskId);
 
     /**
-     * Get {@link JobLogPo} object according to workflowId, submitTime, jobName, triggerTime.
+     * Gets {@link JobLogPo} object according to workflowId, submitTime, jobName, triggerTime.
      *
      * @param workflowId workflow id of the lts task
      * @param submitTime submit time of the lts task
@@ -34,4 +34,31 @@ public interface JobLogger {
      * @return JobLogPo if exists
      */
     JobLogPo getJobLogPo(String workflowId, Long submitTime, String jobName, Long triggerTime);
+
+    /**
+     * Gets list of {@link JobLogPo} accroding to workflowId, submitTime, triggerTime, including job that was killed
+     * or finished normally.
+     *
+     * @param workflowId workflow id of the lts task
+     * @param submitTime submit time of the lts task
+     * @param triggerTime plan time
+     * @return list of {@link JobLogPo}
+     */
+    List<JobLogPo> getJobLogPoListWithEndStatus(String workflowId, Long submitTime, Long triggerTime);
+
+    /**
+     * Gets the max submit time according to workflowId and triggerTime.
+     * @param workflowId workflow id of the lts task
+     * @param triggerTime plan time
+     * @return max timestamp of submitTime
+     */
+    Long getMaxSubmitTime(String workflowId, Long triggerTime);
+
+    /**
+     * Remove {@link JobLogPo}.
+     *
+     * @param jobLogPo job log info
+     * @return true if remove successfully
+     */
+    boolean remove(JobLogPo jobLogPo);
 }

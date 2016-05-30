@@ -11,6 +11,7 @@ import com.github.ltsopensource.core.logger.Logger;
 import com.github.ltsopensource.core.logger.LoggerFactory;
 import com.github.ltsopensource.queue.mysql.support.RshHolder;
 import com.github.ltsopensource.store.jdbc.JdbcAbstractAccess;
+import com.github.ltsopensource.store.jdbc.builder.DeleteSql;
 import com.github.ltsopensource.store.jdbc.builder.InsertSql;
 import com.github.ltsopensource.store.jdbc.builder.OrderByType;
 import com.github.ltsopensource.store.jdbc.builder.SelectSql;
@@ -239,6 +240,50 @@ public class MysqlJobLogger extends JdbcAbstractAccess implements JobLogger {
             return rows.get(0);
         }
         return null;
+    }
+
+    @Override
+    public List<JobLogPo> getJobLogPoListWithEndStatus(String workflowId, Long submitTime, Long triggerTime) {
+        SelectSql sql = new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("submit_time = ?", submitTime)
+                .and("trigger_time = ?", triggerTime)
+                .and("(log_type = 'FINISHED' or log_type = 'KILLED')")
+                .orderBy()
+                .column("log_time", OrderByType.DESC);
+        LOGGER.info("......getJobLogPo(workflowId, submitTime, jobName, triggerTime): " +
+                sql.getSQL());
+        List<JobLogPo> rows = sql.list(RshHolder.JOB_LOGGER_LIST_RSH);
+        return rows;
+    }
+
+    @Override
+    public Long getMaxSubmitTime(String workflowId, Long triggerTime) {
+        SelectSql sql = new SelectSql(getSqlTemplate())
+                .select()
+                .columns("submit_time")
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .and("trigger_time = ?", triggerTime)
+                .column("submit_time", OrderByType.DESC)
+                .orderBy();
+        return sql.single();
+    }
+
+    @Override
+    public boolean remove(JobLogPo jobLogPo) {
+        new DeleteSql(getSqlTemplate())
+                .delete()
+                .from()
+                .table(getTableName())
+                .where("job_id = ?", jobLogPo.getJobId())
+                .doDelete();
+        return true;
     }
 
     private String buildAndStatement4ExtParams(String key, String value) {
