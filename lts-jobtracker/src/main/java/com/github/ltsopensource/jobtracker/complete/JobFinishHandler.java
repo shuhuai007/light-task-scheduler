@@ -23,18 +23,27 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Robert HG (254963746@qq.com) on 11/11/15.
+ * Handler to resolve operations after job finishes.
  */
 public class JobFinishHandler {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JobFinishHandler.class);
 
     private JobTrackerAppContext appContext;
 
+    /**
+     * Constructs new {@link JobFinishHandler}.
+     *
+     * @param appContext jobTracker app context
+     */
     public JobFinishHandler(JobTrackerAppContext appContext) {
         this.appContext = appContext;
     }
 
+    /**
+     * This method will be called when job finishes.
+     *
+     * @param results list of {@link JobRunResult}
+     */
     public void onComplete(List<JobRunResult> results) {
         if (CollectionUtils.isEmpty(results)) {
             return;
@@ -45,7 +54,8 @@ public class JobFinishHandler {
             JobMeta jobMeta = result.getJobMeta();
 
             // 当前完成的job是否是重试的
-            boolean isRetryForThisTime = Boolean.TRUE.toString().equals(jobMeta.getInternalExtParam(Constants.IS_RETRY_JOB));
+            boolean isRetryForThisTime = Boolean.TRUE.toString().equals(jobMeta.getInternalExtParam(
+                    Constants.IS_RETRY_JOB));
             boolean isOnce = Boolean.TRUE.toString().equals(jobMeta.getInternalExtParam(Constants.ONCE));
 
             if (!isOnce && jobMeta.getJob().isCron()) {
@@ -60,6 +70,11 @@ public class JobFinishHandler {
         }
     }
 
+    /**
+     * Finish cron job.
+     *
+     * @param jobId job id
+     */
     public void finishCronJob(String jobId) {
         JobPo jobPo = appContext.getCronJobQueue().getJob(jobId);
         if (jobPo == null) {
