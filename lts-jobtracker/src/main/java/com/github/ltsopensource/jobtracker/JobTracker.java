@@ -77,7 +77,8 @@ public class JobTracker extends AbstractServerNode<JobTrackerNode, JobTrackerApp
                 new AddJobHttpCmd(appContext),
                 new SubmitLTSTaskHttpCmd(appContext),
                 new KillLTSTaskHttpCmd(appContext),
-                new SuspendLTSTaskHttpCmd(appContext));
+                new SuspendLTSTaskHttpCmd(appContext),
+                new ResumeLTSTaskHttpCmd(appContext));
 
         if(appContext.getOldDataHandler() == null){
             appContext.setOldDataHandler(new OldDataDeletePolicy());

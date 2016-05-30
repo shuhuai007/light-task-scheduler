@@ -20,5 +20,8 @@ public interface HttpCmdNames {
     String HTTP_CMD_SUBMIT_LTS_TASK = "lts_task_submit_cmd";
 
     String HTTP_CMD_KILL_LTS_TASK = "lts_task_kill_cmd";
+
     String HTTP_CMD_SUSPEND_LTS_TASK = "lts_task_suspend_cmd";
+
+    String HTTP_CMD_RESUME_LTS_TASK = "lts_task_resume_cmd";
 }
