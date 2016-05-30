@@ -14,4 +14,6 @@ public interface HttpCmdParamNames {
     String PARAM_KEY_FOR_KILL_OPERATION_TASK_TRACKER_GROUP_NAME = "taskTrackerGroupName";
     String PARAM_KEY_FOR_SUSPEND_OPERATION_TASK_ID = "taskId";
     String PARAM_KEY_FOR_SUSPEND_OPERATION_TASK_TRACKER_GROUP_NAME = "taskTrackerGroupName";
+    String PARAM_KEY_FOR_RESUME_OPERATION_TASK_ID = "taskId";
+    String PARAM_KEY_FOR_RESUME_OPERATION_TASK_TRACKER_GROUP_NAME = "taskTrackerGroupName";
 }

@@ -2,7 +2,7 @@ package com.github.ltsopensource.jobtracker.cmd;
 
 import com.github.ltsopensource.biz.logger.JobLogUtils;
 import com.github.ltsopensource.biz.logger.domain.LogType;
-import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
+import com.github.ltsopensource.biz.logger.domain.WorkflowLogStatus;
 import com.github.ltsopensource.cmd.HttpCmdProc;
 import com.github.ltsopensource.cmd.HttpCmdRequest;
 import com.github.ltsopensource.cmd.HttpCmdResponse;
@@ -111,7 +111,7 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
         waitingJobQueue.removeBatchByWorkflowId(workflowId);
 
         addSuspendQueue(jobPoList, JobQueueType.WAITING_JOB_QUEUE);
-        JobLogUtils.logBatch(LogType.SUSPEND, jobPoList, WorkflowLogType.SUSPEND, appContext.getJobLogger());
+        JobLogUtils.logBatch(LogType.SUSPEND, jobPoList, WorkflowLogStatus.SUSPEND, appContext.getJobLogger());
     }
 
     private void suspendExecutableQueue(ExecutableJobQueue executableJobQueue, String workflowId,
@@ -127,7 +127,7 @@ public class SuspendLTSTaskHttpCmd implements HttpCmdProc {
             executableJobQueue.removeBatchByWorkflowId(workflowId, taskTrackerGroupName);
 
             addSuspendQueue(jobPoList, JobQueueType.EXECUTABLE_JOB_QUEUE);
-            JobLogUtils.logBatch(LogType.SUSPEND, jobPoList, WorkflowLogType.SUSPEND, appContext.getJobLogger());
+            JobLogUtils.logBatch(LogType.SUSPEND, jobPoList, WorkflowLogStatus.SUSPEND, appContext.getJobLogger());
         }
 
     }

@@ -9,6 +9,8 @@ import com.github.ltsopensource.store.jdbc.builder.DeleteSql;
 import com.github.ltsopensource.store.jdbc.builder.SelectSql;
 import com.github.ltsopensource.admin.request.JobQueueReq;
 
+import java.util.List;
+
 /**
  * @author bug (357693306@qq.com) on 3/4/16.
  */
@@ -48,6 +50,17 @@ public class MysqlSuspendJobQueue extends AbstractMysqlJobQueue implements Suspe
                 .table(getTableName())
                 .where("job_id = ?", jobId)
                 .doDelete() == 1;
+    }
+
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId) {
+        return new SelectSql(getSqlTemplate())
+                .select()
+                .all()
+                .from()
+                .table(getTableName())
+                .where("workflow_id = ?", workflowId)
+                .list(RshHolder.JOB_PO_LIST_RSH);
     }
 
     private String getTableName() {

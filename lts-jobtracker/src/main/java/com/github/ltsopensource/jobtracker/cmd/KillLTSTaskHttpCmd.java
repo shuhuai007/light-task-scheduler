@@ -2,7 +2,7 @@ package com.github.ltsopensource.jobtracker.cmd;
 
 import com.github.ltsopensource.biz.logger.JobLogUtils;
 import com.github.ltsopensource.biz.logger.domain.LogType;
-import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
+import com.github.ltsopensource.biz.logger.domain.WorkflowLogStatus;
 import com.github.ltsopensource.cmd.DefaultHttpCmd;
 import com.github.ltsopensource.cmd.HttpCmd;
 import com.github.ltsopensource.cmd.HttpCmdClient;
@@ -156,7 +156,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         }
         if (CollectionUtils.isNotEmpty(jobPoList)) {
             executableJobQueue.removeBatchByWorkflowId(workflowId, taskTrackerGroupName);
-            JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+            JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogStatus.END_KILL, appContext.getJobLogger());
         }
     }
 
@@ -164,7 +164,7 @@ public class KillLTSTaskHttpCmd implements HttpCmdProc {
         List<JobPo> jobPoList = waitingJobQueue.getJobsByWorkflowId(workflowId);
         waitingJobQueue.removeBatchByWorkflowId(workflowId);
 
-        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogType.END_KILL, appContext.getJobLogger());
+        JobLogUtils.logBatch(LogType.KILL, jobPoList, WorkflowLogStatus.END_KILL, appContext.getJobLogger());
     }
 
 }

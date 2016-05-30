@@ -67,4 +67,10 @@ public class MongoSuspendJobQueue extends AbstractMongoJobQueue implements Suspe
         return wr.getN() == 1;
     }
 
+    @Override
+    public List<JobPo> getJobsByWorkflowId(String workflowId) {
+        // TODO(zj): to be implemented
+        return null;
+    }
+
 }

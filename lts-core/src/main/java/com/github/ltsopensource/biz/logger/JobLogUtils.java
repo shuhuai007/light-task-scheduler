@@ -2,7 +2,7 @@ package com.github.ltsopensource.biz.logger;
 
 import com.github.ltsopensource.biz.logger.domain.JobLogPo;
 import com.github.ltsopensource.biz.logger.domain.LogType;
-import com.github.ltsopensource.biz.logger.domain.WorkflowLogType;
+import com.github.ltsopensource.biz.logger.domain.WorkflowLogStatus;
 import com.github.ltsopensource.core.constant.JobInfoConstants;
 import com.github.ltsopensource.core.constant.Level;
 import com.github.ltsopensource.core.support.JobDomainConverter;
@@ -33,7 +33,7 @@ public class JobLogUtils {
      * @param workflowLogType log type of workflow
      * @param jobLogger job logger
      */
-    public static void log(LogType logType, JobPo jobPo, WorkflowLogType workflowLogType, JobLogger
+    public static void log(LogType logType, JobPo jobPo, WorkflowLogStatus workflowLogType, JobLogger
             jobLogger) {
         JobLogPo jobLogPo = JobDomainConverter.convert2JobLog(jobPo);
         jobLogPo.setSuccess(true);
@@ -47,7 +47,7 @@ public class JobLogUtils {
     }
 
 
-    public static void logBatch(LogType logType, List<JobPo> jobPoList, WorkflowLogType workflowLogType, JobLogger jobLogger) {
+    public static void logBatch(LogType logType, List<JobPo> jobPoList, WorkflowLogStatus workflowLogType, JobLogger jobLogger) {
         for (JobPo jobPo : jobPoList) {
             log(logType, jobPo, workflowLogType, jobLogger);
         }

@@ -3,6 +3,8 @@ package com.github.ltsopensource.queue;
 import com.github.ltsopensource.queue.domain.JobPo;
 import com.github.ltsopensource.store.jdbc.exception.DupEntryException;
 
+import java.util.List;
+
 /**
  * 暂停队列
  *
@@ -24,4 +26,11 @@ public interface SuspendJobQueue extends JobQueue{
      */
     boolean remove(String jobId);
 
+    /**
+     * Gets list of {@link JobPo} based on workflowId.
+     *
+     * @param workflowId workflow id of the lts task
+     * @return list of {@link JobPo}
+     */
+    List<JobPo> getJobsByWorkflowId(String workflowId);
 }
